@@ -3,13 +3,13 @@
 import * as anchor from "@project-serum/anchor"
 import {programId,marketConstants} from "../../config.json"
 import {Connection, Keypair} from "@solana/web3.js"
-import { Event, IDL } from "types";
+import { Event, IDL } from "../types";
 
 
 const parseEventQ = (eventQ:any) => {
   const events:Event[] = [] 
-  for(let i = 0;i<(eventQ.buf as any[]).length;i++){
-    const e = eventQ.buf[i];
+  for(let i = 0;i<(eventQ as any[]).length;i++){
+    const e = eventQ[i];
     if(e.orderId.toString() === '0') continue
     const event:Event= {} as Event
     event['idx'] = i;
@@ -27,7 +27,7 @@ const parseEventQ = (eventQ:any) => {
 }
 
 
-export async function getEventQ(keypair:Keypair,connection:Connection){
+export async function getRawEventQ(keypair:Keypair,connection:Connection){
   const {eventQPda} = marketConstants
   const wallet = new anchor.Wallet(keypair);
   const provider = new anchor.AnchorProvider(
@@ -38,6 +38,10 @@ export async function getEventQ(keypair:Keypair,connection:Connection){
   const program = new anchor.Program(IDL, programId, provider);
   const eventQ = await program.account.eventQueue.fetch(eventQPda);
 
-  return parseEventQ(eventQ);
+  return eventQ;
+}
 
+export async function getParsedEventQ(keypair:Keypair,connection:Connection){
+  const eventQ = await getRawEventQ(keypair,connection);
+  return parseEventQ(eventQ.buf);
 }

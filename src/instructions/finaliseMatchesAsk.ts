@@ -1,9 +1,8 @@
 import getFermiDexProgram from "../utils/getFermiDexProgram";
-import type { FinaliseMatchesAskParams } from "types";
+import type { FinaliseMatchesAskParams } from "../types";
 import { marketConstants } from "../../config.json";
 import { getAssociatedTokenAddress } from "@solana/spl-token";
 import * as anchor from "@project-serum/anchor";
-
 
 export const finaliseMatchesAsk = async ({
   eventSlot1,

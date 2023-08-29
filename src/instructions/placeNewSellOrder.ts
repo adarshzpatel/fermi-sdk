@@ -3,7 +3,7 @@ import * as spl from '@solana/spl-token';
 import { Connection} from '@solana/web3.js';
 import { Keypair } from '@solana/web3.js';
 import {marketConstants,programId} from '../../config.json'
-import { IDL } from 'types/IDL';
+import { IDL } from '../types/IDL';
 
 /**
  * Place a new limit sell order == ASK

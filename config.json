@@ -1,16 +1,16 @@
 {
-  "rpcUrl":"http://127.0.0.1:8899",
+  "rpcUrl":"https://api.devnet.solana.com",
   "programId": "6D8nP3TRrsT8FZNbhgZXGhyZz9SbnHHU2egsdJjeaHa7",
   "marketConstants": {
-    "marketPda":"nvKx4Mew31U218r6uFTEMwaMX5hVo3qoB2tiwHjzdXF",
-    "coinVault":"71wqmwACjkBJhGvmKpkBs7F25L2i2DdL8oPt9LbxnABE",
-    "pcVault":"2D1hbNkk2uWfyDDDQxA7rERiofEtSrn5cSh5myeYAkfq",
-    "coinMint":"4U8aZMFwjrjCS9ZUR7HyAvu8q26NkWx68eLBJJ6rZPSQ",
-    "pcMint":"7KJoHrYycuBExfimvmW8tp7KxqAFhJ4jEEaEFmhW9c1a",
-    "bidsPda":"2ZrPymF5VVe24RJPiGPw5f85guQWLE4S6WTjVh6gRP4c",
-    "asksPda":"QqRwtonXSQk7mUQcQVTpzptPDj8WZkDP1f1c11NwiZS",
-    "reqQPda":"9cKSsiNyM16ii3HCJYDCHXxTKonbNbgDYqGPWWkpx2xX",
-    "eventQPda":"4fhoaDDLRGfSzoMuKgMpQQ9FbLD4HJpDttnhsnqRoMAN",
-    "authority":"8oLBNnz2xWq6Mw5KX9PUELQEo92kBmkSoTZCBph5C5ju"
+    "marketPda":"yvm1gAuftPevauWpLPKfKzJU5N4G6mwhqpqvccMYNh9",
+    "coinVault":"DZRGzBgrvgCNoCD7mF82xKSEHHKAaNogJW6E7Fi54wtU",
+    "pcVault":"6fgP81TJpPW8wp1PkXk63MeDK8Jag4HcMyvYnVC2KNoh",
+    "coinMint":"DUpPuL6nRMSGpXp4MDM8SHb3Ro6WqZSaM3ijmw93DZpD",
+    "pcMint":"645eZKR5qpBYkGVntLyNB2jQ2iUbRpho1L6W6wEC7nZ2",
+    "bidsPda":"9vvMmNBS8iTuiTU3HZyvZcWMucLoHhHPVPwqVsSQ7MNH",
+    "asksPda":"aUKNi5RAXCuCiBycDHEduHcNwqdQjaRqRoUMMh28fdj",
+    "reqQPda":"BoG5oqWvXS87BSiz9D6MdmWWqUaUjP7kpC3F1zjvm2wd",
+    "eventQPda":"7fQdNhqS13FrPYuQRqzdSvYP34KC5UWkjnxcCaJVNKk7",
+    "authority":"7fQdNhqS13FrPYuQRqzdSvYP34KC5UWkjnxcCaJVNKk7"
   }
 }

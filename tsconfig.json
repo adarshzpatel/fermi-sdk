@@ -1,6 +1,5 @@
 {
   "compilerOptions": {
-    "baseUrl": "src",
     "module": "commonjs",
     "target": "es2015",
     "esModuleInterop": true,

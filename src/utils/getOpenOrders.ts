@@ -1,13 +1,13 @@
 import * as anchor from "@project-serum/anchor";
-import { Keypair } from "@solana/web3.js";
+import { Keypair, PublicKey } from "@solana/web3.js";
 import { Connection } from "@solana/web3.js";
 import { marketConstants, programId } from "../../config.json";
-import { IDL } from "types";
+import { IDL } from "../types";
 
 export const getOpenOrders = async (
   userKp: Keypair,
   connection: Connection
-) => {
+):Promise<{orders:string[],pda:PublicKey}> => {
   const { marketPda } = marketConstants;
   const authority = userKp;
   const wallet = new anchor.Wallet(authority);

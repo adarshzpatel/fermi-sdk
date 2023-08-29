@@ -3,7 +3,7 @@ import getFermiDexProgram from "../utils/getFermiDexProgram";
 import { marketConstants } from "../../config.json";
 import { getAssociatedTokenAddress } from "@solana/spl-token";
 import * as anchor from "@project-serum/anchor";
-import type { FinaliseMatchesBidParams } from "types";
+import type { FinaliseMatchesBidParams } from "../types";
 
 export const finaliseMatchesBid = async ({
   eventSlot1,

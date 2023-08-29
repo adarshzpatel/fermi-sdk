@@ -3,17 +3,22 @@ import { Connection } from "@solana/web3.js";
 import * as FermiDex from "../src"
 import { rpcUrl } from "../config.json";
 
-const createNewMarket = async () => {
+const fetchEventQueue = async () => {
   const authority = FermiDex.getLocalKeypair("/Users/zero/.config/solana/id.json");
-  console.log("authority",authority.publicKey.toString())
   const connection = new Connection(rpcUrl)
-  const market = await FermiDex.initialiseMarket(authority,connection);
-  console.log(market);
+
+  // Readable stringified event q
+  const parsedEventQ = await FermiDex.getParsedEventQ(authority,connection);
+  console.log({parsedEventQ});
+
+  // Raw eventq
+  const rawEventQ = await FermiDex.getRawEventQ(authority,connection);
+  console.log({rawEventQ});
 }
 
 (async function () {
   try {
-    await createNewMarket();
+    await fetchEventQueue();
   } catch (err) {
     console.log("Error: ", err);
     process.exit(1);

@@ -2,7 +2,7 @@ import * as anchor from '@project-serum/anchor';
 import * as spl from '@solana/spl-token';
 import { Keypair, Connection } from '@solana/web3.js';
 import { createMint } from '../utils/createMint';
-import { IDL } from 'types/IDL';
+import { IDL } from '../types/IDL';
 import {programId} from "../../config.json"
 
 export async function initialiseMarket(
