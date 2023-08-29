@@ -18,9 +18,18 @@
     "@types/mocha": "^10.0.1",
     "@types/node": "^20.5.7",
     "chai": "^4.3.8",
+    "fs": "^0.0.1-security",
     "mocha": "^10.2.0",
     "ts-node": "^10.9.1",
     "tsup": "^7.2.0",
     "typescript": "^5.2.2"
+  },
+  "dependencies": {
+    "@project-serum/anchor": "^0.26.0",
+    "@solana/spl-token": "^0.3.8",
+    "@solana/web3.js": "^1.78.4",
+    "@typescript-eslint/eslint-plugin": "^6.5.0",
+    "@typescript-eslint/parser": "^6.5.0",
+    "eslint": "^8.48.0"
   }
 }

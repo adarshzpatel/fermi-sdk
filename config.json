@@ -1,0 +1,16 @@
+{
+  "rpcUrl":"http://127.0.0.1:8899",
+  "programId": "6D8nP3TRrsT8FZNbhgZXGhyZz9SbnHHU2egsdJjeaHa7",
+  "marketConstants": {
+    "marketPda":"nvKx4Mew31U218r6uFTEMwaMX5hVo3qoB2tiwHjzdXF",
+    "coinVault":"71wqmwACjkBJhGvmKpkBs7F25L2i2DdL8oPt9LbxnABE",
+    "pcVault":"2D1hbNkk2uWfyDDDQxA7rERiofEtSrn5cSh5myeYAkfq",
+    "coinMint":"4U8aZMFwjrjCS9ZUR7HyAvu8q26NkWx68eLBJJ6rZPSQ",
+    "pcMint":"7KJoHrYycuBExfimvmW8tp7KxqAFhJ4jEEaEFmhW9c1a",
+    "bidsPda":"2ZrPymF5VVe24RJPiGPw5f85guQWLE4S6WTjVh6gRP4c",
+    "asksPda":"QqRwtonXSQk7mUQcQVTpzptPDj8WZkDP1f1c11NwiZS",
+    "reqQPda":"9cKSsiNyM16ii3HCJYDCHXxTKonbNbgDYqGPWWkpx2xX",
+    "eventQPda":"4fhoaDDLRGfSzoMuKgMpQQ9FbLD4HJpDttnhsnqRoMAN",
+    "authority":"8oLBNnz2xWq6Mw5KX9PUELQEo92kBmkSoTZCBph5C5ju"
+  }
+}
