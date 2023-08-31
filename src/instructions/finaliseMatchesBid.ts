@@ -5,6 +5,19 @@ import { getAssociatedTokenAddress } from "@solana/spl-token";
 import * as anchor from "@project-serum/anchor";
 import type { FinaliseMatchesBidParams } from "../types";
 
+
+/**
+ * Finalize bid side of the order.
+ *
+ * @param eventSlot1 - The event index of the event having orderIdSecond.
+ * @param eventSlot2 - The event index of the event which doesn't have the orderIdSecond.
+ * @param authority - The primary authority keypair.
+ * @param authoritySecond - The secondary/counterparty authority keypair.
+ * @param openOrdersOwnerPda - The pda of openOrders of authority.
+ * @param openOrdersCounterpartyPda - The pda of openOrders of counterparty.
+ * @param connection - The Solana network connection object.
+ * @returns A string representing the transaction or undefined in case of an error.
+ */
 export const finaliseMatchesBid = async ({
   eventSlot1,
   eventSlot2,
@@ -13,7 +26,8 @@ export const finaliseMatchesBid = async ({
   openOrdersOwnerPda,
   openOrdersCounterpartyPda,
   connection
-}: FinaliseMatchesBidParams): Promise<string> => {
+}: FinaliseMatchesBidParams): Promise<string | undefined> => {
+  try{
   const program = getFermiDexProgram(authoritySecond,connection);
   const { pcMint, marketPda, pcVault, reqQPda, eventQPda, coinMint } =
     marketConstants;
@@ -42,4 +56,7 @@ export const finaliseMatchesBid = async ({
 
   console.log("✅ finalized bid : ", finalizeBidTx);
   return finalizeBidTx;
+} catch(err){
+  console.error(err)
+}
 };

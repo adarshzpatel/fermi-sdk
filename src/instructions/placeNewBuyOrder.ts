@@ -1,9 +1,10 @@
 import * as anchor from '@project-serum/anchor';
 import * as spl from '@solana/spl-token';
-import { Connection } from '@solana/web3.js';
+import { Connection, } from '@solana/web3.js';
 import { Keypair } from '@solana/web3.js';
-import {marketConstants,programId} from '../../config.json'
+import { marketConstants, programId } from '../../config.json'
 import { IDL } from '../types/IDL';
+
 /**
  * Place a new limit buy order == bid
  *
@@ -11,12 +12,12 @@ import { IDL } from '../types/IDL';
  * @param price - The price for the sell order.
  * @returns A confirmation message.
  */
-export async function placeNewBuyOrder(kp: Keypair, price: number,connection:Connection) {
+export async function placeNewBuyOrder(kp: Keypair, price: number, connection: Connection) {
   try {
     const authority = kp;
     const wallet = new anchor.Wallet(authority);
     const provider = new anchor.AnchorProvider(
-     connection ,
+      connection,
       wallet,
       anchor.AnchorProvider.defaultOptions(),
     );
@@ -32,7 +33,7 @@ export async function placeNewBuyOrder(kp: Keypair, price: number,connection:Con
       reqQPda,
     } = marketConstants
     const program = new anchor.Program(IDL, programId, provider);
-    
+
     const authorityPcTokenAccount = await spl.getAssociatedTokenAddress(
       new anchor.web3.PublicKey(pcMint),
       authority.publicKey,
@@ -48,7 +49,7 @@ export async function placeNewBuyOrder(kp: Keypair, price: number,connection:Con
       new anchor.web3.PublicKey(programId),
     );
 
-    await program.methods
+    const tx = await program.methods
       .newOrder(
         { bid: {} },
         new anchor.BN(price),
@@ -73,13 +74,10 @@ export async function placeNewBuyOrder(kp: Keypair, price: number,connection:Con
       .signers([authority])
       .rpc();
 
-    const openOrders = await program.account.openOrders.fetch(
-        openOrdersPda,
-    );
-    console.log("Open orders for ",authority.publicKey.toString())
-    console.log(openOrders.orders.map(item=>item.toString()))
+    console.log("Placed limit buy order at price ",price)
 
     return {
+      tx,
       message: 'Placed limit order Buy price: ' + price,
     };
   } catch (err) {

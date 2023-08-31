@@ -12,8 +12,8 @@ const fetchEventQueue = async () => {
   console.log({parsedEventQ});
 
   // Raw eventq
-  const rawEventQ = await FermiDex.getRawEventQ(authority,connection);
-  console.log({rawEventQ});
+  // const rawEventQ = await FermiDex.getRawEventQ(authority,connection);
+  // console.log({rawEventQ});
 }
 
 (async function () {

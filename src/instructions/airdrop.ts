@@ -5,83 +5,110 @@ import { mintTo } from "../utils/mintTo";
 import { Keypair, Connection, PublicKey } from "@solana/web3.js";
 import { marketConstants } from "../../config.json";
 
-export const airdrop = async (
+/**
+* Airdrops pc tokens to a specified user. Needs the keypair of the owner of market
+ * 
+ * @param userKp - The user keypair that represents the user's identity.
+ * @param owner - The owner keypair of the market.
+ * @param connection - The Solana network connection object.
+ * @returns The public key of the authority coin token account.
+ */
+export const airdropCoinToken = async (
   userKp: Keypair,
-  owner:Keypair,
+  owner: Keypair,
   connection: Connection
-): Promise<
-  | { authorityPcTokenAccount: PublicKey; authorityCoinTokenAccount: PublicKey }
-  | undefined
-> => {
-
-    const { coinMint, pcMint } = marketConstants;
+): Promise<PublicKey | undefined> => {
+  try {
+    const { coinMint } = marketConstants;
     const authority = userKp;
-    // wallet which owns the market 
     const wallet = new anchor.Wallet(owner);
     const provider = new anchor.AnchorProvider(
       connection,
       wallet,
-      anchor.AnchorProvider.defaultOptions()
+      anchor.AnchorProvider.defaultOptions(),
     );
 
-    // create token account
-    const authorityCoinTokenAccount = await spl.getAssociatedTokenAddress(
+    const authorityCoinTokenAccount: PublicKey = await spl.getAssociatedTokenAddress(
       new anchor.web3.PublicKey(coinMint),
       authority.publicKey,
-      false
+      false,
     );
 
-    await createAssociatedTokenAccount(
-      provider,
-      new anchor.web3.PublicKey(coinMint),
-      authorityCoinTokenAccount,
-      authority.publicKey
-    )
-      .then(() =>
-        console.log("✅ Coin ATA created")
+    if (!(await connection.getAccountInfo(authorityCoinTokenAccount))) {
+      await createAssociatedTokenAccount(
+        provider,
+        new anchor.web3.PublicKey(coinMint),
+        authorityCoinTokenAccount,
+        authority.publicKey
       );
+      console.log("✅ Coin ATA created for ", authority.publicKey.toString());
+    }
 
     await mintTo(
       provider,
       new anchor.web3.PublicKey(coinMint),
       authorityCoinTokenAccount,
-      BigInt("10000000000")
-    )
-      .then(() =>
-        console.log("✅ Coin tokens minted ")
-      )
+      BigInt('10000000000')
+    );
+    console.log("✅ Coin tokens minted to ", authorityCoinTokenAccount.toString());
 
-    const authorityPcTokenAccount = await spl.getAssociatedTokenAddress(
-      new anchor.web3.PublicKey(pcMint),
-      authority.publicKey,
-      false
+    return authorityCoinTokenAccount;
+  } catch (err) {
+    console.log('Something went wrong while airdropping coin token.');
+    console.log(err);
+  }
+};
+
+/**
+ * Airdrops pc tokens to a specified user. Needs the keypair of the owner of market
+ * 
+ * @param userKp - The user keypair that represents the user's identity.
+ * @param owner - The owner keypair of the market.
+ * @param connection - The Solana network connection object.
+ * @returns The public key of the authority pc token account.
+ */
+export const airdropPcToken = async (
+  userKp: Keypair,
+  owner: Keypair,
+  connection: Connection
+): Promise<PublicKey | undefined> => {
+  try {
+    const { pcMint } = marketConstants;
+    const authority = userKp;
+    const wallet = new anchor.Wallet(owner);
+    const provider = new anchor.AnchorProvider(
+      connection,
+      wallet,
+      anchor.AnchorProvider.defaultOptions(),
     );
 
-    await createAssociatedTokenAccount(
-      provider,
+    const authorityPcTokenAccount: PublicKey = await spl.getAssociatedTokenAddress(
       new anchor.web3.PublicKey(pcMint),
-      authorityPcTokenAccount,
-      authority.publicKey
-    )
-      .then(() =>
-        console.log("✅ Pc ATA created ")
-      )
+      authority.publicKey,
+      false,
+    );
+
+    if (!(await connection.getAccountInfo(authorityPcTokenAccount))) {
+      await createAssociatedTokenAccount(
+        provider,
+        new anchor.web3.PublicKey(pcMint),
+        authorityPcTokenAccount,
+        authority.publicKey
+      );
+      console.log("✅ Pc ATA created for ", authority.publicKey.toString());
+    }
 
     await mintTo(
       provider,
       new anchor.web3.PublicKey(pcMint),
       authorityPcTokenAccount,
-      BigInt("1000000000")
-    )
-      .then(() =>
-        console.log("✅ Pc tokens minted to")
-      )
+      BigInt('1000000000')
+    );
+    console.log("✅ Pc tokens minted to ", authorityPcTokenAccount.toString());
 
-
-    console.log("Airdropped to ", authority.publicKey.toString(), "✅");
-    return {
-      authorityCoinTokenAccount,
-      authorityPcTokenAccount,
-    };
-  
+    return authorityPcTokenAccount;
+  } catch (err) {
+    console.log('Something went wrong while airdropping pc token.');
+    console.log(err);
+  }
 };

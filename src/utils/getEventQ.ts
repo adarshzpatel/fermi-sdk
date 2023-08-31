@@ -26,7 +26,6 @@ const parseEventQ = (eventQ:any) => {
   return events;
 }
 
-
 export async function getRawEventQ(keypair:Keypair,connection:Connection){
   const {eventQPda} = marketConstants
   const wallet = new anchor.Wallet(keypair);

@@ -11,3 +11,9 @@ Update programId , market constants and programId  in `config.json`
 
 
 
+# TASKS 
+[] Fix algo for reverse matching - Tommorow
+[] Documentation - Tommorow
+[] TOkenplex 
+ - Design : today
+ - Ui - next week

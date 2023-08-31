@@ -1,8 +1,8 @@
 import * as anchor from '@project-serum/anchor';
 import * as spl from '@solana/spl-token';
-import { Connection} from '@solana/web3.js';
+import { Connection } from '@solana/web3.js';
 import { Keypair } from '@solana/web3.js';
-import {marketConstants,programId} from '../../config.json'
+import { marketConstants, programId } from '../../config.json'
 import { IDL } from '../types/IDL';
 
 /**
@@ -12,7 +12,7 @@ import { IDL } from '../types/IDL';
  * @param price - The price for the sell order.
  * @returns A confirmation message.
  */
-export async function placeNewSellOrder(kp: Keypair, price: number = 22,connection:Connection) {
+export async function placeNewSellOrder(kp: Keypair, price: number = 22, connection: Connection) {
   try {
     const {
       asksPda,
@@ -36,6 +36,7 @@ export async function placeNewSellOrder(kp: Keypair, price: number = 22,connecti
     );
 
     const program = new anchor.Program(IDL, programId, provider);
+
     const authorityCoinTokenAccount = await spl.getAssociatedTokenAddress(
       new anchor.web3.PublicKey(coinMint),
       authority.publicKey,
@@ -52,7 +53,7 @@ export async function placeNewSellOrder(kp: Keypair, price: number = 22,connecti
         new anchor.web3.PublicKey(programId),
       );
 
-    await program.methods
+    const tx = await program.methods
       .newOrder(
         { ask: {} },
         new anchor.BN(price),
@@ -77,13 +78,12 @@ export async function placeNewSellOrder(kp: Keypair, price: number = 22,connecti
       .signers([authority])
       .rpc();
 
-    const openOrders = await program.account.openOrders.fetch(
-        openOrdersPda,
-    );
-    console.log("Open orders for ",authority.publicKey.toString())
-    console.log(openOrders.orders.map(item=>item.toString()))
+    console.log("Placed limit sell order at price ", price)
+
+
     return {
-      message: 'Place limit order sell price: ' + price,
+      tx,
+      message: 'Placed limit order sell price: ' + price,
     };
   } catch (err) {
     console.log('something went wrong while placing a sell order!');
