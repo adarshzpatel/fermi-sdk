@@ -75,13 +75,14 @@ await FermiDex.airdropPcToken(user2, owner, connection);
 To fetch and display the balances for both users:
 
 ```
-console.log("User 1");
-console.log("Pc balance", (await FermiDex.getTokenBalance(user1.publicKey, new PublicKey(marketConstants.pcMint), connection)));
-console.log("Coin balance", (await FermiDex.getTokenBalance(user1.publicKey, new PublicKey(marketConstants.coinMint), connection)));
-
-console.log("User 2");
-console.log("Pc balance", (await FermiDex.getTokenBalance(user2.publicKey, new PublicKey(marketConstants.pcMint), connection)));
-console.log("Coin balance", (await FermiDex.getTokenBalance(user2.publicKey, new PublicKey(marketConstants.coinMint), connection)));
+// fetch pc balance
+const pcmint = new PublicKey(marketConstants.pcMint)
+const pcTokenBalance = await FermiDex.getTokenBalance(user.publicKey,pcmint,connection);
+console.log("Pc balance :",pcTokenBalance)
+// fetch coin balance
+const coinmint = new PublicKey(marketConstants.coinMint)
+const coinTokenBalance = await FermiDex.getTokenBalance(user.publicKey,coinmint,connection);
+console.log("Coin balance :",coinTokenBalance);
 ```
 
 ## 5. Placing Orders
@@ -89,8 +90,8 @@ console.log("Coin balance", (await FermiDex.getTokenBalance(user2.publicKey, new
 Place a sell order for `user2` and a buy order for `user1`:
 
 ```
-await FermiDex.placeNewSellOrder(user2, 36, connection);
-await FermiDex.placeNewBuyOrder(user1, 35, connection);
+await FermiDex.placeNewBuyOrder(user1, 36, connection);
+await FermiDex.placeNewSellOrder(user2, 35, connection);
 ```
 
 ## 6. Finalizing Orders
