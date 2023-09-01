@@ -40,7 +40,7 @@ const main = async () => {
   // 4. PLACING ORDERS
 
   await FermiDex.placeNewBuyOrder(user1, 36, connection);
-  await FermiDex.placeNewSellOrder(user2, 36, connection);
+  await FermiDex.placeNewSellOrder(user2, 35, connection);
 
   console.log("sleeping for 20 sec")
   await FermiDex.sleep(20000)
