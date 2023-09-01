@@ -12,7 +12,7 @@ const main = async () => {
   console.log("Owner : ", owner.publicKey.toString());
 
   // 1. CREATE MARKET -- WORKING
-  await FermiDex.initialiseMarket(owner, connection);
+  // await FermiDex.initialiseMarket(owner, connection);
 
   // 2. Airdrop Tokens -- WORKING
   console.log("AIRDROPPING TOKENS !!");
@@ -39,8 +39,8 @@ const main = async () => {
 
   // 4. PLACING ORDERS
 
+  await FermiDex.placeNewBuyOrder(user1, 36, connection);
   await FermiDex.placeNewSellOrder(user2, 36, connection);
-  await FermiDex.placeNewBuyOrder(user1, 35, connection);
 
   console.log("sleeping for 20 sec")
   await FermiDex.sleep(20000)

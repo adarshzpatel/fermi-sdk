@@ -1,17 +1,16 @@
 {
   "rpcUrl": "http://127.0.0.1:8899",
-  "programId": "FYCNpzDJtk1GcrsRqzmFcBwPVQkFXwYBk3Fmu1H7DB7B",
-  "marketConstants": {
-    "programId": "FYCNpzDJtk1GcrsRqzmFcBwPVQkFXwYBk3Fmu1H7DB7B",
-    "marketPda": "5k1q89rSRyjtXWYRMMig4hTmsd1wQf3CZqZkRzrndB1L",
-    "coinVault": "DSsE1Ej9wcDBjVK3yq5Rqy4eCpSGMGUcmTNDsx3ZLnhT",
-    "pcVault": "ATMZ6VeGxtGnfqyhp5uV2n9Mxv96A7nFypmi7E5oboy4",
-    "coinMint": "7zHeuycJyemUsMdejzRLzVwP7NMWq4tgREvR342LhxLR",
-    "pcMint": "B4PHDpMdpEZTCn5RekCG6RRteEVRrAyPyucihNWrE2rh",
-    "bidsPda": "YSRbwZJUMUkmkG5Gj7vmDcZJxEMeSKVkdMDy7guk5GR",
-    "asksPda": "AL9gchbWhydbDwJj5CMuLmzTPbt8QAaVedcuqzdgWFwr",
-    "reqQPda": "AWwsEDEHRfnTPJ5JRTH3LNFhp4phoUfvbow4Q3PdPo9M",
-    "eventQPda": "2PP9TDxVUBvuFPUi8VAkZEXgMj1xs7tfhyFBHDfuNhXz",
+  "programId": "Acf2r77toiCEQJ7fAMED7YURgAcV24LSpcMiKFPTy51L",
+  "marketConstants": {    
+    "marketPda": "FBKPfLnmuAKq5KaD9Fnr2GqbHx86hMGCwLxajg5dTE2w",
+    "coinVault": "ACo4BQyiiw1axgfVPVTpkpvJ54kAL9mVpTxjdyHUPA44",
+    "pcVault": "F1Mu3tKFkHG4ZcLqyYXnf2QRT9NbcCkRXLKDae5b7d5H",
+    "coinMint": "6psYaMdfKpeEw3zhFa8UFTmPGceVQmbbbGXhfbJobECd",
+    "pcMint": "5qQbx6rwyBxKMhAVVQnYBjPSt2rndaCHNLRYzhCXx6oa",
+    "bidsPda": "4JL5WeNT7NoVJL1vFmokWBs3JwAtKNEGhN1yMoPbL1ac",
+    "asksPda": "x5NEQUwzPT8oxRXe5BmQJKK9BzuDhob1wtA4pamMMu1",
+    "reqQPda": "4R11tXRJZiyPnwksifvJ4Zz685v8wakYBG3Y7nf5MEZ3",
+    "eventQPda": "65pYWGrufNn8CN2f91Ub6MQ1c7Y2AaGksCorkyVEKY9S",
     "authority": "E6QkwjM6WTzJJoGkfjcwxnCvkBuzSsMG4UnHcjCJLCFw"
   }
 }
