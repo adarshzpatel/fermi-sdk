@@ -12,6 +12,11 @@ Now you are ready to interact with the market through various functions availabl
 
 `import * as FermiDex from "../src`
 
+## Setup for devnet 
+Go to `config.json`
+- Replace `rpcUrl` with `https://api.devnet.solana.com` or any custom endpoint for devnet
+- Replace  `programId` with address of deployed program on devnet
+
 # Fermi Protocol SDK Tutorial
 
 The Fermi Protocol SDK provides functionalities to interact with the Fermi DEX on Solana. In this tutorial, we will cover the following steps:
