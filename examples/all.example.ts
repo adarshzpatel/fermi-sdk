@@ -12,7 +12,7 @@ const main = async () => {
   console.log("Owner : ", owner.publicKey.toString());
 
   // 1. CREATE MARKET -- WORKING
-  // await FermiDex.initialiseMarket(owner, connection);
+  await FermiDex.initialiseMarket(owner, connection);
 
   // 2. Airdrop Tokens -- WORKING
   console.log("AIRDROPPING TOKENS !!");
@@ -38,16 +38,13 @@ const main = async () => {
   console.log("Coin balance",(await FermiDex.getTokenBalance(user2.publicKey,new PublicKey(marketConstants.coinMint),connection)))
 
   // 4. PLACING ORDERS
-  await FermiDex.placeNewSellOrder(user2, 25, connection);
-  await FermiDex.placeNewBuyOrder(user1, 26, connection);
 
-  await FermiDex.placeNewSellOrder(user1, 32, connection);
-  await FermiDex.placeNewBuyOrder(user2, 33, connection);
+  await FermiDex.placeNewSellOrder(user2, 36, connection);
+  await FermiDex.placeNewBuyOrder(user1, 35, connection);
 
   console.log("sleeping for 20 sec")
   await FermiDex.sleep(20000)
   console.log("Sleep ended !")
-
 
   // 5. Finalise Orders
   // Check with reverse 
@@ -58,8 +55,11 @@ const main = async () => {
   const openOrdersAuthority = await FermiDex.getOpenOrders(authority, connection);
   const openOrdersCounterparty = await FermiDex.getOpenOrders(counterparty, connection);
   const eventQ = await FermiDex.getParsedEventQ(user1, connection);
+  console.log("user2",openOrdersAuthority)
+  console.log("user1",openOrdersCounterparty)
+  console.log(eventQ)
 
-  const matchedEvents = FermiDex.findMatchingEvents(
+const matchedEvents = FermiDex.findMatchingEvents(
     openOrdersAuthority.orders,
     eventQ
   );
