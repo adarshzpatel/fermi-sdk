@@ -51,7 +51,7 @@ const connection = new Connection(rpcUrl);
 Load local keypairs for the owner and two users:
 
 ```
-const owner = FermiDex.getLocalKeypair("/Users/zero/.config/solana/id.json");
+const owner = FermiDex.getLocalKeypair("~/.config/solana/id.json");
 const user1 = FermiDex.getLocalKeypair("./test-keypairs/user1/key.json");
 const user2 = FermiDex.getLocalKeypair("./test-keypairs/user2/key.json");
 ```

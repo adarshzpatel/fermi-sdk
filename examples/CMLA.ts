@@ -5,7 +5,7 @@ import * as anchor from "@project-serum/anchor"
 
 const main = async () => {
   const connection = new Connection(rpcUrl);
-  const owner = FermiDex.getLocalKeypair("/Users/zero/.config/solana/id.json");
+  const owner = FermiDex.getLocalKeypair("~/.config/solana/id.json");
   const wallet = new anchor.Wallet(owner);
   const provider = new anchor.AnchorProvider(connection,wallet,anchor.AnchorProvider.defaultOptions())
   const user1 = FermiDex.getLocalKeypair("./test-keypairs/user1/key.json");
@@ -25,8 +25,8 @@ const main = async () => {
    await FermiDex.createMint(provider, BonkMint, 9);
   // 1. CREATE MARKET -- WORKING
   
-  await FermiDex.initialiseMarketCustom(owner, connection, USDCMint.publicKey, wSolMint.publicKey);
-  await FermiDex.initialiseMarketCustom(owner, connection, USDCMint.publicKey, BonkMint.publicKey);
+  const market1Pdas = await FermiDex.initialiseMarketCustom(owner, connection, USDCMint.publicKey, wSolMint.publicKey);
+  const market2Pdas = await FermiDex.initialiseMarketCustom(owner, connection, USDCMint.publicKey, BonkMint.publicKey);
 
   // 2. Airdrop Tokens -- WORKING
   console.log("AIRDROPPING TOKENS !!");
@@ -56,10 +56,16 @@ const main = async () => {
   // 4. PLACING ORDERS
 
   // Alice places new Bid on both markets 
-  await FermiDex.placeNewBuyOrder(user1, 36, connection);
-  await FermiDex.placeNewSellOrder(user2, 35, connection);
+  // Place Bid on USDC/wSol market
+  await FermiDex.placeNewBuyOrderCustom(user1, 1000, connection, market1Pdas.marketPda, USDCMint, wSolMint)
+  //Place Bid on USDC/Bonk market
+  await FermiDex.placeNewBuyOrderCustom(user1, 1000, connection, market2Pdas.marketPda, USDCMint, BonkMint)
 
-  // Bob places new sell order on Bonk/USDC market
+  //await FermiDex.placeNewBuyOrder(user1, 36, connection);
+  //await FermiDex.placeNewSellOrder(user2, 35, connection);
+
+  // Bob places new sell order on Bonk/USDC market, selling 500 USDC worth of Sol at the market price.
+  await FermiDex.placeNewSellOrderCustom(user2, 500, connection, market2Pdas.marketPda,  USDCMint, BonkMin );
 
   console.log("sleeping for 20 sec")
   await FermiDex.sleep(20000)
@@ -110,6 +116,7 @@ const matchedEvents = FermiDex.findMatchingEvents(
 
     console.log(` ✅SUCCESSFULLY FINALIZED  ${orderId} and events ${orderIdMatched.idx} <-> ${orderIdSecondMatched?.idx}`)
   }
+
 };
 
 (async function() {

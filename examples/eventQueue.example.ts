@@ -4,7 +4,7 @@ import * as FermiDex from "../src"
 import { rpcUrl } from "../config.json";
 
 const fetchEventQueue = async () => {
-  const authority = FermiDex.getLocalKeypair("/Users/zero/.config/solana/id.json");
+  const authority = FermiDex.getLocalKeypair("~/.config/solana/id.json");
   const connection = new Connection(rpcUrl)
 
   // Readable stringified event q

@@ -1,10 +1,15 @@
 import { Connection, PublicKey } from "@solana/web3.js";
 import * as FermiDex from "../src";
 import { rpcUrl, marketConstants } from "../config.json";
+import * as os from 'os';
+import * as path from 'path';
+
+const homeDirectory = os.homedir();
+const solanaConfigPath = path.join(homeDirectory, '.config/solana/id.json');
 
 const main = async () => {
   const connection = new Connection(rpcUrl);
-  const owner = FermiDex.getLocalKeypair("/Users/zero/.config/solana/id.json");
+  const owner = FermiDex.getLocalKeypair(solanaConfigPath);
   const user1 = FermiDex.getLocalKeypair("./test-keypairs/user1/key.json");
   const user2 = FermiDex.getLocalKeypair("./test-keypairs/user2/key.json");
   console.log("User1 : ", user1.publicKey.toString());
