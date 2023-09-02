@@ -91,36 +91,39 @@ const main = async () => {
 
   // Alice places new Bid on both markets
   // Place Bid on USDC/wSol market
-  await FermiDex.placeNewBuyOrderCustom(
-    user1,
-    1000,
+  await FermiDex.placeNewBuyOrderCustom({
+    kp: user1,
+    price: 1000,
+    qty: 1,
     connection,
-    market1Pdas.marketPda,
-    wSolMint.publicKey,
-    USDCMint.publicKey
-  );
+    marketPda: market1Pdas.marketPda,
+    coinMint: wSolMint.publicKey,
+    pcMint: USDCMint.publicKey,
+  });
   //Place Bid on USDC/Bonk market
-  await FermiDex.placeNewBuyOrderCustom(
-    user1,
-    1000,
+  await FermiDex.placeNewBuyOrderCustom({
+    kp: user1,
+    price: 1000,
+    qty: 1,
     connection,
-    market2Pdas.marketPda,
-    BonkMint.publicKey,
-    USDCMint.publicKey
-  );
+    marketPda: market2Pdas.marketPda,
+    coinMint: BonkMint.publicKey,
+    pcMint: USDCMint.publicKey,
+  });
 
   //await FermiDex.placeNewBuyOrder(user1, 36, connection);
   //await FermiDex.placeNewSellOrder(user2, 35, connection);
 
   // Bob places new sell order on Bonk/USDC market, selling 500 USDC worth of Sol at the market price.
-  await FermiDex.placeNewSellOrderCustom(
-    user2,
-    500,
+  await FermiDex.placeNewSellOrderCustom({
+    kp: user2,
+    price: 500,
+    qty: 1,
     connection,
-    market2Pdas.marketPda,
-    BonkMint.publicKey,
-    USDCMint.publicKey
-  );
+    marketPda: market2Pdas.marketPda,
+    coinMint: BonkMint.publicKey,
+    pcMint: USDCMint.publicKey,
+  });
 
   console.log("sleeping for 20 sec");
   await FermiDex.sleep(20000);
@@ -172,9 +175,9 @@ const main = async () => {
       openOrdersOwnerPda: openOrdersAuthority.pda,
       openOrdersCounterpartyPda: openOrdersCounterparty.pda,
       connection: connection,
-      marketPda:market2Pdas.marketPda,
-      coinMint:market2Pdas.coinMint,
-      pcMint:market2Pdas.pcMint
+      marketPda: market2Pdas.marketPda,
+      coinMint: market2Pdas.coinMint,
+      pcMint: market2Pdas.pcMint,
     });
 
     await FermiDex.finaliseMatchesBidCustom({
@@ -185,9 +188,9 @@ const main = async () => {
       openOrdersOwnerPda: openOrdersAuthority.pda,
       openOrdersCounterpartyPda: openOrdersCounterparty.pda,
       connection: connection,
-      marketPda:market2Pdas.marketPda,
-      coinMint:market2Pdas.coinMint,
-      pcMint:market2Pdas.pcMint
+      marketPda: market2Pdas.marketPda,
+      coinMint: market2Pdas.coinMint,
+      pcMint: market2Pdas.pcMint,
     });
 
     console.log(

@@ -4,6 +4,7 @@ import { Connection } from '@solana/web3.js';
 import { Keypair } from '@solana/web3.js';
 import { marketConstants, programId } from '../../config.json'
 import { IDL } from '../types/IDL';
+import { PlaceOrderParams } from '../types/PlaceOrderParams';
 
 /**
  * Place a new limit sell order == ASK
@@ -92,7 +93,7 @@ export async function placeNewSellOrder(kp: Keypair, price: number = 22, connect
 }
 
 
-export async function placeNewSellOrderCustom(kp: Keypair, price: number = 22, connection: Connection,marketPda:anchor.web3.PublicKey,coinMint:anchor.web3.PublicKey,pcMint:anchor.web3.PublicKey) {
+export async function placeNewSellOrderCustom({coinMint,connection,kp,marketPda,pcMint,price,qty}:PlaceOrderParams) {
   try {
     const authority = kp;
 
