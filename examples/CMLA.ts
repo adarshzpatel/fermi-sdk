@@ -2,16 +2,21 @@ import { Connection, PublicKey } from "@solana/web3.js";
 import * as FermiDex from "../src";
 import { rpcUrl, marketConstants } from "../config.json";
 import * as anchor from "@project-serum/anchor"
+import * as os from 'os';
+import * as path from 'path';
+
+const homeDirectory = os.homedir();
+const solanaConfigPath = path.join(homeDirectory, '.config/solana/id.json');
 
 const main = async () => {
   const connection = new Connection(rpcUrl);
-  const owner = FermiDex.getLocalKeypair("~/.config/solana/id.json");
+  const owner = FermiDex.getLocalKeypair(solanaConfigPath);
   const wallet = new anchor.Wallet(owner);
   const provider = new anchor.AnchorProvider(connection,wallet,anchor.AnchorProvider.defaultOptions())
   const user1 = FermiDex.getLocalKeypair("./test-keypairs/user1/key.json");
   const user2 = FermiDex.getLocalKeypair("./test-keypairs/user2/key.json");
-  console.log("User1 : ", user1.publicKey.toString());
-  console.log("User2 : ", user2.publicKey.toString());
+  console.log("Alice : ", user1.publicKey.toString());
+  console.log("Bob : ", user2.publicKey.toString());
   console.log("Owner : ", owner.publicKey.toString());
   
     // Create Mints
@@ -25,19 +30,21 @@ const main = async () => {
    await FermiDex.createMint(provider, BonkMint, 9);
   // 1. CREATE MARKET -- WORKING
   
-  const market1Pdas = await FermiDex.initialiseMarketCustom(owner, connection, USDCMint.publicKey, wSolMint.publicKey);
-  const market2Pdas = await FermiDex.initialiseMarketCustom(owner, connection, USDCMint.publicKey, BonkMint.publicKey);
+  const market1Pdas = await FermiDex.initialiseMarketCustom(owner, connection, wSolMint.publicKey, USDCMint.publicKey);
+  const market2Pdas = await FermiDex.initialiseMarketCustom(owner, connection, BonkMint.publicKey, USDCMint.publicKey);
 
   // 2. Airdrop Tokens -- WORKING
   console.log("AIRDROPPING TOKENS !!");
   console.log("------------------------");
 
-  // Airdrop USDC to user1 (Alice)
-  await FermiDex.airdropCoinToken(user1, owner, connection);
-  await FermiDex.airdropPcToken(user1, owner, connection);
+  // Airdrop 1000 USDC to user1 (Alice)
+  await FermiDex.airdropCustomToken(user1, owner, connection, USDCMint.publicKey, BigInt('100000000000')) //1000 * 1000000 decimals
+  //await FermiDex.airdropCoinToken(user1, owner, connection);
+  //await FermiDex.airdropPcToken(user1, owner, connection);
 
-  await FermiDex.airdropCoinToken(user2, owner, connection);
-  await FermiDex.airdropPcToken(user2, owner, connection);
+  // Airdrop 500000 BONK to user2 (Bob)
+  await FermiDex.airdropCustomToken(user2, owner, connection, BonkMint.publicKey, BigInt('5000000000000000')); //500000 * 1000000000 decimals
+  //await FermiDex.airdropPcToken(user2, owner, connection);
 
 
   console.log("sleeping for 20 sec")
@@ -57,15 +64,16 @@ const main = async () => {
 
   // Alice places new Bid on both markets 
   // Place Bid on USDC/wSol market
-  await FermiDex.placeNewBuyOrderCustom(user1, 1000, connection, market1Pdas.marketPda, USDCMint, wSolMint)
+  await FermiDex.placeNewBuyOrderCustom(user1, 1000, connection, market1Pdas.marketPda, USDCMint.publicKey, wSolMint.publicKey)
   //Place Bid on USDC/Bonk market
-  await FermiDex.placeNewBuyOrderCustom(user1, 1000, connection, market2Pdas.marketPda, USDCMint, BonkMint)
+  await FermiDex.placeNewBuyOrderCustom(user1, 1000, connection, market2Pdas.marketPda, USDCMint.publicKey, BonkMint.publicKey)
 
   //await FermiDex.placeNewBuyOrder(user1, 36, connection);
   //await FermiDex.placeNewSellOrder(user2, 35, connection);
 
   // Bob places new sell order on Bonk/USDC market, selling 500 USDC worth of Sol at the market price.
-  await FermiDex.placeNewSellOrderCustom(user2, 500, connection, market2Pdas.marketPda,  USDCMint, BonkMin );
+  await FermiDex.placeNewSellOrderCustom(user2, 500, connection, market2Pdas.marketPda,  USDCMint.publicKey, BonkMint.publicKey);
+  
 
   console.log("sleeping for 20 sec")
   await FermiDex.sleep(20000)
