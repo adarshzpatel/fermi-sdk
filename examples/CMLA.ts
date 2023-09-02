@@ -140,17 +140,23 @@ const main = async () => {
   //BOB FINALISES ORDERS
   const authority = user2;
   const counterparty = user1;
-  const openOrdersAuthority = await FermiDex.getOpenOrders(
+
+  const openOrdersAuthority = await FermiDex.getOpenOrdersCustom(
     authority,
-    connection
+    connection,
+    market2Pdas.marketPda
   );
-  const openOrdersCounterparty = await FermiDex.getOpenOrders(
+
+  const openOrdersCounterparty = await FermiDex.getOpenOrdersCustom(
     counterparty,
-    connection
+    connection,
+    market1Pdas.marketPda
   );
-  const eventQ = await FermiDex.getParsedEventQ(user1, connection);
+
   console.log("user2", openOrdersAuthority);
   console.log("user1", openOrdersCounterparty);
+  
+  const eventQ = await FermiDex.getParsedEventQ(user1, connection);
   console.log(eventQ);
 
   const matchedEvents = FermiDex.findMatchingEvents(
