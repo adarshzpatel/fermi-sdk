@@ -30,6 +30,7 @@ const main = async () => {
    await FermiDex.createMint(provider, BonkMint, 9);
   // 1. CREATE MARKET -- WORKING
   
+  //coinmint, pcmint
   const market1Pdas = await FermiDex.initialiseMarketCustom(owner, connection, wSolMint.publicKey, USDCMint.publicKey);
   const market2Pdas = await FermiDex.initialiseMarketCustom(owner, connection, BonkMint.publicKey, USDCMint.publicKey);
 
