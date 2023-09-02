@@ -128,8 +128,8 @@ const main = async () => {
 
   // 5. Finalise Orders
   //BOB FINALISES ORDERS
-  const authority = user2;
-  const counterparty = user1;
+  const authority = user1;
+  const counterparty = user2;
 
   const openOrdersAuthority = await FermiDex.getOpenOrdersCustom(
     authority,
@@ -140,11 +140,11 @@ const main = async () => {
   const openOrdersCounterparty = await FermiDex.getOpenOrdersCustom(
     counterparty,
     connection,
-    market1Pdas.marketPda
+    market2Pdas.marketPda
   );
 
-  console.log("user2", openOrdersAuthority);
-  console.log("user1", openOrdersCounterparty);
+  console.log("user1", openOrdersAuthority);
+  console.log("user2", openOrdersCounterparty);
   
   const eventQmarket1 = await FermiDex.getParsedEventQCustom(user1, connection,market1Pdas.eventQPda);
   const eventQmarket2 = await FermiDex.getParsedEventQCustom(user1, connection,market2Pdas.eventQPda);

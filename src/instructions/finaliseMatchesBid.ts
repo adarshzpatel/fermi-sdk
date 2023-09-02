@@ -32,7 +32,7 @@ export const finaliseMatchesBid = async ({
       marketConstants;
     const authorityPcTokenAccount = await getAssociatedTokenAddress(
       new anchor.web3.PublicKey(pcMint),
-      authoritySecond.publicKey,
+      authority.publicKey,
       false
     );
 
