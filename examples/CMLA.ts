@@ -91,25 +91,30 @@ const main = async () => {
 
   // Alice places new Bid on both markets
   // Place Bid on USDC/wSol market
+  /*
   await FermiDex.placeNewBuyOrderCustom({
     kp: user1,
-    price: 1000,
-    qty: 1,
+    price: 20000000,//20 * 10e6
+    qty: 50,
     connection,
     marketPda: market1Pdas.marketPda,
     coinMint: wSolMint.publicKey,
     pcMint: USDCMint.publicKey,
-  });
+  }); */
+  console.log("Alice placed bid for 50 wsol at 20 usdc price")
+
   //Place Bid on USDC/Bonk market
   await FermiDex.placeNewBuyOrderCustom({
     kp: user1,
-    price: 1000,
-    qty: 1,
+    price: 1000, //0.01*10e6
+    qty: 100000, 
     connection,
     marketPda: market2Pdas.marketPda,
     coinMint: BonkMint.publicKey,
     pcMint: USDCMint.publicKey,
   });
+  console.log("Alice placed bid for 10000 bonk at 0.01 usdc price")
+
 
   //await FermiDex.placeNewBuyOrder(user1, 36, connection);
   //await FermiDex.placeNewSellOrder(user2, 35, connection);
@@ -117,13 +122,15 @@ const main = async () => {
   // Bob places new sell order on Bonk/USDC market, selling 500 USDC worth of Sol at the market price.
   await FermiDex.placeNewSellOrderCustom({
     kp: user2,
-    price: 500,
-    qty: 1,
+    price: 1000, //0.01*10e6
+    qty: 50000,
     connection,
     marketPda: market2Pdas.marketPda,
     coinMint: BonkMint.publicKey,
     pcMint: USDCMint.publicKey,
   });
+
+  console.log("Bob placed ask for 500000 bonk at 0.01 usdc price")
 
   console.log("sleeping for 20 sec");
   await FermiDex.sleep(20000);
@@ -131,8 +138,8 @@ const main = async () => {
 
   // 5. Finalise Orders
   //BOB FINALISES ORDERS
-  const authority = user1;
-  const counterparty = user2;
+  const authority = user2;
+  const counterparty = user1;
 
   const openOrdersAuthority = await FermiDex.getOpenOrdersCustom(
     authority,

@@ -33,7 +33,7 @@ export const finaliseMatchesBid = async ({
     const authorityPcTokenAccount = await getAssociatedTokenAddress(
       new anchor.web3.PublicKey(pcMint),
       authority.publicKey,
-      false
+      true
     );
 
     const finalizeBidTx = await program.methods
@@ -104,12 +104,13 @@ export const finaliseMatchesBidCustom = async ({
     const authorityPcTokenAccount = await getAssociatedTokenAddress(
       new anchor.web3.PublicKey(pcMint),
       authoritySecond.publicKey,
-      false
+      true
     );
 
     const pcVault = await spl.getAssociatedTokenAddress(
       pcMint,
-      marketPda
+      marketPda,
+      true,
     );
 
     const finalizeBidTx = await program.methods

@@ -17,6 +17,8 @@ import * as spl from "@solana/spl-token"
  * @param connection - The Solana network connection object.
  * @returns A string representing the transaction or undefined in case of an error.
  */
+console.log("exporting consts")
+
 export const finaliseMatchesAsk = async ({
   eventSlot1,
   eventSlot2,
@@ -31,11 +33,12 @@ export const finaliseMatchesAsk = async ({
     const { coinMint, marketPda, pcMint, reqQPda, eventQPda, coinVault } =
       marketConstants;
 
+console.log("getting authority ata")
     const authorityCoinTokenAccount: anchor.web3.PublicKey =
       await getAssociatedTokenAddress(
         new anchor.web3.PublicKey(coinMint),
         authority.publicKey,
-        false
+        true
       );
     console.log({ authorityCoinTokenAccount });
 
@@ -108,10 +111,10 @@ export const finaliseMatchesAskCustom = async ({
       await getAssociatedTokenAddress(
         new anchor.web3.PublicKey(coinMint),
         authority.publicKey,
-        false
+        true
       );
 
-    const coinVault = await spl.getAssociatedTokenAddress(coinMint, marketPda);
+    const coinVault = await spl.getAssociatedTokenAddress(coinMint, marketPda, true);
 
     console.log({ authorityCoinTokenAccount });
 
