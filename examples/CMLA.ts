@@ -156,12 +156,13 @@ const main = async () => {
   console.log("user2", openOrdersAuthority);
   console.log("user1", openOrdersCounterparty);
   
-  const eventQ = await FermiDex.getParsedEventQ(user1, connection);
-  console.log(eventQ);
+  const eventQmarket1 = await FermiDex.getParsedEventQCustom(user1, connection,market1Pdas.eventQPda);
+  const eventQmarket2 = await FermiDex.getParsedEventQCustom(user1, connection,market2Pdas.eventQPda);
+  console.log({eventQmarket1,eventQmarket2});
 
   const matchedEvents = FermiDex.findMatchingEvents(
     openOrdersAuthority.orders,
-    eventQ
+    eventQmarket2
   );
 
   console.log(matchedEvents.entries());
@@ -173,7 +174,7 @@ const main = async () => {
       `GOING TO FINALIZE FOR ORDER ${orderId} and events ${orderIdMatched.idx} <-> ${orderIdSecondMatched?.idx}`
     );
 
-    await FermiDex.finaliseMatchesAsk({
+    await FermiDex.finaliseMatchesAskCustom({
       eventSlot1: orderIdSecondMatched.idx,
       eventSlot2: orderIdMatched.idx,
       authority: authority,
@@ -181,9 +182,12 @@ const main = async () => {
       openOrdersOwnerPda: openOrdersAuthority.pda,
       openOrdersCounterpartyPda: openOrdersCounterparty.pda,
       connection: connection,
+      marketPda:market2Pdas.marketPda,
+      coinMint:market2Pdas.coinMint,
+      pcMint:market2Pdas.pcMint
     });
 
-    await FermiDex.finaliseMatchesBid({
+    await FermiDex.finaliseMatchesBidCustom({
       eventSlot1: orderIdSecondMatched.idx,
       eventSlot2: orderIdMatched.idx,
       authority: authority,
@@ -191,6 +195,9 @@ const main = async () => {
       openOrdersOwnerPda: openOrdersAuthority.pda,
       openOrdersCounterpartyPda: openOrdersCounterparty.pda,
       connection: connection,
+      marketPda:market2Pdas.marketPda,
+      coinMint:market2Pdas.coinMint,
+      pcMint:market2Pdas.pcMint
     });
 
     console.log(
