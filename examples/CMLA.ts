@@ -1,25 +1,28 @@
 import { Connection, PublicKey } from "@solana/web3.js";
 import * as FermiDex from "../src";
 import { rpcUrl, marketConstants } from "../config.json";
+import * as anchor from "@project-serum/anchor"
 
 const main = async () => {
   const connection = new Connection(rpcUrl);
   const owner = FermiDex.getLocalKeypair("/Users/zero/.config/solana/id.json");
+  const wallet = new anchor.Wallet(owner);
+  const provider = new anchor.AnchorProvider(connection,wallet,anchor.AnchorProvider.defaultOptions())
   const user1 = FermiDex.getLocalKeypair("./test-keypairs/user1/key.json");
   const user2 = FermiDex.getLocalKeypair("./test-keypairs/user2/key.json");
   console.log("User1 : ", user1.publicKey.toString());
   console.log("User2 : ", user2.publicKey.toString());
   console.log("Owner : ", owner.publicKey.toString());
-
+  
     // Create Mints
    const USDCMint = anchor.web3.Keypair.generate();
    const wSolMint = anchor.web3.Keypair.generate();
    const BonkMint = anchor.web3.Keypair.generate();
 
 
-   await createMint(provider, wSolMint, 9);
-   await createMint(provider, USDCMint, 6);
-   await createMint(provider, BonkMint, 9);
+   await FermiDex.createMint(provider, wSolMint, 9);
+   await FermiDex.createMint(provider, USDCMint, 6);
+   await FermiDex.createMint(provider, BonkMint, 9);
   // 1. CREATE MARKET -- WORKING
   
   await FermiDex.initialiseMarketCustom(owner, connection, USDCMint.publicKey, wSolMint.publicKey);

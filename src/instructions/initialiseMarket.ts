@@ -155,11 +155,12 @@ export async function initialiseMarketCustom(
   const [marketPda] = await anchor.web3.PublicKey.findProgramAddress(
     [
       Buffer.from("market", "utf-8"),
-      coinMint.publicKey.toBuffer(),
-      pcMint.publicKey.toBuffer(),
+      coinMint.toBuffer(),
+      pcMint.toBuffer(),
     ],
     program.programId
   );
+
 
   const [bidsPda] = await anchor.web3.PublicKey.findProgramAddress(
     [Buffer.from("bids", "utf-8"), marketPda.toBuffer()],
@@ -180,12 +181,12 @@ export async function initialiseMarketCustom(
   );
 
   const coinVault = await spl.getAssociatedTokenAddress(
-    coinMint.publicKey,
+    coinMint,
     marketPda,
     true
   );
   const pcVault = await spl.getAssociatedTokenAddress(
-    pcMint.publicKey,
+    pcMint,
     marketPda,
     true
   );
@@ -196,8 +197,8 @@ export async function initialiseMarketCustom(
       market: marketPda,
       coinVault,
       pcVault,
-      coinMint: coinMint.publicKey,
-      pcMint: pcMint.publicKey,
+      coinMint: coinMint,
+      pcMint: pcMint,
       bids: bidsPda,
       asks: asksPda,
       reqQ: reqQPda,
@@ -212,8 +213,8 @@ export async function initialiseMarketCustom(
     marketPda: marketPda,
     coinVault: coinVault,
     pcVault: pcVault,
-    coinMint: coinMint.publicKey,
-    pcMint: pcMint.publicKey,
+    coinMint: coinMint,
+    pcMint: pcMint,
     bidsPda: bidsPda,
     asksPda: asksPda,
     reqQPda: reqQPda,
