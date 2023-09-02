@@ -4,6 +4,7 @@ import { Connection, } from '@solana/web3.js';
 import { Keypair } from '@solana/web3.js';
 import { marketConstants, programId } from '../../config.json'
 import { IDL } from '../types/IDL';
+import { PlaceOrderParams } from '../types/PlaceOrderParams';
 
 /**
  * Place a new limit buy order == bid
@@ -88,7 +89,7 @@ export async function placeNewBuyOrder(kp: Keypair, price: number, connection: C
 
 
 
-export async function placeNewBuyOrderCustom(kp: Keypair, price: number, connection: Connection,marketPda:anchor.web3.PublicKey,coinMint:anchor.web3.PublicKey,pcMint:anchor.web3.PublicKey) {
+export async function placeNewBuyOrderCustom({coinMint,connection,kp,marketPda,pcMint,price,qty}:PlaceOrderParams) {
   try {
     const authority = kp;
     const wallet = new anchor.Wallet(authority);
@@ -150,8 +151,8 @@ export async function placeNewBuyOrderCustom(kp: Keypair, price: number, connect
       .newOrder(
         { bid: {} },
         new anchor.BN(price),
-        new anchor.BN(1),
-        new anchor.BN(price),
+        new anchor.BN(qty),
+        new anchor.BN(price*qty),
         { limit: {} },
       )
       .accounts({
