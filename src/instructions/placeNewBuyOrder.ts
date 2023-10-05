@@ -178,6 +178,7 @@ export async function placeNewBuyOrderCustom({coinMint,connection,kp,marketPda,p
       tx,
       message: 'Placed limit order Buy price: ' + price,
     };
+    
   } catch (err) {
     console.log('something went wrong while placing a buy order!');
     console.log(err);

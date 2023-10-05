@@ -88,6 +88,330 @@ export type FermiDex = {
       ]
     },
     {
+      "name": "cancelBid",
+      "accounts": [
+        {
+          "name": "openOrders",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "market",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "bids",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "asks",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "eventQ",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "authority",
+          "isMut": false,
+          "isSigner": true
+        }
+      ],
+      "args": [
+        {
+          "name": "orderId",
+          "type": "u128"
+        },
+        {
+          "name": "expectedOwner",
+          "type": "publicKey"
+        }
+      ]
+    },
+    {
+      "name": "cancelAsk",
+      "accounts": [
+        {
+          "name": "openOrders",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "market",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "bids",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "asks",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "eventQ",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "authority",
+          "isMut": false,
+          "isSigner": true
+        }
+      ],
+      "args": [
+        {
+          "name": "orderId",
+          "type": "u128"
+        },
+        {
+          "name": "expectedOwner",
+          "type": "publicKey"
+        }
+      ]
+    },
+    {
+      "name": "depositPcTokens",
+      "accounts": [
+        {
+          "name": "market",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "payer",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "vault",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "openOrders",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "authority",
+          "isMut": false,
+          "isSigner": true
+        },
+        {
+          "name": "tokenProgram",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "associatedTokenProgram",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "rent",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": [
+        {
+          "name": "amount",
+          "type": "u64"
+        }
+      ]
+    },
+    {
+      "name": "depositCoinTokens",
+      "accounts": [
+        {
+          "name": "market",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "payer",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "vault",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "openOrders",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "authority",
+          "isMut": false,
+          "isSigner": true
+        },
+        {
+          "name": "tokenProgram",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "associatedTokenProgram",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "rent",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": [
+        {
+          "name": "amount",
+          "type": "u64"
+        }
+      ]
+    },
+    {
+      "name": "withdrawCoins",
+      "accounts": [
+        {
+          "name": "market",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "payer",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "coinMint",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "pcMint",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "coinVault",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "pcVault",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "openOrders",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "authority",
+          "isMut": false,
+          "isSigner": true
+        },
+        {
+          "name": "systemProgram",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "tokenProgram",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "associatedTokenProgram",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": [
+        {
+          "name": "amount",
+          "type": "u64"
+        }
+      ]
+    },
+    {
+      "name": "withdrawTokens",
+      "accounts": [
+        {
+          "name": "market",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "payer",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "coinMint",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "pcMint",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "coinVault",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "pcVault",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "openOrders",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "authority",
+          "isMut": false,
+          "isSigner": true
+        },
+        {
+          "name": "systemProgram",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "tokenProgram",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "associatedTokenProgram",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": [
+        {
+          "name": "amount",
+          "type": "u64"
+        }
+      ]
+    },
+    {
       "name": "newOrder",
       "accounts": [
         {
@@ -211,12 +535,12 @@ export type FermiDex = {
         },
         {
           "name": "openOrdersCounterparty",
-          "isMut": false,
+          "isMut": true,
           "isSigner": false
         },
         {
           "name": "market",
-          "isMut": false,
+          "isMut": true,
           "isSigner": false
         },
         {
@@ -304,7 +628,7 @@ export type FermiDex = {
         },
         {
           "name": "openOrdersCounterparty",
-          "isMut": false,
+          "isMut": true,
           "isSigner": false
         },
         {
@@ -387,7 +711,7 @@ export type FermiDex = {
   ],
   "accounts": [
     {
-      "name": "market",
+      "name": "Market",
       "type": {
         "kind": "struct",
         "fields": [
@@ -447,7 +771,7 @@ export type FermiDex = {
       }
     },
     {
-      "name": "requestQueue",
+      "name": "RequestQueue",
       "type": {
         "kind": "struct",
         "fields": [
@@ -461,7 +785,7 @@ export type FermiDex = {
       }
     },
     {
-      "name": "eventQueue",
+      "name": "EventQueue",
       "type": {
         "kind": "struct",
         "fields": [
@@ -490,7 +814,7 @@ export type FermiDex = {
       }
     },
     {
-      "name": "orders",
+      "name": "Orders",
       "type": {
         "kind": "struct",
         "fields": [
@@ -506,7 +830,7 @@ export type FermiDex = {
       }
     },
     {
-      "name": "openOrders",
+      "name": "OpenOrders",
       "type": {
         "kind": "struct",
         "fields": [
@@ -1010,13 +1334,25 @@ export type FermiDex = {
     },
     {
       "code": 6014,
+      "name": "OrderNotFound",
+      "msg": "OrderNotFound"
+    },
+    {
+      "code": 6015,
+      "name": "InvalidAuthority",
+      "msg": "InvalidAuthority"
+    },
+    {
+      "code": 6016,
       "name": "Error",
       "msg": "Error"
     }
-  ]
-};
-
-export const IDL: FermiDex = {
+  ],
+  // "metadata": {
+  //   "address": "HViUPBVkNo9v9y24N7qForgibiGGT3vQgbHjJnaScBMW"
+  // }
+}
+export const IDL : FermiDex = {
   "version": "0.1.0",
   "name": "fermi_dex",
   "instructions": [
@@ -1106,6 +1442,330 @@ export const IDL: FermiDex = {
       ]
     },
     {
+      "name": "cancelBid",
+      "accounts": [
+        {
+          "name": "openOrders",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "market",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "bids",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "asks",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "eventQ",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "authority",
+          "isMut": false,
+          "isSigner": true
+        }
+      ],
+      "args": [
+        {
+          "name": "orderId",
+          "type": "u128"
+        },
+        {
+          "name": "expectedOwner",
+          "type": "publicKey"
+        }
+      ]
+    },
+    {
+      "name": "cancelAsk",
+      "accounts": [
+        {
+          "name": "openOrders",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "market",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "bids",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "asks",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "eventQ",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "authority",
+          "isMut": false,
+          "isSigner": true
+        }
+      ],
+      "args": [
+        {
+          "name": "orderId",
+          "type": "u128"
+        },
+        {
+          "name": "expectedOwner",
+          "type": "publicKey"
+        }
+      ]
+    },
+    {
+      "name": "depositPcTokens",
+      "accounts": [
+        {
+          "name": "market",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "payer",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "vault",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "openOrders",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "authority",
+          "isMut": false,
+          "isSigner": true
+        },
+        {
+          "name": "tokenProgram",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "associatedTokenProgram",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "rent",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": [
+        {
+          "name": "amount",
+          "type": "u64"
+        }
+      ]
+    },
+    {
+      "name": "depositCoinTokens",
+      "accounts": [
+        {
+          "name": "market",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "payer",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "vault",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "openOrders",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "authority",
+          "isMut": false,
+          "isSigner": true
+        },
+        {
+          "name": "tokenProgram",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "associatedTokenProgram",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "rent",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": [
+        {
+          "name": "amount",
+          "type": "u64"
+        }
+      ]
+    },
+    {
+      "name": "withdrawCoins",
+      "accounts": [
+        {
+          "name": "market",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "payer",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "coinMint",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "pcMint",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "coinVault",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "pcVault",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "openOrders",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "authority",
+          "isMut": false,
+          "isSigner": true
+        },
+        {
+          "name": "systemProgram",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "tokenProgram",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "associatedTokenProgram",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": [
+        {
+          "name": "amount",
+          "type": "u64"
+        }
+      ]
+    },
+    {
+      "name": "withdrawTokens",
+      "accounts": [
+        {
+          "name": "market",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "payer",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "coinMint",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "pcMint",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "coinVault",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "pcVault",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "openOrders",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "authority",
+          "isMut": false,
+          "isSigner": true
+        },
+        {
+          "name": "systemProgram",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "tokenProgram",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "associatedTokenProgram",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": [
+        {
+          "name": "amount",
+          "type": "u64"
+        }
+      ]
+    },
+    {
       "name": "newOrder",
       "accounts": [
         {
@@ -1229,12 +1889,12 @@ export const IDL: FermiDex = {
         },
         {
           "name": "openOrdersCounterparty",
-          "isMut": false,
+          "isMut": true,
           "isSigner": false
         },
         {
           "name": "market",
-          "isMut": false,
+          "isMut": true,
           "isSigner": false
         },
         {
@@ -1322,7 +1982,7 @@ export const IDL: FermiDex = {
         },
         {
           "name": "openOrdersCounterparty",
-          "isMut": false,
+          "isMut": true,
           "isSigner": false
         },
         {
@@ -1405,7 +2065,7 @@ export const IDL: FermiDex = {
   ],
   "accounts": [
     {
-      "name": "market",
+      "name": "Market",
       "type": {
         "kind": "struct",
         "fields": [
@@ -1465,7 +2125,7 @@ export const IDL: FermiDex = {
       }
     },
     {
-      "name": "requestQueue",
+      "name": "RequestQueue",
       "type": {
         "kind": "struct",
         "fields": [
@@ -1479,7 +2139,7 @@ export const IDL: FermiDex = {
       }
     },
     {
-      "name": "eventQueue",
+      "name": "EventQueue",
       "type": {
         "kind": "struct",
         "fields": [
@@ -1508,7 +2168,7 @@ export const IDL: FermiDex = {
       }
     },
     {
-      "name": "orders",
+      "name": "Orders",
       "type": {
         "kind": "struct",
         "fields": [
@@ -1524,7 +2184,7 @@ export const IDL: FermiDex = {
       }
     },
     {
-      "name": "openOrders",
+      "name": "OpenOrders",
       "type": {
         "kind": "struct",
         "fields": [
@@ -2028,8 +2688,21 @@ export const IDL: FermiDex = {
     },
     {
       "code": 6014,
+      "name": "OrderNotFound",
+      "msg": "OrderNotFound"
+    },
+    {
+      "code": 6015,
+      "name": "InvalidAuthority",
+      "msg": "InvalidAuthority"
+    },
+    {
+      "code": 6016,
       "name": "Error",
       "msg": "Error"
     }
-  ]
-};
+  ],
+  // "metadata": {
+  //   "address": "HViUPBVkNo9v9y24N7qForgibiGGT3vQgbHjJnaScBMW"
+  // }
+}
