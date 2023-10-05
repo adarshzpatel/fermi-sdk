@@ -17,7 +17,7 @@ import * as spl from "@solana/spl-token"
  * @param connection - The Solana network connection object.
  * @returns A string representing the transaction or undefined in case of an error.
  */
-console.log("exporting consts")
+
 
 export const finaliseMatchesAsk = async ({
   eventSlot1,
