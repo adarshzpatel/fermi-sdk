@@ -6,7 +6,7 @@ import {assert} from "chai";
 
 describe("Initialize new market 🚀", async () => {
   it("should initialize new market", async () => {
-    const authority = getLocalKeypair("/Users/zero/.config/solana/id.json");
+    const authority = getLocalKeypair("~/.config/solana/id.json");
     const connection = new Connection(rpcUrl);
     const market = await initialiseMarket(authority, connection);
     console.log(market);

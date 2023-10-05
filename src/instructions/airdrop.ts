@@ -112,3 +112,52 @@ export const airdropPcToken = async (
     console.log(err);
   }
 };
+
+export const airdropCustomToken = async (
+  userKp: Keypair,
+  owner: Keypair,
+  connection: Connection,
+  mint: PublicKey,
+  amount: BigInt
+): Promise<PublicKey | undefined> => {
+  try {
+    //const { coinMint } = marketConstants;
+    const coinMint = mint;
+    const authority = userKp;
+    const wallet = new anchor.Wallet(owner);
+    const provider = new anchor.AnchorProvider(
+      connection,
+      wallet,
+      anchor.AnchorProvider.defaultOptions(),
+    );
+
+    const authorityCoinTokenAccount: PublicKey = await spl.getAssociatedTokenAddress(
+      new anchor.web3.PublicKey(coinMint),
+      authority.publicKey,
+      false,
+    );
+
+    if (!(await connection.getAccountInfo(authorityCoinTokenAccount))) {
+      await createAssociatedTokenAccount(
+        provider,
+        new anchor.web3.PublicKey(coinMint),
+        authorityCoinTokenAccount,
+        authority.publicKey
+      );
+      console.log("✅ Coin ATA created for ", authority.publicKey.toString());
+    }
+
+    await mintTo(
+      provider,
+      new anchor.web3.PublicKey(coinMint),
+      authorityCoinTokenAccount,
+      BigInt(amount.toString())
+    );
+    console.log("✅ Coin tokens minted to ", authorityCoinTokenAccount.toString());
+
+    return authorityCoinTokenAccount;
+  } catch (err) {
+    console.log('Something went wrong while airdropping coin token.');
+    console.log(err);
+  }
+};

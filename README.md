@@ -5,17 +5,17 @@
 1. Run `solana-test-validator`
 2. Get the deployed programId of the FermiDex program.
 3. Paste the programId into the `config.json` in fermi-sdk 
-4. Now create a new market buy running `npx ts-node ./examples/newMarket.example.ts`
+4. Now create a new market by running `npx ts-node ./examples/newMarket.example.ts`
 5. Copy paste the generated market constants from the console output to the `config.json` marketConstants field.
 
-Now you are ready to interact with the market through various functions available in sdk 
+You now are ready to interact with the market through various functions available in sdk 
 
 `import * as FermiDex from "../src`
 
 ## Setup for devnet 
 Go to `config.json`
 - Replace `rpcUrl` with `https://api.devnet.solana.com` or any custom endpoint for devnet
-- Replace  `programId` with address of deployed program on devnet
+- Replace  `programId` with address of deployed program on devnet [contact team for latest programID: tg: @dtree33]
 
 # Fermi Protocol SDK Tutorial
 
@@ -51,7 +51,7 @@ const connection = new Connection(rpcUrl);
 Load local keypairs for the owner and two users:
 
 ```
-const owner = FermiDex.getLocalKeypair("/Users/zero/.config/solana/id.json");
+const owner = FermiDex.getLocalKeypair("~/.config/solana/id.json");
 const user1 = FermiDex.getLocalKeypair("./test-keypairs/user1/key.json");
 const user2 = FermiDex.getLocalKeypair("./test-keypairs/user2/key.json");
 ```
