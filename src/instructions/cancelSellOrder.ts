@@ -18,9 +18,14 @@ export const cancelSellOrder = async ({
   marketPda,
 }: CancelOrderParams) => {
   try {
+
+    if(Number(orderId) === 0){
+      console.log("Invalid order id. Aborting ...")
+      return 
+    }
     const authority = owner; // expected owner
     const program = await getFermiDexProgram(authority,connection)
-    const expectedOwner = authority.publicKey;
+
 
     const [bidsPda] = await anchor.web3.PublicKey.findProgramAddress(
       [Buffer.from("bids", "utf-8"), marketPda.toBuffer()],
@@ -46,7 +51,7 @@ export const cancelSellOrder = async ({
     );
 
     const cancelIx = await program.methods
-      .cancelAsk(orderId, expectedOwner)
+      .cancelAsk(new anchor.BN(orderId), authority.publicKey)
       .accounts({
         openOrders: openOrdersPda,
         market: marketPda,

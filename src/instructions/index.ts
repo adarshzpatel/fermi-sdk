@@ -7,3 +7,7 @@ export * from "./placeNewSellOrder"
 export * from "./depositPcTokens"
 export * from "./cancelBuyOrder"
 export * from "./cancelSellOrder"
+export * from "./depositCoinTokens"
+export * from "./withdrawCoinTokens"
+export * from "./withdrawPcTokens"
+

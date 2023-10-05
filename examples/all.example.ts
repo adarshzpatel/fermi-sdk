@@ -64,42 +64,45 @@ const main = async () => {
   const eventQ = await FermiDex.getParsedEventQ(user1, connection);
   console.log("user2",openOrdersAuthority)
   console.log("user1",openOrdersCounterparty)
-  console.log(eventQ)
+  console.log("Before cancelling ",eventQ)
+  const buyOrderId = "682529530727253409791"
+  const sellOrderId = "645636042579834306561"
 
-const matchedEvents = FermiDex.findMatchingEvents(
-    openOrdersAuthority.orders,
-    eventQ
-  );
 
-  console.log(matchedEvents.entries())
+// const matchedEvents = FermiDex.findMatchingEvents(
+//     openOrdersAuthority.orders,
+//     eventQ
+//   );
 
-  for (const [orderId, match] of matchedEvents) {
-    const { orderIdMatched, orderIdSecondMatched } = match
-    if (!orderIdMatched || !orderIdSecondMatched) continue
-    console.log(`GOING TO FINALIZE FOR ORDER ${orderId} and events ${orderIdMatched.idx} <-> ${orderIdSecondMatched?.idx}`)
+//   console.log(matchedEvents.entries())
 
-    await FermiDex.finaliseMatchesAsk({
-      eventSlot1: orderIdSecondMatched.idx,
-      eventSlot2: orderIdMatched.idx,
-      authority: authority,
-      authoritySecond: counterparty,
-      openOrdersOwnerPda: openOrdersAuthority.pda,
-      openOrdersCounterpartyPda: openOrdersCounterparty.pda,
-      connection: connection
-    })
+//   for (const [orderId, match] of matchedEvents) {
+//     const { orderIdMatched, orderIdSecondMatched } = match
+//     if (!orderIdMatched || !orderIdSecondMatched) continue
+//     console.log(`GOING TO FINALIZE FOR ORDER ${orderId} and events ${orderIdMatched.idx} <-> ${orderIdSecondMatched?.idx}`)
 
-    await FermiDex.finaliseMatchesBid({
-      eventSlot1: orderIdSecondMatched.idx,
-      eventSlot2: orderIdMatched.idx,
-      authority: authority,
-      authoritySecond: counterparty,
-      openOrdersOwnerPda: openOrdersAuthority.pda,
-      openOrdersCounterpartyPda: openOrdersCounterparty.pda,
-      connection: connection
-    })
+//     await FermiDex.finaliseMatchesAsk({
+//       eventSlot1: orderIdSecondMatched.idx,
+//       eventSlot2: orderIdMatched.idx,
+//       authority: authority,
+//       authoritySecond: counterparty,
+//       openOrdersOwnerPda: openOrdersAuthority.pda,
+//       openOrdersCounterpartyPda: openOrdersCounterparty.pda,
+//       connection: connection
+//     })
 
-    console.log(` ✅SUCCESSFULLY FINALIZED  ${orderId} and events ${orderIdMatched.idx} <-> ${orderIdSecondMatched?.idx}`)
-  }
+//     await FermiDex.finaliseMatchesBid({
+//       eventSlot1: orderIdSecondMatched.idx,
+//       eventSlot2: orderIdMatched.idx,
+//       authority: authority,
+//       authoritySecond: counterparty,
+//       openOrdersOwnerPda: openOrdersAuthority.pda,
+//       openOrdersCounterpartyPda: openOrdersCounterparty.pda,
+//       connection: connection
+//     })
+
+//     console.log(` ✅SUCCESSFULLY FINALIZED  ${orderId} and events ${orderIdMatched.idx} <-> ${orderIdSecondMatched?.idx}`)
+//   }
 };
 
 (async function() {

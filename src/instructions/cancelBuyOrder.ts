@@ -18,6 +18,10 @@ export const cancelBuyOrder = async ({
   marketPda,
 }: CancelOrderParams) => {
   try {
+    if(Number(orderId) === 0){
+      console.log("Invalid order id. Aborting ...")
+      return 
+    }
     const authority = owner; // expected owner
     const program =await getFermiDexProgram(authority,connection)
     const expectedOwner = authority.publicKey;
@@ -46,7 +50,7 @@ export const cancelBuyOrder = async ({
     );
 
     const cancelIx = await program.methods
-      .cancelBid(orderId, expectedOwner)
+      .cancelBid(new anchor.BN(orderId), authority.publicKey)
       .accounts({
         openOrders: openOrdersPda,
         market: marketPda,
@@ -57,6 +61,7 @@ export const cancelBuyOrder = async ({
       })
       .signers([authority])
       .rpc();
+
     console.log(`Cancelled order ${orderId} `, { cancelIx });
   } catch (err) {
     console.log(err);

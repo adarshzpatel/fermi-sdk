@@ -167,43 +167,43 @@ const main = async () => {
 
   console.log(matchedEvents.entries());
 
-  for (const [orderId, match] of matchedEvents) {
-    const { orderIdMatched, orderIdSecondMatched } = match;
-    if (!orderIdMatched || !orderIdSecondMatched) continue;
-    console.log(
-      `GOING TO FINALIZE FOR ORDER ${orderId} and events ${orderIdMatched.idx} <-> ${orderIdSecondMatched?.idx}`
-    );
+  // for (const [orderId, match] of matchedEvents) {
+  //   const { orderIdMatched, orderIdSecondMatched } = match;
+  //   if (!orderIdMatched || !orderIdSecondMatched) continue;
+  //   console.log(
+  //     `GOING TO FINALIZE FOR ORDER ${orderId} and events ${orderIdMatched.idx} <-> ${orderIdSecondMatched?.idx}`
+  //   );
 
-    await FermiDex.finaliseMatchesAskCustom({
-      eventSlot1: orderIdSecondMatched.idx,
-      eventSlot2: orderIdMatched.idx,
-      authority: authority,
-      authoritySecond: counterparty,
-      openOrdersOwnerPda: openOrdersAuthority.pda,
-      openOrdersCounterpartyPda: openOrdersCounterparty.pda,
-      connection: connection,
-      marketPda: market2Pdas.marketPda,
-      coinMint: market2Pdas.coinMint,
-      pcMint: market2Pdas.pcMint,
-    });
+  //   await FermiDex.finaliseMatchesAskCustom({
+  //     eventSlot1: orderIdSecondMatched.idx,
+  //     eventSlot2: orderIdMatched.idx,
+  //     authority: authority,
+  //     authoritySecond: counterparty,
+  //     openOrdersOwnerPda: openOrdersAuthority.pda,
+  //     openOrdersCounterpartyPda: openOrdersCounterparty.pda,
+  //     connection: connection,
+  //     marketPda: market2Pdas.marketPda,
+  //     coinMint: market2Pdas.coinMint,
+  //     pcMint: market2Pdas.pcMint,
+  //   });
 
-    await FermiDex.finaliseMatchesBidCustom({
-      eventSlot1: orderIdSecondMatched.idx,
-      eventSlot2: orderIdMatched.idx,
-      authority: authority,
-      authoritySecond: counterparty,
-      openOrdersOwnerPda: openOrdersAuthority.pda,
-      openOrdersCounterpartyPda: openOrdersCounterparty.pda,
-      connection: connection,
-      marketPda: market2Pdas.marketPda,
-      coinMint: market2Pdas.coinMint,
-      pcMint: market2Pdas.pcMint,
-    });
+  //   await FermiDex.finaliseMatchesBidCustom({
+  //     eventSlot1: orderIdSecondMatched.idx,
+  //     eventSlot2: orderIdMatched.idx,
+  //     authority: authority,
+  //     authoritySecond: counterparty,
+  //     openOrdersOwnerPda: openOrdersAuthority.pda,
+  //     openOrdersCounterpartyPda: openOrdersCounterparty.pda,
+  //     connection: connection,
+  //     marketPda: market2Pdas.marketPda,
+  //     coinMint: market2Pdas.coinMint,
+  //     pcMint: market2Pdas.pcMint,
+  //   });
 
-    console.log(
-      ` ✅SUCCESSFULLY FINALIZED  ${orderId} and events ${orderIdMatched.idx} <-> ${orderIdSecondMatched?.idx}`
-    );
-  }
+  //   console.log(
+  //     ` ✅SUCCESSFULLY FINALIZED  ${orderId} and events ${orderIdMatched.idx} <-> ${orderIdSecondMatched?.idx}`
+  //   );
+  // }
 };
 
 (async function () {

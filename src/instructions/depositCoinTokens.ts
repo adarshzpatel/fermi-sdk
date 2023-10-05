@@ -1,38 +1,35 @@
-// Deposit Pc Tokens
 
-import { Program } from "@project-serum/anchor";
-import { FermiDex } from "../types";
 import * as anchor from "@project-serum/anchor";
 import { Connection, Keypair, PublicKey } from "@solana/web3.js";
 import * as spl from "@solana/spl-token";
 import getFermiDexProgram from "../utils/getFermiDexProgram";
-import { connect } from "http2";
+
 
 type DepositParams = {
   amount: number;
   marketPda: PublicKey;
-  pcMint: PublicKey;
+  coinMint: PublicKey;
   authority: Keypair;
   connection:Connection
 };
 
-export const depositPcTokens = async ({
+export const depositCoinTokens = async ({
   amount,
   marketPda,
-  pcMint,
+  coinMint,
   authority,
   connection
 }: DepositParams) => {
   try {
     const program = getFermiDexProgram(authority,connection)
-    const pcVault = await spl.getAssociatedTokenAddress(
-      pcMint,
+    const coinVault = await spl.getAssociatedTokenAddress(
+      coinMint,
       marketPda,
       true
     );
 
-    const authorityPcTokenAccount = await spl.getAssociatedTokenAddress(
-      new anchor.web3.PublicKey(pcMint),
+    const authorityCoinTokenAccount = await spl.getAssociatedTokenAddress(
+      new anchor.web3.PublicKey(coinMint),
       authority.publicKey,
       false
     );
@@ -47,12 +44,12 @@ export const depositPcTokens = async ({
     );
 
     const depositIx = await program.methods
-      .depositPcTokens(new anchor.BN(amount))
+      .depositCoinTokens(new anchor.BN(amount))
       .accounts({
         openOrders: openOrdersPda,
         market: marketPda,
-        vault: pcVault,
-        payer: authorityPcTokenAccount,
+        vault: coinVault,
+        payer: authorityCoinTokenAccount,
         authority: authority.publicKey,
       })
       .signers([authority])
