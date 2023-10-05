@@ -13,9 +13,15 @@ const airdropTokens = async () => {
   const connection = new Connection(rpcUrl);
 
   // Airdrop to user 1
+  console.log("airdropping to user 1")
   const user1 = FermiDex.getLocalKeypair("./test-keypairs/user1/key.json");
   await FermiDex.airdropPcToken(user1, owner, connection)
   await FermiDex.airdropCoinToken(user1, owner, connection)
+// Airdrop to user 3
+console.log("airdropping to user 2")
+  const user2 = FermiDex.getLocalKeypair("./test-keypairs/user2/key.json");
+  await FermiDex.airdropPcToken(user2, owner, connection)
+  await FermiDex.airdropCoinToken(user2, owner, connection)
 
 }
 

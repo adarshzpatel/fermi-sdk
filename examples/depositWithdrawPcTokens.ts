@@ -18,9 +18,7 @@ const main = async () => {
   })
     .then(() => console.log("Deposited pc tokens"))
     .catch(() => console.log("Failed to deposit Pc tokens"));
-
-    await FermiDex.sleep(10000)
-    
+  await FermiDex.sleep(30000, "Wating for tx confirmation , sleeping for 30s");
   await FermiDex.withdrawPcTokens({
     amount: 10,
     authority: user1,

@@ -19,7 +19,7 @@ const main = async () => {
     .then(() => console.log("Withdrawed coin tokens"))
     .catch(() => console.log("Failed to withdraw coin tokens"));
 
-  await FermiDex.sleep(10000)
+  await FermiDex.sleep(30000,"Wating for tx confirmation , sleeping for 30s");
   await FermiDex.withdrawCoinTokens({
     amount: 10,
     authority: user1,
@@ -30,7 +30,7 @@ const main = async () => {
   })
     .then(() => console.log("Withdrawed pc tokens"))
     .catch(() => console.log("Failed to withdraw Pc tokens"));
-};
+}
 
 (async function () {
   try {
