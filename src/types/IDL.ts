@@ -785,14 +785,14 @@ export type FermiDex = {
       }
     },
     {
-      "name": "EventQueue",
+      "name": "eventQueue",
       "type": {
         "kind": "struct",
         "fields": [
           {
             "name": "header",
             "type": {
-              "defined": "EventQueueHeader"
+              "defined": "eventQueueHeader"
             }
           },
           {
@@ -830,7 +830,7 @@ export type FermiDex = {
       }
     },
     {
-      "name": "OpenOrders",
+      "name": "openOrders",
       "type": {
         "kind": "struct",
         "fields": [
@@ -975,7 +975,7 @@ export type FermiDex = {
       }
     },
     {
-      "name": "EventQueueHeader",
+      "name": "eventQueueHeader",
       "type": {
         "kind": "struct",
         "fields": [
@@ -2139,14 +2139,14 @@ export const IDL : FermiDex = {
       }
     },
     {
-      "name": "EventQueue",
+      "name": "eventQueue",
       "type": {
         "kind": "struct",
         "fields": [
           {
             "name": "header",
             "type": {
-              "defined": "EventQueueHeader"
+              "defined": "eventQueueHeader"
             }
           },
           {
@@ -2184,7 +2184,7 @@ export const IDL : FermiDex = {
       }
     },
     {
-      "name": "OpenOrders",
+      "name": "openOrders",
       "type": {
         "kind": "struct",
         "fields": [
@@ -2329,7 +2329,7 @@ export const IDL : FermiDex = {
       }
     },
     {
-      "name": "EventQueueHeader",
+      "name": "eventQueueHeader",
       "type": {
         "kind": "struct",
         "fields": [

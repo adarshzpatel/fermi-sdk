@@ -3,25 +3,28 @@
 import { Program } from "@project-serum/anchor";
 import { FermiDex } from "../types";
 import * as anchor from "@project-serum/anchor";
-import { Keypair, PublicKey } from "@solana/web3.js";
+import { Connection, Keypair, PublicKey } from "@solana/web3.js";
 import * as spl from "@solana/spl-token";
+import getFermiDexProgram from "../utils/getFermiDexProgram";
+import { connect } from "http2";
 
 type DepositParams = {
-  program: Program<FermiDex>;
   amount: number;
   marketPda: PublicKey;
   pcMint: PublicKey;
   authority: Keypair;
+  connection:Connection
 };
 
-const depositPcTokens = async ({
-  program,
+export const depositPcTokens = async ({
   amount,
   marketPda,
   pcMint,
   authority,
+  connection
 }: DepositParams) => {
   try {
+    const program = getFermiDexProgram(authority,connection)
     const pcVault = await spl.getAssociatedTokenAddress(
       pcMint,
       marketPda,
@@ -60,5 +63,3 @@ const depositPcTokens = async ({
     console.log(err);
   }
 };
-
-export default depositPcTokens

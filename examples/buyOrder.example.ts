@@ -5,9 +5,11 @@ import { rpcUrl } from "../config.json";
 
 const placeNewBuyOrder = async () => {
   const connection = new Connection(rpcUrl);
-  const user2 = FermiDex.getLocalKeypair("./test-keypairs/user2/key.json"); // 5TwNSHaijveFjz9pD1qKXvqoU9dRgEAnCWKM8LcbQQ8M
+  const user1 = FermiDex.getLocalKeypair("./test-keypairs/user1/key.json"); // 5TwNSHaijveFjz9pD1qKXvqoU9dRgEAnCWKM8LcbQQ8M
+  console.log(user1.publicKey.toString())
   const price = 26
-  const buyOrder = await FermiDex.placeNewBuyOrder(user2, price, connection);
+  const buyOrder = await FermiDex.placeNewBuyOrder(user1, price, connection);
+  
   console.log({ buyOrder })
 }
 

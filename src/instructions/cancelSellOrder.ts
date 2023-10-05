@@ -1,24 +1,25 @@
 import { Program } from "@project-serum/anchor";
 import { FermiDex } from "../types";
-import { Keypair, PublicKey } from "@solana/web3.js";
+import { Connection, Keypair, PublicKey } from "@solana/web3.js";
 import * as anchor from "@project-serum/anchor";
+import getFermiDexProgram from "../utils/getFermiDexProgram";
 
 type CancelOrderParams = {
-  program: Program<FermiDex>;
+  connection:Connection
   owner: Keypair;
   orderId: string;
   marketPda: PublicKey;
 };
 
-const cancelBid = async ({
-  program,
+export const cancelSellOrder = async ({
+  connection,
   owner,
   orderId,
   marketPda,
 }: CancelOrderParams) => {
   try {
     const authority = owner; // expected owner
-    // validate ownership
+    const program = await getFermiDexProgram(authority,connection)
     const expectedOwner = authority.publicKey;
 
     const [bidsPda] = await anchor.web3.PublicKey.findProgramAddress(
@@ -45,7 +46,7 @@ const cancelBid = async ({
     );
 
     const cancelIx = await program.methods
-      .cancelBid(orderId, expectedOwner)
+      .cancelAsk(orderId, expectedOwner)
       .accounts({
         openOrders: openOrdersPda,
         market: marketPda,
@@ -63,4 +64,3 @@ const cancelBid = async ({
 };
 
 
-export default cancelBid

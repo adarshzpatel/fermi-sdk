@@ -12,6 +12,8 @@ const main = async () => {
   const owner = FermiDex.getLocalKeypair(solanaConfigPath);
   const user1 = FermiDex.getLocalKeypair("./test-keypairs/user1/key.json");
   const user2 = FermiDex.getLocalKeypair("./test-keypairs/user2/key.json");
+  console.log("user1: ",user1.publicKey.toString())
+  console.log("user2:",user2.publicKey.toString())
   console.log("User1 : ", user1.publicKey.toString());
   console.log("User2 : ", user2.publicKey.toString());
   console.log("Owner : ", owner.publicKey.toString());
