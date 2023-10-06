@@ -28,7 +28,7 @@ const main = async () => {
     connection,
     marketPda,
   })
-    .then(() => console.log("Withdrawed pc tokens"))
+    .then(() => console.log("Withdrawed coin tokens"))
     .catch(() => console.log("Failed to withdraw Pc tokens"));
 }
 

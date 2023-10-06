@@ -41,14 +41,14 @@ export const withdrawPcTokens = async ({
       true
     );
 
-    const authorityCoinTokenAccount = await spl.getAssociatedTokenAddress(
+    const authorityPcTokenAccount = await spl.getAssociatedTokenAddress(
       new anchor.web3.PublicKey(pcMint),
       authority.publicKey,
       false
     );
     
     const withdrawPcTx = await program.methods
-      .withdrawCoins(new anchor.BN(amount))
+      .withdrawTokens(new anchor.BN(amount))
       .accounts({
         openOrders: openOrdersPda,
         market: marketPda,
@@ -56,14 +56,14 @@ export const withdrawPcTokens = async ({
         pcVault,
         coinMint: coinMint,
         pcMint: pcMint,
-        payer: authorityCoinTokenAccount,
+        payer: authorityPcTokenAccount,
         authority: authority.publicKey,
       })
       .signers([authority])
       .rpc();
 
-    console.log({ withdrawPcTx });
-    return withdrawPcTx;
+    console.log({ withdrawPcTx,amount });
+    return {withdrawPcTx,amount};
 
   } catch (err) {
     console.log(err);
