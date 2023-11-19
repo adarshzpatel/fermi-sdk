@@ -12,7 +12,7 @@ function getFermiDexProgram(authority:Keypair,connection:Connection) {
       anchor.AnchorProvider.defaultOptions(),
   );
 
-  return new anchor.Program(IDL as any, programId, provider);
+  return new anchor.Program(IDL, programId, provider);
 }
 
 export default getFermiDexProgram

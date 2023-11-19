@@ -1,6 +1,3 @@
-export * from "./Event"
-export * from "./OrderMatch"
+export * from "./EventQueue"
+
 export * from "./IDL"
-export * from "./FinaliseMatchesAskParams"
-export * from "./FinaliseMatchesBidParams"
-export * from "./PlaceOrderParams"

@@ -1,4 +1,10 @@
-export type Event = {
+
+export type OrderMatch = {
+  orderIdMatchedEvent?: EventQueueItem;
+  orderIdSecondMatchedEvent?: EventQueueItem;
+};
+
+export type EventQueueItem = {
   idx: number;
   orderId: string;
   orderIdSecond: string;
@@ -8,8 +14,10 @@ export type Event = {
   finalised: number;
   nativeQtyReleased: string;
   nativeQtyPaid: string;
-  timestamp:string
+  timestamp: string;
 };
+
+export type EventQueue = EventQueueItem[];
 
 
 // write an enum for event flags and also write a function to decode the event flags
@@ -38,5 +46,5 @@ enum EventFlags {
   Maker = 0x8,
   ReleaseFunds = 0x10,
   Finalise = 0x20,
-  
+
 }

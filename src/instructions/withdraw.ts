@@ -6,7 +6,7 @@ import * as anchor from "@project-serum/anchor";
 import { Keypair, PublicKey } from "@solana/web3.js";
 import * as spl from "@solana/spl-token";
 
-type DepositParams = {
+type WithdrawTokensParams = {
   program: Program<FermiDex>;
   amount: number;
   marketPda: PublicKey;
@@ -15,14 +15,14 @@ type DepositParams = {
   authority: Keypair;
 };
 
-const withdrawPcTokens = async ({
+export async function withdrawPcTokens({
   program,
   amount,
   marketPda,
   coinMint,
   pcMint,
   authority,
-}: DepositParams) => {
+}: WithdrawTokensParams) {
   try {
     const pcVault = await spl.getAssociatedTokenAddress(
       pcMint,
@@ -70,16 +70,16 @@ const withdrawPcTokens = async ({
   } catch (err) {
     console.log(err);
   }
-};
+}
 
-const withdrawCoinTokens = async ({
+export async function withdrawCoinTokens({
   program,
   amount,
   marketPda,
   coinMint,
   pcMint,
   authority,
-}: DepositParams) => {
+}: WithdrawTokensParams) {
   try {
     const pcVault = await spl.getAssociatedTokenAddress(
       pcMint,
@@ -127,5 +127,5 @@ const withdrawCoinTokens = async ({
   } catch (err) {
     console.log(err);
   }
-};
+}
 export default { withdrawPcTokens, withdrawCoinTokens };
