@@ -524,9 +524,6 @@ export type FermiDex = {
     },
     {
       "name": "finaliseMatchesBid",
-      "docs": [
-        "Just-in-time transfers for bid side."
-      ],
       "accounts": [
         {
           "name": "openOrdersOwner",
@@ -535,12 +532,12 @@ export type FermiDex = {
         },
         {
           "name": "openOrdersCounterparty",
-          "isMut": true,
+          "isMut": false,
           "isSigner": false
         },
         {
           "name": "market",
-          "isMut": true,
+          "isMut": false,
           "isSigner": false
         },
         {
@@ -602,6 +599,11 @@ export type FermiDex = {
           "name": "rent",
           "isMut": false,
           "isSigner": false
+        },
+        {
+          "name": "clock",
+          "isMut": false,
+          "isSigner": false
         }
       ],
       "args": [
@@ -628,7 +630,7 @@ export type FermiDex = {
         },
         {
           "name": "openOrdersCounterparty",
-          "isMut": true,
+          "isMut": false,
           "isSigner": false
         },
         {
@@ -711,7 +713,7 @@ export type FermiDex = {
   ],
   "accounts": [
     {
-      "name": "Market",
+      "name": "market",
       "type": {
         "kind": "struct",
         "fields": [
@@ -771,7 +773,7 @@ export type FermiDex = {
       }
     },
     {
-      "name": "RequestQueue",
+      "name": "requestQueue",
       "type": {
         "kind": "struct",
         "fields": [
@@ -792,7 +794,7 @@ export type FermiDex = {
           {
             "name": "header",
             "type": {
-              "defined": "eventQueueHeader"
+              "defined": "EventQueueHeader"
             }
           },
           {
@@ -814,7 +816,7 @@ export type FermiDex = {
       }
     },
     {
-      "name": "Orders",
+      "name": "orders",
       "type": {
         "kind": "struct",
         "fields": [
@@ -935,6 +937,50 @@ export type FermiDex = {
       }
     },
     {
+      "name": "Order",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "orderId",
+            "type": "u128"
+          },
+          {
+            "name": "qty",
+            "type": "u64"
+          },
+          {
+            "name": "owner",
+            "type": "publicKey"
+          },
+          {
+            "name": "ownerSlot",
+            "type": "u8"
+          }
+        ]
+      }
+    },
+    {
+      "name": "EventQueueHeader",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "head",
+            "type": "u64"
+          },
+          {
+            "name": "count",
+            "type": "u64"
+          },
+          {
+            "name": "seqNum",
+            "type": "u64"
+          }
+        ]
+      }
+    },
+    {
       "name": "Event",
       "type": {
         "kind": "struct",
@@ -970,124 +1016,62 @@ export type FermiDex = {
           {
             "name": "orderIdSecond",
             "type": "u128"
-          }
-        ]
-      }
-    },
-    {
-      "name": "eventQueueHeader",
-      "type": {
-        "kind": "struct",
-        "fields": [
-          {
-            "name": "head",
-            "type": "u64"
           },
           {
-            "name": "count",
-            "type": "u64"
-          },
-          {
-            "name": "seqNum",
+            "name": "timestamp",
             "type": "u64"
           }
         ]
       }
     },
     {
-      "name": "Order",
-      "type": {
-        "kind": "struct",
-        "fields": [
-          {
-            "name": "orderId",
-            "type": "u128"
-          },
-          {
-            "name": "qty",
-            "type": "u64"
-          },
-          {
-            "name": "owner",
-            "type": "publicKey"
-          },
-          {
-            "name": "ownerSlot",
-            "type": "u8"
-          }
-        ]
-      }
-    },
-    {
-      "name": "RequestView",
+      "name": "RequestFlag",
       "type": {
         "kind": "enum",
         "variants": [
           {
-            "name": "NewOrder",
-            "fields": [
-              {
-                "name": "side",
-                "type": {
-                  "defined": "Side"
-                }
-              },
-              {
-                "name": "order_type",
-                "type": {
-                  "defined": "OrderType"
-                }
-              },
-              {
-                "name": "order_id",
-                "type": "u128"
-              },
-              {
-                "name": "max_coin_qty",
-                "type": "u64"
-              },
-              {
-                "name": "native_pc_qty_locked",
-                "type": {
-                  "option": "u64"
-                }
-              },
-              {
-                "name": "owner_slot",
-                "type": "u8"
-              },
-              {
-                "name": "owner",
-                "type": "publicKey"
-              }
-            ]
+            "name": "NewOrder"
           },
           {
-            "name": "CancelOrder",
-            "fields": [
-              {
-                "name": "side",
-                "type": {
-                  "defined": "Side"
-                }
-              },
-              {
-                "name": "order_id",
-                "type": "u128"
-              },
-              {
-                "name": "cancel_id",
-                "type": "u64"
-              },
-              {
-                "name": "expected_owner_slot",
-                "type": "u8"
-              },
-              {
-                "name": "expected_owner",
-                "type": "publicKey"
-              }
-            ]
+            "name": "CancelOrder"
+          },
+          {
+            "name": "Bid"
+          },
+          {
+            "name": "PostOnly"
+          },
+          {
+            "name": "ImmediateOrCancel"
+          },
+          {
+            "name": "DecrementTakeOnSelfTrade"
+          }
+        ]
+      }
+    },
+    {
+      "name": "EventFlag",
+      "type": {
+        "kind": "enum",
+        "variants": [
+          {
+            "name": "Fill"
+          },
+          {
+            "name": "Out"
+          },
+          {
+            "name": "Bid"
+          },
+          {
+            "name": "Maker"
+          },
+          {
+            "name": "ReleaseFunds"
+          },
+          {
+            "name": "Finalise"
           }
         ]
       }
@@ -1230,6 +1214,80 @@ export type FermiDex = {
       }
     },
     {
+      "name": "RequestView",
+      "type": {
+        "kind": "enum",
+        "variants": [
+          {
+            "name": "NewOrder",
+            "fields": [
+              {
+                "name": "side",
+                "type": {
+                  "defined": "Side"
+                }
+              },
+              {
+                "name": "order_type",
+                "type": {
+                  "defined": "OrderType"
+                }
+              },
+              {
+                "name": "order_id",
+                "type": "u128"
+              },
+              {
+                "name": "max_coin_qty",
+                "type": "u64"
+              },
+              {
+                "name": "native_pc_qty_locked",
+                "type": {
+                  "option": "u64"
+                }
+              },
+              {
+                "name": "owner_slot",
+                "type": "u8"
+              },
+              {
+                "name": "owner",
+                "type": "publicKey"
+              }
+            ]
+          },
+          {
+            "name": "CancelOrder",
+            "fields": [
+              {
+                "name": "side",
+                "type": {
+                  "defined": "Side"
+                }
+              },
+              {
+                "name": "order_id",
+                "type": "u128"
+              },
+              {
+                "name": "cancel_id",
+                "type": "u64"
+              },
+              {
+                "name": "expected_owner_slot",
+                "type": "u8"
+              },
+              {
+                "name": "expected_owner",
+                "type": "publicKey"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
       "name": "Side",
       "type": {
         "kind": "enum",
@@ -1347,12 +1405,10 @@ export type FermiDex = {
       "name": "Error",
       "msg": "Error"
     }
-  ],
-  // "metadata": {
-  //   "address": "HViUPBVkNo9v9y24N7qForgibiGGT3vQgbHjJnaScBMW"
-  // }
-}
-export const IDL : FermiDex = {
+  ]
+};
+
+export const IDL: FermiDex = {
   "version": "0.1.0",
   "name": "fermi_dex",
   "instructions": [
@@ -1878,9 +1934,6 @@ export const IDL : FermiDex = {
     },
     {
       "name": "finaliseMatchesBid",
-      "docs": [
-        "Just-in-time transfers for bid side."
-      ],
       "accounts": [
         {
           "name": "openOrdersOwner",
@@ -1889,12 +1942,12 @@ export const IDL : FermiDex = {
         },
         {
           "name": "openOrdersCounterparty",
-          "isMut": true,
+          "isMut": false,
           "isSigner": false
         },
         {
           "name": "market",
-          "isMut": true,
+          "isMut": false,
           "isSigner": false
         },
         {
@@ -1956,6 +2009,11 @@ export const IDL : FermiDex = {
           "name": "rent",
           "isMut": false,
           "isSigner": false
+        },
+        {
+          "name": "clock",
+          "isMut": false,
+          "isSigner": false
         }
       ],
       "args": [
@@ -1982,7 +2040,7 @@ export const IDL : FermiDex = {
         },
         {
           "name": "openOrdersCounterparty",
-          "isMut": true,
+          "isMut": false,
           "isSigner": false
         },
         {
@@ -2065,7 +2123,7 @@ export const IDL : FermiDex = {
   ],
   "accounts": [
     {
-      "name": "Market",
+      "name": "market",
       "type": {
         "kind": "struct",
         "fields": [
@@ -2125,7 +2183,7 @@ export const IDL : FermiDex = {
       }
     },
     {
-      "name": "RequestQueue",
+      "name": "requestQueue",
       "type": {
         "kind": "struct",
         "fields": [
@@ -2146,7 +2204,7 @@ export const IDL : FermiDex = {
           {
             "name": "header",
             "type": {
-              "defined": "eventQueueHeader"
+              "defined": "EventQueueHeader"
             }
           },
           {
@@ -2168,7 +2226,7 @@ export const IDL : FermiDex = {
       }
     },
     {
-      "name": "Orders",
+      "name": "orders",
       "type": {
         "kind": "struct",
         "fields": [
@@ -2289,6 +2347,50 @@ export const IDL : FermiDex = {
       }
     },
     {
+      "name": "Order",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "orderId",
+            "type": "u128"
+          },
+          {
+            "name": "qty",
+            "type": "u64"
+          },
+          {
+            "name": "owner",
+            "type": "publicKey"
+          },
+          {
+            "name": "ownerSlot",
+            "type": "u8"
+          }
+        ]
+      }
+    },
+    {
+      "name": "EventQueueHeader",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "head",
+            "type": "u64"
+          },
+          {
+            "name": "count",
+            "type": "u64"
+          },
+          {
+            "name": "seqNum",
+            "type": "u64"
+          }
+        ]
+      }
+    },
+    {
       "name": "Event",
       "type": {
         "kind": "struct",
@@ -2324,124 +2426,62 @@ export const IDL : FermiDex = {
           {
             "name": "orderIdSecond",
             "type": "u128"
-          }
-        ]
-      }
-    },
-    {
-      "name": "eventQueueHeader",
-      "type": {
-        "kind": "struct",
-        "fields": [
-          {
-            "name": "head",
-            "type": "u64"
           },
           {
-            "name": "count",
-            "type": "u64"
-          },
-          {
-            "name": "seqNum",
+            "name": "timestamp",
             "type": "u64"
           }
         ]
       }
     },
     {
-      "name": "Order",
-      "type": {
-        "kind": "struct",
-        "fields": [
-          {
-            "name": "orderId",
-            "type": "u128"
-          },
-          {
-            "name": "qty",
-            "type": "u64"
-          },
-          {
-            "name": "owner",
-            "type": "publicKey"
-          },
-          {
-            "name": "ownerSlot",
-            "type": "u8"
-          }
-        ]
-      }
-    },
-    {
-      "name": "RequestView",
+      "name": "RequestFlag",
       "type": {
         "kind": "enum",
         "variants": [
           {
-            "name": "NewOrder",
-            "fields": [
-              {
-                "name": "side",
-                "type": {
-                  "defined": "Side"
-                }
-              },
-              {
-                "name": "order_type",
-                "type": {
-                  "defined": "OrderType"
-                }
-              },
-              {
-                "name": "order_id",
-                "type": "u128"
-              },
-              {
-                "name": "max_coin_qty",
-                "type": "u64"
-              },
-              {
-                "name": "native_pc_qty_locked",
-                "type": {
-                  "option": "u64"
-                }
-              },
-              {
-                "name": "owner_slot",
-                "type": "u8"
-              },
-              {
-                "name": "owner",
-                "type": "publicKey"
-              }
-            ]
+            "name": "NewOrder"
           },
           {
-            "name": "CancelOrder",
-            "fields": [
-              {
-                "name": "side",
-                "type": {
-                  "defined": "Side"
-                }
-              },
-              {
-                "name": "order_id",
-                "type": "u128"
-              },
-              {
-                "name": "cancel_id",
-                "type": "u64"
-              },
-              {
-                "name": "expected_owner_slot",
-                "type": "u8"
-              },
-              {
-                "name": "expected_owner",
-                "type": "publicKey"
-              }
-            ]
+            "name": "CancelOrder"
+          },
+          {
+            "name": "Bid"
+          },
+          {
+            "name": "PostOnly"
+          },
+          {
+            "name": "ImmediateOrCancel"
+          },
+          {
+            "name": "DecrementTakeOnSelfTrade"
+          }
+        ]
+      }
+    },
+    {
+      "name": "EventFlag",
+      "type": {
+        "kind": "enum",
+        "variants": [
+          {
+            "name": "Fill"
+          },
+          {
+            "name": "Out"
+          },
+          {
+            "name": "Bid"
+          },
+          {
+            "name": "Maker"
+          },
+          {
+            "name": "ReleaseFunds"
+          },
+          {
+            "name": "Finalise"
           }
         ]
       }
@@ -2584,6 +2624,80 @@ export const IDL : FermiDex = {
       }
     },
     {
+      "name": "RequestView",
+      "type": {
+        "kind": "enum",
+        "variants": [
+          {
+            "name": "NewOrder",
+            "fields": [
+              {
+                "name": "side",
+                "type": {
+                  "defined": "Side"
+                }
+              },
+              {
+                "name": "order_type",
+                "type": {
+                  "defined": "OrderType"
+                }
+              },
+              {
+                "name": "order_id",
+                "type": "u128"
+              },
+              {
+                "name": "max_coin_qty",
+                "type": "u64"
+              },
+              {
+                "name": "native_pc_qty_locked",
+                "type": {
+                  "option": "u64"
+                }
+              },
+              {
+                "name": "owner_slot",
+                "type": "u8"
+              },
+              {
+                "name": "owner",
+                "type": "publicKey"
+              }
+            ]
+          },
+          {
+            "name": "CancelOrder",
+            "fields": [
+              {
+                "name": "side",
+                "type": {
+                  "defined": "Side"
+                }
+              },
+              {
+                "name": "order_id",
+                "type": "u128"
+              },
+              {
+                "name": "cancel_id",
+                "type": "u64"
+              },
+              {
+                "name": "expected_owner_slot",
+                "type": "u8"
+              },
+              {
+                "name": "expected_owner",
+                "type": "publicKey"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
       "name": "Side",
       "type": {
         "kind": "enum",
@@ -2701,8 +2815,5 @@ export const IDL : FermiDex = {
       "name": "Error",
       "msg": "Error"
     }
-  ],
-  // "metadata": {
-  //   "address": "HViUPBVkNo9v9y24N7qForgibiGGT3vQgbHjJnaScBMW"
-  // }
-}
+  ]
+};

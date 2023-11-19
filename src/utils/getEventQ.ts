@@ -21,6 +21,7 @@ const parseEventQ = (eventQ:any) => {
     event['finalised'] = e.finalised 
     event['nativeQtyReleased'] = e.nativeQtyReleased.toString()
     event['nativeQtyPaid'] = e.nativeQtyPaid.toString()
+    event['timestamp'] = new Date(e.timestamp.toNumber()*1000).toLocaleString()
     events.push(event)
   }
   return events;

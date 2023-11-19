@@ -24,7 +24,7 @@ export async function initialiseMarket(
     anchor.AnchorProvider.defaultOptions()
   );
 
-  const program = new anchor.Program(IDL, programId, provider);
+  const program = new anchor.Program(IDL as any, programId, provider);
 
   const coinMint = anchor.web3.Keypair.generate();
   const pcMint = anchor.web3.Keypair.generate();
