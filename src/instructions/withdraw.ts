@@ -15,7 +15,7 @@ type WithdrawTokensParams = {
   authority: Keypair;
 };
 
-export async function withdrawPcTokens({
+export async function withdrawPcTokensIx({
   program,
   amount,
   marketPda,
@@ -72,7 +72,7 @@ export async function withdrawPcTokens({
   }
 }
 
-export async function withdrawCoinTokens({
+export async function withdrawCoinTokensIx({
   program,
   amount,
   marketPda,
@@ -128,4 +128,4 @@ export async function withdrawCoinTokens({
     console.log(err);
   }
 }
-export default { withdrawPcTokens, withdrawCoinTokens };
+

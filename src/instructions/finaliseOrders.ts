@@ -3,6 +3,7 @@ import { getAssociatedTokenAddress } from "@solana/spl-token";
 import * as anchor from "@project-serum/anchor";
 import * as spl from "@solana/spl-token";
 import { Keypair, Connection, PublicKey } from "@solana/web3.js";
+import { FermiDex } from "../types";
 
 export type FinaliseOrderParams = {
   eventSlot1: number;
@@ -11,24 +12,11 @@ export type FinaliseOrderParams = {
   authoritySecond: Keypair;
   openOrdersOwnerPda: PublicKey;
   openOrdersCounterpartyPda: PublicKey;
-  connection: Connection;
+  program:anchor.Program<FermiDex>
   marketPda: anchor.web3.PublicKey;
   coinMint: anchor.web3.PublicKey;
   pcMint: anchor.web3.PublicKey;
 };
-
-/**
- * Finalize ask side of the order.
- *
- * @param eventSlot1 - The event index of the event having orderIdSecond.
- * @param eventSlot2 - The event index of the event which doesn't have the orderIdSecond.
- * @param authority - The primary authority keypair.
- * @param authoritySecond - The secondary/counterparty authority keypair.
- * @param openOrdersOwnerPda - The pda of openOrders of authority.
- * @param openOrdersCounterpartyPda - The pda of openOrders of counterparty.
- * @param connection - The Solana network connection object.
- * @returns A string representing the transaction or undefined in case of an error.
- */
 
 /**
  * Finalize ask side of the order.
@@ -45,20 +33,19 @@ export type FinaliseOrderParams = {
  * @param pcMint - mint of payer coin
  * @returns A string representing the transaction or undefined in case of an error.
  */
-export const finaliseAsk = async ({
+export const finaliseAskIx = async ({
   eventSlot1,
   eventSlot2,
   authority,
   authoritySecond,
   openOrdersOwnerPda,
   openOrdersCounterpartyPda,
-  connection,
+  program,
   marketPda,
   coinMint,
   pcMint,
 }: FinaliseOrderParams): Promise<string | undefined> => {
   try {
-    const program = getFermiDexProgram(authoritySecond, connection);
 
     const [reqQPda] = await anchor.web3.PublicKey.findProgramAddress(
       [Buffer.from("req-q", "utf-8"), marketPda.toBuffer()],
@@ -122,20 +109,20 @@ export const finaliseAsk = async ({
  * @param marketPda - Pda of market
  * @returns A string representing the transaction or undefined in case of an error.
  */
-export const finaliseMatchesBidCustom = async ({
+export const finaliseBidIx= async ({
   eventSlot1,
   eventSlot2,
   authority,
   authoritySecond,
   openOrdersOwnerPda,
   openOrdersCounterpartyPda,
-  connection,
+  program,
   marketPda,
   coinMint,
   pcMint,
 }: FinaliseOrderParams): Promise<string | undefined> => {
   try {
-    const program = getFermiDexProgram(authoritySecond, connection);
+
 
     const [reqQPda] = await anchor.web3.PublicKey.findProgramAddress(
       [Buffer.from("req-q", "utf-8"), marketPda.toBuffer()],

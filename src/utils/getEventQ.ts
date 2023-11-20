@@ -1,22 +1,22 @@
 import * as anchor from "@project-serum/anchor";
 import { programId } from "../../config.json";
 import { Connection, Keypair, PublicKey } from "@solana/web3.js";
-import { EventQueue, EventQueueItem, IDL } from "../types";
+import { EventQueue, EventQueueItem, FermiDex, IDL } from "../types";
 import getFermiDexProgram from "./getFermiDexProgram";
 
 type FetchEventQueueParams = {
   authority: Keypair;
   marketPda: PublicKey;
-  connection: Connection;
+  program: anchor.Program<FermiDex>;
 };
 
 // Returns a raw event queue from blockchain
 export async function fetchRawEventQ({
   authority,
   marketPda,
-  connection,
+  program,
 }: FetchEventQueueParams) {
-  const program = getFermiDexProgram(authority, connection);
+
   const [eventQPda] = await anchor.web3.PublicKey.findProgramAddress(
     [Buffer.from("event-q", "utf-8"), marketPda.toBuffer()],
     program.programId
@@ -29,35 +29,9 @@ export async function fetchRawEventQ({
 export async function getParsedEventQ({
   authority,
   marketPda,
-  connection,
+  program,
 }: FetchEventQueueParams) {
-  const eventQ = await fetchRawEventQ({ authority, marketPda, connection });
-  return parseEventQ(eventQ.buf);
-}
-
-export async function getRawEventQCustom(
-  keypair: Keypair,
-  connection: Connection,
-  eventQPda: PublicKey
-) {
-  const wallet = new anchor.Wallet(keypair);
-  const provider = new anchor.AnchorProvider(
-    connection,
-    wallet,
-    anchor.AnchorProvider.defaultOptions()
-  );
-  const program = new anchor.Program(IDL, programId, provider);
-  const eventQ = await program.account.eventQueue.fetch(eventQPda);
-
-  return eventQ;
-}
-
-export async function getParsedEventQCustom(
-  keypair: Keypair,
-  connection: Connection,
-  eventQPda: PublicKey
-) {
-  const eventQ = await getRawEventQCustom(keypair, connection, eventQPda);
+  const eventQ = await fetchRawEventQ({ authority, marketPda, program });
   return parseEventQ(eventQ.buf);
 }
 

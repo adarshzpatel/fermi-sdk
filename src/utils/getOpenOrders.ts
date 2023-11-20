@@ -1,16 +1,13 @@
 import * as anchor from "@project-serum/anchor";
 import { Keypair, PublicKey } from "@solana/web3.js";
-import { Connection } from "@solana/web3.js";
 
-import getFermiDexProgram from "./getFermiDexProgram";
+import { FermiDex } from "../types";
 
-export const getOpenOrdersCustom = async (
+export const fetchOpenOrdersAccount = async (
   authority: Keypair,
-  connection: Connection,
-  marketPda:anchor.web3.PublicKey
-):Promise<{orders:string[],pda:PublicKey}> => {
-  const program = getFermiDexProgram(authority, connection);
-
+  program: anchor.Program<FermiDex>,
+  marketPda: anchor.web3.PublicKey
+) => {
   const [openOrdersPda] = await anchor.web3.PublicKey.findProgramAddress(
     [
       Buffer.from("open-orders", "utf-8"),
@@ -21,7 +18,8 @@ export const getOpenOrdersCustom = async (
   );
 
   const openOrders = await program.account.openOrders.fetch(openOrdersPda);
-  const orders = openOrders.orders.map((item) => item.toString());
-  
-  return { orders: orders, pda: openOrdersPda };
+  const orders:string[] = openOrders.orders.map((item) => item.toString());
+
+  return { ...openOrders,orders };
 };
+

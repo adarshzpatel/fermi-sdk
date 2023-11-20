@@ -18,7 +18,7 @@ export type EventQueueItem = {
 };
 
 export type EventQueue = EventQueueItem[];
-
+  
 
 // write an enum for event flags and also write a function to decode the event flags
 // 0x1 : Fill is represented by the bit 0x1, which is the binary value 0000 0001.

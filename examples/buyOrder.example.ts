@@ -1,19 +1,24 @@
-
 import { Connection } from "@solana/web3.js";
-import * as FermiDex from "../src"
+import * as FermiDex from "../src";
 import { rpcUrl } from "../config.json";
 
 const placeNewBuyOrder = async () => {
   const connection = new Connection(rpcUrl);
-  const user1 = FermiDex.getLocalKeypair("./test-keypairs/user1/key.json"); // 5TwNSHaijveFjz9pD1qKXvqoU9dRgEAnCWKM8LcbQQ8M
-  console.log(user1.publicKey.toString())
-  const price = 26
-  const buyOrder = await FermiDex.placeNewBuyOrder(user1, price, connection);
+  const user1Kp = FermiDex.getLocalKeypair("./test-keypairs/user1/key.json"); // 5TwNSHaijveFjz9pD1qKXvqoU9dRgEAnCWKM8LcbQQ8M
+  console.log(user1Kp.publicKey.toString());
   
-  console.log({ buyOrder })
-}
+  const user1 = new FermiDex.FermiClient({
+    market: markets[0],
+    connection,
+    authority: user1Kp,
+  });
+  const price = 26;
 
-(async function() {
+
+  console.log({ buyOrder });
+};
+
+(async function () {
   try {
     await placeNewBuyOrder();
   } catch (err) {

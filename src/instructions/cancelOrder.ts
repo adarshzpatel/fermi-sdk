@@ -1,17 +1,18 @@
 import { Connection, Keypair, PublicKey } from "@solana/web3.js";
 import * as anchor from "@project-serum/anchor";
 import getFermiDexProgram from "../utils/getFermiDexProgram";
+import { FermiDex } from "../types";
 
 type CancelOrderParams = {
-  connection: Connection;
-  owner: Keypair;
+  program:anchor.Program<FermiDex>
+  authority: Keypair;
   orderId: string;
   marketPda: PublicKey;
 };
 
-export async function cancelSellOrder({
-  connection,
-  owner,
+export async function cancelAskIx({
+  program,
+  authority,
   orderId,
   marketPda,
 }: CancelOrderParams) {
@@ -20,8 +21,7 @@ export async function cancelSellOrder({
       console.log("Invalid order id. Aborting ...");
       return;
     }
-    const authority = owner; // expected owner
-    const program = await getFermiDexProgram(authority, connection);
+
 
     const [bidsPda] = await anchor.web3.PublicKey.findProgramAddress(
       [Buffer.from("bids", "utf-8"), marketPda.toBuffer()],
@@ -64,9 +64,9 @@ export async function cancelSellOrder({
   }
 }
 
-export async function cancelBuyOrder({
-  connection,
-  owner,
+export async function cancelBidIx({
+  program,
+  authority,
   orderId,
   marketPda,
 }: CancelOrderParams) {
@@ -75,8 +75,8 @@ export async function cancelBuyOrder({
       console.log("Invalid order id. Aborting ...");
       return;
     }
-    const authority = owner; // expected owner
-    const program = await getFermiDexProgram(authority, connection);
+
+
 
     const [bidsPda] = await anchor.web3.PublicKey.findProgramAddress(
       [Buffer.from("bids", "utf-8"), marketPda.toBuffer()],

@@ -2,20 +2,20 @@ import * as anchor from '@project-serum/anchor';
 import * as spl from '@solana/spl-token';
 import { Connection, Keypair, PublicKey } from "@solana/web3.js"
 import getFermiDexProgram from '../utils/getFermiDexProgram';
+import { FermiDex } from '../types';
 
 type PlaceOrderParams = {
   authority: Keypair
   price: number
   qty:number
-  connection: Connection
+  program:anchor.Program<FermiDex>
   marketPda:PublicKey
   coinMint:PublicKey
   pcMint:PublicKey
 }
 
-export async function placeNewBuyOrder({coinMint,connection,authority,marketPda,pcMint,price,qty}:PlaceOrderParams) {
+export async function createBidIx({coinMint,program,authority,marketPda,pcMint,price,qty}:PlaceOrderParams) {
   try {
-    const program = getFermiDexProgram(authority,connection)
 
     const [bidsPda] = await anchor.web3.PublicKey.findProgramAddress(
       [Buffer.from("bids", "utf-8"), marketPda.toBuffer()],
@@ -100,9 +100,9 @@ export async function placeNewBuyOrder({coinMint,connection,authority,marketPda,
   }
 }
 
-export async function placeNewSellOrderCustom({coinMint,connection,authority,marketPda,pcMint,price,qty}:PlaceOrderParams) {
+export async function createAskIx({coinMint,program,authority,marketPda,pcMint,price,qty}:PlaceOrderParams) {
   try {
-    const program = getFermiDexProgram(authority,connection)
+
 
     const [bidsPda] = await anchor.web3.PublicKey.findProgramAddress(
       [Buffer.from("bids", "utf-8"), marketPda.toBuffer()],
@@ -153,8 +153,8 @@ export async function placeNewSellOrderCustom({coinMint,connection,authority,mar
       .newOrder(
         { ask: {} },
         new anchor.BN(price),
-        new anchor.BN(1),
-        new anchor.BN(price),
+        new anchor.BN(qty),
+        new anchor.BN(price*qty),
         { limit: {} },
       )
       .accounts({

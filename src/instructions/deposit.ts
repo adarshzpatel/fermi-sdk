@@ -1,29 +1,26 @@
-
 import * as anchor from "@project-serum/anchor";
-import { Connection, Keypair, PublicKey } from "@solana/web3.js";
+import { Keypair, PublicKey } from "@solana/web3.js";
 import * as spl from "@solana/spl-token";
-import getFermiDexProgram from "../utils/getFermiDexProgram";
-
+import { FermiDex } from "../types";
 
 type DepositTokenParams = {
   amount: number;
   marketPda: PublicKey;
   authority: Keypair;
-  connection:Connection
-}
+  program: anchor.Program<FermiDex>;
+};
 
-type DepositCoinTokenParams = DepositTokenParams & {coinMint:PublicKey}
-type DepostitPcTokenParams = DepositTokenParams & {pcMint:PublicKey}
+type DepositCoinTokenParams = DepositTokenParams & { coinMint: PublicKey };
+type DepostitPcTokenParams = DepositTokenParams & { pcMint: PublicKey };
 
-export async function depositCoinTokens ({
+export async function depositCoinTokensIx({
   amount,
   marketPda,
   coinMint,
   authority,
-  connection
-}: DepositCoinTokenParams){
+  program,
+}: DepositCoinTokenParams) {
   try {
-    const program = getFermiDexProgram(authority,connection)
     const coinVault = await spl.getAssociatedTokenAddress(
       coinMint,
       marketPda,
@@ -58,21 +55,20 @@ export async function depositCoinTokens ({
       .rpc();
 
     console.log("Successfully deposited ", { amount, depositIx });
-    return {amount,depositIx}
+    return { amount, depositIx };
   } catch (err) {
     console.log(err);
   }
 }
 
-export async function depositPcTokens({
+export async function depositPcTokensIx({
   amount,
   marketPda,
   pcMint,
   authority,
-  connection
-}: DepostitPcTokenParams){
+  program,
+}: DepostitPcTokenParams) {
   try {
-    const program = getFermiDexProgram(authority,connection)
     const pcVault = await spl.getAssociatedTokenAddress(
       pcMint,
       marketPda,
@@ -107,7 +103,7 @@ export async function depositPcTokens({
       .rpc();
 
     console.log("Successfully deposited ", { amount, depositIx });
-    return {amount,depositIx}
+    return { amount, depositIx };
   } catch (err) {
     console.log(err);
   }

@@ -1,130 +1,85 @@
-import { Connection, Keypair, PublicKey } from "@solana/web3.js";
+import { Connection } from "@solana/web3.js";
 import * as FermiDex from "../src";
-import { rpcUrl, marketConstants } from "../config.json";
-import * as os from 'os';
-import * as path from 'path';
-import getFermiDexProgram from "../src/utils/getFermiDexProgram";
+import { rpcUrl } from "../config.json";
+import * as os from "os";
+import * as path from "path";
+
+import { markets } from "./markets";
 
 const homeDirectory = os.homedir();
-const solanaConfigPath = path.join(homeDirectory, '.config/solana/id.json');
+const solanaConfigPath = path.join(homeDirectory, ".config/solana/id.json");
 
 const main = async () => {
   const connection = new Connection(rpcUrl);
-
-  const owner = Keypair.fromSecretKey(
-    Uint8Array.from([
-      1, 60, 46, 125, 82, 22, 178, 15, 93, 247, 249, 207, 76, 156, 177, 42, 124,
-      17, 225, 67, 204, 111, 68, 38, 71, 16, 206, 114, 165, 219, 70, 72, 134, 112,
-      118, 222, 227, 101, 128, 158, 70, 17, 179, 29, 31, 208, 236, 211, 12, 89,
-      41, 84, 52, 209, 127, 51, 144, 164, 103, 219, 20, 253, 3, 158,
-    ])
-  );
-
-  const user1 = FermiDex.getLocalKeypair("./test-keypairs/user1/key.json");
-  const user2 = FermiDex.getLocalKeypair("./test-keypairs/user2/key.json");
-
-
-  console.log("User1 : ", user1.publicKey.toString());
-  console.log("User2 : ", user2.publicKey.toString());
+  const owner = FermiDex.getLocalKeypair(solanaConfigPath);
+  const user1Kp = FermiDex.getLocalKeypair("./test-keypairs/user1/key.json");
+  const user2Kp = FermiDex.getLocalKeypair("./test-keypairs/user2/key.json");
+  console.log("User1 : ", user1Kp.publicKey.toString());
+  console.log("User2 : ", user2Kp.publicKey.toString());
   console.log("Owner : ", owner.publicKey.toString());
 
-  // 1. CREATE MARKET -- WORKING
-  // await FermiDex.initialiseMarket(owner, connection);
+  console.log("--------------------");
 
-  // 2. Airdrop Tokens -- WORKING
-  // console.log("AIRDROPPING TOKENS !!");
-  // console.log("------------------------");
-  // await FermiDex.airdropCoinToken(user1, owner, connection);
-  // await FermiDex.airdropPcToken(user1, owner, connection);
+  // Creating clients
+  const currentMarket = markets[0];
+  const user1 = new FermiDex.FermiClient({
+    authority: user1Kp,
+    connection,
+    market: currentMarket,
+  });
+  const user2 = new FermiDex.FermiClient({
+    authority: user1Kp,
+    connection,
+    market: currentMarket,
+  });
 
-  // await FermiDex.airdropCoinToken(user2, owner, connection);
-  // await FermiDex.airdropPcToken(user2, owner, connection);
+  // placing orders
+  const buyOrder = await user1.placeBuyOrder(36, 1);
+  console.log("Buy Order : ", buyOrder);
+  const sellOrder = await user2.placeSellOrder(35, 1);
+  console.log("Sell Order : ", sellOrder);
+  console.log("--------------------");
+  // open orders
+  const user1OpenOrders = await user1.getOpenOrders();
+  const user2OpenOrders = await user2.getOpenOrders();
+  console.log({ user1OpenOrders, user2OpenOrders });
+  console.log("--------------------");
 
+  // cancelling order
+  const cancelOrder1 = await user1.cancelBuyOrder(user1OpenOrders.orders[0]);
+  const cancelOrder2 = await user1.cancelSellOrder(user2OpenOrders.orders[0]);
+  console.log({ cancelOrder1, cancelOrder2 });
+  console.log("--------------------");
+  // event queue (not user specific but market specific)
+  const eventQueue1 = await user1.getEventQueue();
+  console.log({ eventQueue1 });
+  console.log("--------------------");
+  // OR
+  // const eventQueue2 = await user2.getEventQueue();
 
-  // console.log("sleeping for 20 sec")
-  // await FermiDex.sleep(20000)
-  // console.log("Sleep ended !")
+  // asks & bids ( not user specific but market specific)
+  const asks = await user1.getAsks();
+  const bids = await user1.getBids();
+  console.log({ asks, bids });
+  console.log("--------------------");
+  // deposit
+  const depositCoinTokens = await user1.depositCoinTokens(10000);
+  const depositPcTokens = await user1.depositPcTokens(10000);
+  console.log({ depositCoinTokens, depositPcTokens });
+  console.log("--------------------");
 
-//   // 3. FETCH TOKEN BALANCE -- WORKING
-//   console.log("User 1");
-//   console.log("Pc balance",(await FermiDex.getTokenBalance(user1.publicKey,new PublicKey(marketConstants.pcMint),connection)))
-//   console.log("Coin balance",(await FermiDex.getTokenBalance(user1.publicKey,new PublicKey(marketConstants.coinMint),connection)))
-// // 
-//   console.log("User 2");
-//   console.log("Pc balance",(await FermiDex.getTokenBalance(user2.publicKey,new PublicKey(marketConstants.pcMint),connection)))
-//   console.log("Coin balance",(await FermiDex.getTokenBalance(user2.publicKey,new PublicKey(marketConstants.coinMint),connection)))
+  // withdraw
+  const withdrawCoinTokens = await user1.withdrawCoinTokens(500);
+  const withdrawPcTokens = await user1.withdrawPcTokens(500);
+  console.log({ withdrawCoinTokens, withdrawPcTokens });
+  console.log("--------------------");
 
-  // 4. PLACING ORDERS
-
-  // Scenario 1 : User 1 places a buy order first and user 2 places a sell order after
-  // await FermiDex.placeNewBuyOrder(user1, 101, connection);
-  // await FermiDex.placeNewSellOrder(user2, 100, connection);
-
-  // Secenario 2 : User 2 places a sell order first and user 1 places a buy order after
-  // await FermiDex.placeNewSellOrder(user2, 100, connection);
-  await FermiDex.placeNewBuyOrder(user1, 101, connection);
-
-  console.log("sleeping for 20 sec")
-  await FermiDex.sleep(20000)
-  console.log("Sleep ended !")
-
-  // 5. Finalise Orders
-  // Check with reverse 
-  // add example for finalize
-  // user 2 is finalizing the matched orders
-  // const authority = user2;
-  // const counterparty = user1;
-  const openOrdersUser2 = await FermiDex.getOpenOrders(user2, connection);
-  console.log("open orders user2",openOrdersUser2)
-  const openOrdersUser1 = await FermiDex.getOpenOrders(user1, connection);
-  console.log("Open orders user1",openOrdersUser1)
-  const eventQ = await FermiDex.getParsedEventQ(user1, connection);
-  console.log("Event Queue",eventQ)
-  FermiDex.saveLogs(eventQ,"./log.json")
-  // const matchedEventsForUser2 = FermiDex.findMatchingEvents(openOrdersAuthority.orders,eventQ)
-  // const matchedEventsForUser1 = FermiDex.findMatchingEvents(openOrdersCounterparty.orders,eventQ)
-
-  // console.log(matchedEventsForUser2.entries())
-  // console.log(matchedEventsForUser1.entries())
-
-
-// const matchedEvents = FermiDex.findMatchingEvents(
-//     openOrdersAuthority.orders,
-//     eventQ
-//   );
-
-//   console.log(matchedEvents.entries())
-
-//   for (const [orderId, match] of matchedEvents) {
-//     const { orderIdMatched, orderIdSecondMatched } = match
-//     if (!orderIdMatched || !orderIdSecondMatched) continue
-//     console.log(`GOING TO FINALIZE FOR ORDER ${orderId} and events ${orderIdMatched.idx} <-> ${orderIdSecondMatched?.idx}`)
-
-//     await FermiDex.finaliseMatchesAsk({
-//       eventSlot1: orderIdSecondMatched.idx,
-//       eventSlot2: orderIdMatched.idx,
-//       authority: authority,
-//       authoritySecond: counterparty,
-//       openOrdersOwnerPda: openOrdersAuthority.pda,
-//       openOrdersCounterpartyPda: openOrdersCounterparty.pda,
-//       connection: connection
-//     })
-
-//     await FermiDex.finaliseMatchesBid({
-//       eventSlot1: orderIdSecondMatched.idx,
-//       eventSlot2: orderIdMatched.idx,
-//       authority: authority,
-//       authoritySecond: counterparty,
-//       openOrdersOwnerPda: openOrdersAuthority.pda,
-//       openOrdersCounterpartyPda: openOrdersCounterparty.pda,
-//       connection: connection
-//     })
-
-//     console.log(` ✅SUCCESSFULLY FINALIZED  ${orderId} and events ${orderIdMatched.idx} <-> ${orderIdSecondMatched?.idx}`)
-//   }
+  // get a list  of matched  finalisable orders 
+  const finalisableOrdersUser1 = await user1.getFinalisableOrderMatches()
+  const finalisableOrdersUser2 = await user2.getFinalisableOrderMatches()
 };
 
-(async function() {
+(async function () {
   try {
     await main();
   } catch (err) {

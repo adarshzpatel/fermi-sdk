@@ -9,7 +9,7 @@ type AirdropTokenParams = {
   ownerKp: Keypair;
   connection: Connection;
   mint: PublicKey;
-  amount: bigint;
+  amount: number;
 };
 
 export async function airdropToken({
