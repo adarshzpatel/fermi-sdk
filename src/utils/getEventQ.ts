@@ -5,14 +5,12 @@ import { EventQueue, EventQueueItem, FermiDex, IDL } from "../types";
 import getFermiDexProgram from "./getFermiDexProgram";
 
 type FetchEventQueueParams = {
-  authority: Keypair;
   marketPda: PublicKey;
   program: anchor.Program<FermiDex>;
 };
 
 // Returns a raw event queue from blockchain
 export async function fetchRawEventQ({
-  authority,
   marketPda,
   program,
 }: FetchEventQueueParams) {
@@ -27,11 +25,10 @@ export async function fetchRawEventQ({
 
 // Returns a parse readable eventQueue
 export async function getParsedEventQ({
-  authority,
   marketPda,
   program,
 }: FetchEventQueueParams) {
-  const eventQ = await fetchRawEventQ({ authority, marketPda, program });
+  const eventQ = await fetchRawEventQ({ marketPda, program });
   return parseEventQ(eventQ.buf);
 }
 

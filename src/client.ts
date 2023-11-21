@@ -193,7 +193,6 @@ export class FermiClient {
   // Market specific
   async getEventQueue() {
     return getParsedEventQ({
-      authority: this.authority,
       marketPda: this.market.marketPda,
       program: this.program,
     });
