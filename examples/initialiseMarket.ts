@@ -5,7 +5,6 @@ import * as os from "os";
 import * as path from "path";
 import { AnchorProvider, Wallet } from "@project-serum/anchor";
 
-
 const homeDirectory = os.homedir();
 const solanaConfigPath = path.join(homeDirectory, ".config/solana/id.json");
 
@@ -21,8 +20,7 @@ const createNewMarket = async () => {
     wallet,
     AnchorProvider.defaultOptions()
   );
-  const newMarket = await FermiDex.initialiseMarket(authority, provider);
-  console.log({ newMarket });
+  await FermiDex.initialiseMarket(authority, provider);
 };
 
 const createNewCustomMarket = async () => {
@@ -41,20 +39,18 @@ const createNewCustomMarket = async () => {
   await FermiDex.createMint(provider, wSolMint, 9);
   await FermiDex.createMint(provider, USDCMint, 6);
 
-  const newCustomMarket = await FermiDex.initialiseMarketCustom(
+  await FermiDex.initialiseMarketCustom(
     authority,
     provider,
     wSolMint.publicKey,
     USDCMint.publicKey
   );
-
-  console.log({newCustomMarket})
 };
 
 (async function () {
   try {
-  // await createNewMarket();
-    await createNewCustomMarket()
+    await createNewMarket();
+    await createNewCustomMarket();
   } catch (err) {
     console.log("Error: ", err);
     process.exit(1);

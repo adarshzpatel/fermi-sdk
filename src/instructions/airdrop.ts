@@ -27,35 +27,36 @@ export async function airdropToken({
       anchor.AnchorProvider.defaultOptions()
     );
 
-    const receiverCoinTokenAccount: PublicKey =
-      await spl.getAssociatedTokenAddress(
-        new anchor.web3.PublicKey(mint),
-        receiverPk,
-        false
-      );
+    const receiverTokenAccount: PublicKey = await spl.getAssociatedTokenAddress(
+      new anchor.web3.PublicKey(mint),
+      receiverPk,
+      false
+    );
 
-    if (!(await connection.getAccountInfo(receiverCoinTokenAccount))) {
+    if (!(await connection.getAccountInfo(receiverTokenAccount))) {
+      console.log("ATA not found, creating one...");
       await createAssociatedTokenAccount(
         provider,
         new anchor.web3.PublicKey(mint),
-        receiverCoinTokenAccount,
+        receiverTokenAccount,
         receiverPk
       );
-      console.log("✅ Coin ATA created for ", receiverPk.toString());
+      console.log("✅ ATA created for ", receiverPk.toString());
     }
 
     await mintTo(
       provider,
       new anchor.web3.PublicKey(mint),
-      receiverCoinTokenAccount,
+      receiverTokenAccount,
       BigInt(amount.toString())
     );
+
     console.log(
-      "✅ Coin tokens minted to ",
-      receiverCoinTokenAccount.toString()
+      "✅ Tokens minted successfully to ",
+      receiverTokenAccount.toString()
     );
 
-    return receiverCoinTokenAccount;
+    return receiverTokenAccount;
   } catch (err) {
     console.log("Something went wrong while airdropping coin token.");
     console.log(err);

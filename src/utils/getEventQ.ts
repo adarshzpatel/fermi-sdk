@@ -1,8 +1,7 @@
 import * as anchor from "@project-serum/anchor";
-import { programId } from "../../config.json";
-import { Connection, Keypair, PublicKey } from "@solana/web3.js";
+import { PublicKey } from "@solana/web3.js";
 import { EventQueue, EventQueueItem, FermiDex, IDL } from "../types";
-import getFermiDexProgram from "./getFermiDexProgram";
+
 
 type FetchEventQueueParams = {
   marketPda: PublicKey;

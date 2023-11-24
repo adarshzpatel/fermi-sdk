@@ -1,7 +1,7 @@
 import * as anchor from '@project-serum/anchor';
 import * as spl from '@solana/spl-token';
-import { Connection, Keypair, PublicKey } from "@solana/web3.js"
-import getFermiDexProgram from '../utils/getFermiDexProgram';
+import { Keypair, PublicKey } from "@solana/web3.js"
+
 import { FermiDex } from '../types';
 
 type PlaceOrderParams = {
@@ -87,7 +87,6 @@ export async function createBidIx({coinMint,program,authority,marketPda,pcMint,p
       .signers([authority])
       .rpc();
 
-    console.log("Placed limit buy order at price ",price)
 
     return {
       tx,
@@ -102,8 +101,6 @@ export async function createBidIx({coinMint,program,authority,marketPda,pcMint,p
 
 export async function createAskIx({coinMint,program,authority,marketPda,pcMint,price,qty}:PlaceOrderParams) {
   try {
-
-
     const [bidsPda] = await anchor.web3.PublicKey.findProgramAddress(
       [Buffer.from("bids", "utf-8"), marketPda.toBuffer()],
       program.programId
@@ -173,9 +170,6 @@ export async function createAskIx({coinMint,program,authority,marketPda,pcMint,p
       })
       .signers([authority])
       .rpc();
-
-    console.log("Placed limit sell order at price ", price)
-
 
     return {
       tx,

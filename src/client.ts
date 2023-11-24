@@ -2,7 +2,8 @@
 import { Program } from "@project-serum/anchor";
 import { Connection, PublicKey, Keypair } from "@solana/web3.js";
 import { FermiDex } from "./types";
-import getFermiDexProgram from "./utils/getFermiDexProgram";
+import {getFermiDexProgram} from "./utils/getFermiDexProgram";
+
 import {
   cancelAskIx,
   cancelBidIx,
@@ -183,6 +184,16 @@ export class FermiClient {
       this.program,
       this.market.marketPda
     );
+  }
+  async fetchOpenOrdersAccountBalances() {
+    const oo = await this.getOpenOrders();
+    const tokenBalances = {
+      nativePcTotal: oo.nativePcTotal.toString(),
+      nativePcFree: oo.nativePcFree.toString(),
+      nativeCoinFree: oo.nativeCoinFree.toString(),
+      nativeCoinTotal: oo.nativeCoinTotal.toString(),
+    };
+    return tokenBalances;
   }
   async getFinalisableOrderMatches() {
     const { orders } = await this.getOpenOrders();

@@ -1,9 +1,9 @@
-import getFermiDexProgram from "../utils/getFermiDexProgram";
+import {getFermiDexProgram} from "../utils/getFermiDexProgram";
 import { getAssociatedTokenAddress } from "@solana/spl-token";
 import * as anchor from "@project-serum/anchor";
 import * as spl from "@solana/spl-token";
-import { Keypair, Connection, PublicKey } from "@solana/web3.js";
 import { FermiDex } from "../types";
+import { Keypair,PublicKey } from "@solana/web3.js";
 
 export type FinaliseOrderParams = {
   eventSlot1: number;

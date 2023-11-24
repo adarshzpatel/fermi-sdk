@@ -1,6 +1,6 @@
-import { Connection, Keypair, PublicKey } from "@solana/web3.js";
+import { Keypair, PublicKey } from "@solana/web3.js";
 import * as anchor from "@project-serum/anchor";
-import getFermiDexProgram from "../utils/getFermiDexProgram";
+
 import { FermiDex } from "../types";
 
 type CancelOrderParams = {

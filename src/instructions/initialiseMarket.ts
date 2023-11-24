@@ -84,14 +84,14 @@ export async function initialiseMarket(
   const marketConstants = {
     programId: programId,
     marketPda: marketPda,
-    coinVault: coinVault,
-    pcVault: pcVault,
+    // coinVault: coinVault,
+    // pcVault: pcVault,
     coinMint: coinMint.publicKey,
     pcMint: pcMint.publicKey,
-    bidsPda: bidsPda,
-    asksPda: asksPda,
-    reqQPda: reqQPda,
-    eventQPda: eventQPda,
+    // bidsPda: bidsPda,
+    // asksPda: asksPda,
+    // reqQPda: reqQPda,
+    // eventQPda: eventQPda,
     authority: authority.publicKey,
   };
 
@@ -177,14 +177,14 @@ export async function initialiseMarketCustom(
   const marketConstants = {
     programId: programId,
     marketPda: marketPda,
-    coinVault: coinVault,
-    pcVault: pcVault,
+    // coinVault: coinVault,
+    // pcVault: pcVault,
     coinMint: coinMint,
     pcMint: pcMint,
-    bidsPda: bidsPda,
-    asksPda: asksPda,
-    reqQPda: reqQPda,
-    eventQPda: eventQPda,
+    // bidsPda: bidsPda,
+    // asksPda: asksPda,
+    // reqQPda: reqQPda,
+    // eventQPda: eventQPda,
     authority: authority.publicKey,
   };
 

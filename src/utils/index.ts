@@ -10,3 +10,4 @@ export * from "./saveLogs"
 export * from "./sleep"
 export * from "./getTokenBalance"
 export * from "./helpers"
+export * from './getFermiDexProgram'

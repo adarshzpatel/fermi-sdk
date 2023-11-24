@@ -10,6 +10,7 @@ const solanaConfigPath = path.join(homeDirectory, ".config/solana/id.json");
 
 const airdropTokens = async () => {
   const owner = FermiDex.getLocalKeypair(solanaConfigPath); // authority keypair of market owner
+
   const connection = new Connection(rpcUrl);
   const currentMarket = markets[0];
   // Airdrop to user 1
@@ -27,10 +28,10 @@ const airdropTokens = async () => {
 
   // airdrop pc acccounts
   await FermiDex.airdropToken({
-    receiverPk: owner.publicKey,
+    receiverPk: user1.publicKey,
     amount: 100000,
     connection,
-    mint: new PublicKey(currentMarket.coinMint),
+    mint: new PublicKey(currentMarket.pcMint),
     ownerKp: owner,
   });
 
