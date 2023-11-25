@@ -1,7 +1,7 @@
 
 export type OrderMatch = {
-  orderIdMatchedEvent?: EventQueueItem;
-  orderIdSecondMatchedEvent?: EventQueueItem;
+  eventSlot1: number ;
+  eventSlot2: number;
 };
 
 export type EventQueueItem = {

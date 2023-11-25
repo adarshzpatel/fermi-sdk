@@ -7,7 +7,7 @@ import { markets } from "./markets";
 
 const fetchTokenBalance = async () => {
   const connection = new Connection(rpcUrl);
-  const userKp = FermiDex.getLocalKeypair("./test-keypairs/user1/key.json");
+  const userKp = FermiDex.getLocalKeypair("./test-keypairs/user2/key.json");
   const client = new FermiDex.FermiClient({
     market:markets[0],
     connection,
@@ -17,6 +17,9 @@ const fetchTokenBalance = async () => {
   // Fetch custom token 
   const cutomTokenBalance = await FermiDex.getTokenBalance(userKp.publicKey,new PublicKey(markets[0].pcMint),connection);
   console.log({cutomTokenBalance})
+
+  const cutomTokenBalance2 = await FermiDex.getTokenBalance(userKp.publicKey,new PublicKey(markets[0].coinMint),connection);
+  console.log({cutomTokenBalance2})
 
 
   // Fetch open orders token balances - needs open orders account to be already intialised

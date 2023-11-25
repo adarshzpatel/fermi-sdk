@@ -2,7 +2,7 @@
 import { Program } from "@project-serum/anchor";
 import { Connection, PublicKey, Keypair } from "@solana/web3.js";
 import { FermiDex } from "./types";
-import {getFermiDexProgram} from "./utils/getFermiDexProgram";
+import { getFermiDexProgram } from "./utils/getFermiDexProgram";
 
 import {
   cancelAskIx,
@@ -149,32 +149,38 @@ export class FermiClient {
       pcMint: this.market.pcMint,
     });
   }
-  async finaliseAskOrder(orderId: string, authoritySecond: Keypair) {
+  async finaliseSellOrder(
+    orderId: string,
+    counterparty: Keypair,
+    eventSlot1: number,
+    eventSlot2: number
+  ) {
     return finaliseAskIx({
       program: this.program,
       authority: this.authority,
-      authoritySecond,
+      authoritySecond:counterparty,
       coinMint: this.market.coinMint,
       pcMint: this.market.pcMint,
-      eventSlot1: 1,
-      eventSlot2: 2,
+      eventSlot1,
+      eventSlot2,
       marketPda: this.market.marketPda,
-      openOrdersCounterpartyPda: new PublicKey("TBA"),
-      openOrdersOwnerPda: new PublicKey("TBA"),
     });
   }
-  async finaliseBidOrder(orderId: string, authoritySecond: Keypair) {
+  async finaliseBuyOrder(
+    orderId: string,
+    counterparty: Keypair,
+    eventSlot1: number,
+    eventSlot2: number
+  ) {
     return finaliseBidIx({
       program: this.program,
       authority: this.authority,
-      authoritySecond,
+      authoritySecond:counterparty,
       coinMint: this.market.coinMint,
       pcMint: this.market.pcMint,
-      eventSlot1: 1,
-      eventSlot2: 2,
+      eventSlot1,
+      eventSlot2,
       marketPda: this.market.marketPda,
-      openOrdersCounterpartyPda: new PublicKey("TBA"),
-      openOrdersOwnerPda: new PublicKey("TBA"),
     });
   }
 
@@ -195,11 +201,11 @@ export class FermiClient {
     };
     return tokenBalances;
   }
-  async getFinalisableOrderMatches() {
+  async getFinalisableOrderMap() {
     const { orders } = await this.getOpenOrders();
     const eventQ = await this.getEventQueue();
     const matchedOrders = findMatchingEvents(orders, eventQ);
-    return matchedOrders.entries();
+    return matchedOrders;
   }
   // Market specific
   async getEventQueue() {

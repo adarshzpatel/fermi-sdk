@@ -5,22 +5,27 @@ import { markets } from "./markets";
 
 const main = async () => {
   const connection = new Connection(rpcUrl);
-  const userKp = FermiDex.getLocalKeypair("./test-keypairs/user1/key.json");
-  const client = new FermiDex.FermiClient({
-    market: markets[0],
+  const bobKp = FermiDex.getLocalKeypair("./test-keypairs/user1/key.json");
+  const aliceKp = FermiDex.getLocalKeypair("./test-keypairs/user2/key.json");
+  const selectedMarket = markets[0]
+  
+  const bobClient = new FermiDex.FermiClient({
+    market: selectedMarket,
     connection,
-    authority: userKp,
+    authority: bobKp,
   });
-  // Placing buy order
-  const buyPrice = 100;
-  const buyQty = 1;
-  const buyOrder = await client.placeBuyOrder(buyPrice, buyQty);
-  console.log({ buyOrder });
-  // Placing sell order
-  const sellPrice = 101;
-  const sellQty = 1;
-  const sellOrder = await client.placeBuyOrder(sellPrice, sellQty);
-  console.log({ sellOrder });
+
+  const aliceClient = new FermiDex.FermiClient({
+    market:selectedMarket,
+    connection,
+    authority:aliceKp
+  })
+  
+   // Bob places buy order
+  const buyOrder = await bobClient.placeBuyOrder(32,1)
+  console.log({buyOrder})
+  const sellOrder = await aliceClient.placeSellOrder(32,1)
+  console.log({sellOrder})
 };
 
 (async function () {

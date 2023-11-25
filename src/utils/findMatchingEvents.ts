@@ -1,9 +1,15 @@
-import { EventQueue, EventQueueItem, OrderMatch } from "../types";
+import { EventQueue, EventQueueItem } from "../types";
 
-export const findMatchingEvents = (
-  orderIds: string[],
-  events: EventQueue
-): Map<string, OrderMatch> => {
+type OrderMatch = {
+  eventSlot1: number;
+  eventSlot2: number;
+};
+
+type OrderMatchMap = {
+  [key: string]: OrderMatch;
+};
+
+export const findMatchingEvents = (orderIds: string[], events: EventQueue) => {
   const orderIdMap = new Map<string, EventQueueItem>();
   const orderIdSecondMap = new Map<string, EventQueueItem>();
 
@@ -23,7 +29,7 @@ export const findMatchingEvents = (
     }
   }
 
-  const matchedEvents = new Map<string, OrderMatch>();
+  const matchedEvents:OrderMatchMap = {} as OrderMatchMap;
   for (const orderId of orderIds) {
     if (orderId === "0") continue;
     // console.log("matching events for ", orderId)
@@ -40,10 +46,12 @@ export const findMatchingEvents = (
       // console.log("Found order id second")
       orderIdSecondMatched = orderIdMap.get(orderIdMatched?.orderIdSecond);
     }
-    matchedEvents.set(orderId, {
-      orderIdMatchedEvent: orderIdMatched,
-      orderIdSecondMatchedEvent: orderIdSecondMatched,
-    });
+    if (orderIdMatched && orderIdSecondMatched) {
+      matchedEvents[orderId] = {
+        eventSlot1: Math.min(orderIdMatched.idx, orderIdSecondMatched?.idx),
+        eventSlot2: Math.max(orderIdMatched.idx, orderIdSecondMatched?.idx),
+      };
+    }
   }
 
   return matchedEvents;

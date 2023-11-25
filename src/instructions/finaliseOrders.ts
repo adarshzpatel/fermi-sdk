@@ -1,18 +1,16 @@
-import {getFermiDexProgram} from "../utils/getFermiDexProgram";
+import { getFermiDexProgram } from "../utils/getFermiDexProgram";
 import { getAssociatedTokenAddress } from "@solana/spl-token";
 import * as anchor from "@project-serum/anchor";
 import * as spl from "@solana/spl-token";
 import { FermiDex } from "../types";
-import { Keypair,PublicKey } from "@solana/web3.js";
+import { Keypair, PublicKey } from "@solana/web3.js";
 
 export type FinaliseOrderParams = {
   eventSlot1: number;
   eventSlot2: number;
   authority: Keypair;
   authoritySecond: Keypair;
-  openOrdersOwnerPda: PublicKey;
-  openOrdersCounterpartyPda: PublicKey;
-  program:anchor.Program<FermiDex>
+  program: anchor.Program<FermiDex>;
   marketPda: anchor.web3.PublicKey;
   coinMint: anchor.web3.PublicKey;
   pcMint: anchor.web3.PublicKey;
@@ -25,8 +23,7 @@ export type FinaliseOrderParams = {
  * @param eventSlot2 - The event index of the event which doesn't have the orderIdSecond.
  * @param authority - The primary authority keypair.
  * @param authoritySecond - The secondary/counterparty authority keypair.
- * @param openOrdersOwnerPda - The pda of openOrders of authority.
- * @param openOrdersCounterpartyPda - The pda of openOrders of counterparty.
+
  * @param connection - The Solana network connection object.
  * @param marketPda - Pda of market
  * @param coinMint - Mint of coin
@@ -38,15 +35,13 @@ export const finaliseAskIx = async ({
   eventSlot2,
   authority,
   authoritySecond,
-  openOrdersOwnerPda,
-  openOrdersCounterpartyPda,
+
   program,
   marketPda,
   coinMint,
   pcMint,
-}: FinaliseOrderParams): Promise<string | undefined> => {
+}: FinaliseOrderParams) => {
   try {
-
     const [reqQPda] = await anchor.web3.PublicKey.findProgramAddress(
       [Buffer.from("req-q", "utf-8"), marketPda.toBuffer()],
       program.programId
@@ -69,7 +64,24 @@ export const finaliseAskIx = async ({
       true
     );
 
-    console.log({ authorityCoinTokenAccount });
+    const [openOrdersOwnerPda] = await anchor.web3.PublicKey.findProgramAddress(
+      [
+        Buffer.from("open-orders", "utf-8"),
+        marketPda.toBuffer(),
+        authority.publicKey.toBuffer(),
+      ],
+      new anchor.web3.PublicKey(program.programId)
+    );
+
+    const [openOrdersCounterpartyPda] =
+      await anchor.web3.PublicKey.findProgramAddress(
+        [
+          Buffer.from("open-orders", "utf-8"),
+          marketPda.toBuffer(),
+          authoritySecond.publicKey.toBuffer(),
+        ],
+        new anchor.web3.PublicKey(program.programId)
+      );
 
     const finalizeAskTx: string = await program.methods
       .finaliseMatchesAsk(eventSlot1, eventSlot2)
@@ -89,10 +101,12 @@ export const finaliseAskIx = async ({
       .signers([authority])
       .rpc();
 
-    console.log("✅ finalized Ask : ", finalizeAskTx);
-    return finalizeAskTx;
+    return {
+      message: "Finalised ask successfully ",
+      tx: finalizeAskTx,
+    };
   } catch (err) {
-    console.log(err);
+    console.error("Error in FinaliseAsk",err);
   }
 };
 
@@ -103,27 +117,21 @@ export const finaliseAskIx = async ({
  * @param eventSlot2 - The event index of the event which doesn't have the orderIdSecond.
  * @param authority - The primary authority keypair.
  * @param authoritySecond - The secondary/counterparty authority keypair.
- * @param openOrdersOwnerPda - The pda of openOrders of authority.
- * @param openOrdersCounterpartyPda - The pda of openOrders of counterparty.
  * @param connection - The Solana network connection object.
  * @param marketPda - Pda of market
  * @returns A string representing the transaction or undefined in case of an error.
  */
-export const finaliseBidIx= async ({
+export const finaliseBidIx = async ({
   eventSlot1,
   eventSlot2,
   authority,
   authoritySecond,
-  openOrdersOwnerPda,
-  openOrdersCounterpartyPda,
   program,
   marketPda,
   coinMint,
   pcMint,
-}: FinaliseOrderParams): Promise<string | undefined> => {
+}: FinaliseOrderParams) => {
   try {
-
-
     const [reqQPda] = await anchor.web3.PublicKey.findProgramAddress(
       [Buffer.from("req-q", "utf-8"), marketPda.toBuffer()],
       program.programId
@@ -145,6 +153,25 @@ export const finaliseBidIx= async ({
       true
     );
 
+    const [openOrdersOwnerPda] = await anchor.web3.PublicKey.findProgramAddress(
+      [
+        Buffer.from("open-orders", "utf-8"),
+        marketPda.toBuffer(),
+        authority.publicKey.toBuffer(),
+      ],
+      new anchor.web3.PublicKey(program.programId)
+    );
+
+    const [openOrdersCounterpartyPda] =
+      await anchor.web3.PublicKey.findProgramAddress(
+        [
+          Buffer.from("open-orders", "utf-8"),
+          marketPda.toBuffer(),
+          authoritySecond.publicKey.toBuffer(),
+        ],
+        new anchor.web3.PublicKey(program.programId)
+      );
+
     const finalizeBidTx = await program.methods
       .finaliseMatchesBid(eventSlot1, eventSlot2)
       .accounts({
@@ -162,9 +189,11 @@ export const finaliseBidIx= async ({
       .signers([authority])
       .rpc();
 
-    console.log("✅ finalized bid : ", finalizeBidTx);
-    return finalizeBidTx;
+    return {
+      message: "Finalised ask successfully ",
+      tx: finalizeBidTx,
+    };
   } catch (err) {
-    console.error(err);
+    console.error("Error in FinaliseBid",err);
   }
 };

@@ -15,10 +15,10 @@ const main = async () => {
   const balanceBeforeDeosit = await client.fetchOpenOrdersAccountBalances();
   console.log({ balanceBeforeDeosit });
   // Deposit pc tokens
-  const depositPc = await client.depositPcTokens(100);
+  const depositPc = await client.depositPcTokens(1000 * 10 ** 6);
   console.log({ depositPc });
   // Deposit coin tokens
-  const depositCoin = await client.depositCoinTokens(100);
+  const depositCoin = await client.depositCoinTokens(1000 * 10 ** 9);
   console.log({ depositCoin });
 
   await FermiDex.sleep(30000, "Waiting for deposit to be processed"); // Remove this in local testing

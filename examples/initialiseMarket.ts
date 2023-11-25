@@ -24,6 +24,7 @@ const createNewMarket = async () => {
 };
 
 const createNewCustomMarket = async () => {
+  
   const authority = FermiDex.getLocalKeypair(solanaConfigPath);
   const connection = new Connection(rpcUrl);
   const USDCMint = Keypair.generate();
