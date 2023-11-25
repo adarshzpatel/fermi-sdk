@@ -4,7 +4,7 @@ import * as anchor from "@project-serum/anchor";
 import { FermiDex } from "../types";
 
 type CancelOrderParams = {
-  program:anchor.Program<FermiDex>
+  program: anchor.Program<FermiDex>;
   authority: Keypair;
   orderId: string;
   marketPda: PublicKey;
@@ -21,7 +21,6 @@ export async function cancelAskIx({
       console.log("Invalid order id. Aborting ...");
       return;
     }
-
 
     const [bidsPda] = await anchor.web3.PublicKey.findProgramAddress(
       [Buffer.from("bids", "utf-8"), marketPda.toBuffer()],
@@ -58,7 +57,11 @@ export async function cancelAskIx({
       })
       .signers([authority])
       .rpc();
-    console.log(`Cancelled order ${orderId} `, { cancelIx });
+
+    return {
+      message: `Cancelled ask order ${orderId} `,
+      tx: cancelIx,
+    };
   } catch (err) {
     console.log(err);
   }
@@ -75,8 +78,6 @@ export async function cancelBidIx({
       console.log("Invalid order id. Aborting ...");
       return;
     }
-
-
 
     const [bidsPda] = await anchor.web3.PublicKey.findProgramAddress(
       [Buffer.from("bids", "utf-8"), marketPda.toBuffer()],
@@ -114,7 +115,11 @@ export async function cancelBidIx({
       .signers([authority])
       .rpc();
 
-    console.log(`Cancelled order ${orderId} `, { cancelIx });
+
+    return {
+      message: `Cancelled bid order ${orderId} `,
+      tx: cancelIx,
+    };
   } catch (err) {
     console.log(err);
   }

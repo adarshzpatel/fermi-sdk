@@ -54,8 +54,7 @@ export async function depositCoinTokensIx({
       .signers([authority])
       .rpc();
 
-    console.log("Successfully deposited ", { amount, depositIx });
-    return { amount, depositIx };
+    return { message: "Deposit Successfull", tx: depositIx };
   } catch (err) {
     console.log(err);
   }
@@ -102,7 +101,11 @@ export async function depositPcTokensIx({
       .signers([authority])
       .rpc();
 
-    console.log("Successfully deposited ", { amount, depositIx });
+    // console.log("Successfully deposited ", { amount, depositIx });
+    return {
+      message: "Deposit successful",
+      tx: depositIx,
+    };
     return { amount, depositIx };
   } catch (err) {
     console.log(err);

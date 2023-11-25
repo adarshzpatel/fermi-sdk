@@ -18,7 +18,7 @@ export const fetchOpenOrdersAccount = async (
   );
 
   const openOrders = await program.account.openOrders.fetch(openOrdersPda);
-  const orders:string[] = openOrders.orders.map((item) => item.toString());
+  const orders:string[] = openOrders.orders.map((item) => item.toString()).filter((item) => item !== "0");
 
   return { ...openOrders,orders };
 };

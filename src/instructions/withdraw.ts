@@ -15,7 +15,7 @@ type WithdrawTokensParams = {
   authority: Keypair;
 };
 
-export async function withdrawPcTokensIx({
+export async function withdrawCoinTokensIx({
   program,
   amount,
   marketPda,
@@ -36,8 +36,8 @@ export async function withdrawPcTokensIx({
       true
     );
 
-    const authorityPcTokenAccount = await spl.getAssociatedTokenAddress(
-      new anchor.web3.PublicKey(pcMint),
+    const authorityCoinTokenAccount = await spl.getAssociatedTokenAddress(
+      new anchor.web3.PublicKey(coinMint),
       authority.publicKey,
       false
     );
@@ -60,19 +60,22 @@ export async function withdrawPcTokensIx({
         pcMint: pcMint,
         coinVault: coinVault,
         pcVault: pcVault,
-        payer: authorityPcTokenAccount,
+        payer: authorityCoinTokenAccount,
         authority: authority.publicKey,
       })
       .signers([authority])
       .rpc();
 
-    console.log("Successfully withdrawed ", { amount, withdrawIx });
+    return {
+      message: "Successfully withdrawed ",
+      tx: withdrawIx,
+    };
   } catch (err) {
-    console.log(err);
+    console.log("Error in withdrawCoinTokens: ", err);
   }
 }
 
-export async function withdrawCoinTokensIx({
+export async function withdrawPcTokensIx({
   program,
   amount,
   marketPda,
@@ -123,9 +126,11 @@ export async function withdrawCoinTokensIx({
       .signers([authority])
       .rpc();
 
-    console.log("Successfully withdrawed ", { amount, withdrawIx });
+    return {
+      message: "Successfully withdrawed ",
+      tx: withdrawIx,
+    };
   } catch (err) {
-    console.log(err);
+    console.log("Error in withdrawPcTokens: ", err);
   }
 }
-

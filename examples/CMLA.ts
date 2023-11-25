@@ -1,6 +1,6 @@
-import { Connection, PublicKey } from "@solana/web3.js";
+import { Connection } from "@solana/web3.js";
 import * as FermiDex from "../src";
-import { rpcUrl, marketConstants } from "../config.json";
+import { rpcUrl } from "../config.json";
 import * as anchor from "@project-serum/anchor";
 import * as os from "os";
 import * as path from "path";

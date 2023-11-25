@@ -1,8 +1,7 @@
-import { Connection, PublicKey } from "@solana/web3.js";
+import { Connection } from "@solana/web3.js";
 import * as FermiDex from "../src";
 import { rpcUrl } from "../config.json";
 import { markets } from "./markets";
-import { connect } from "http2";
 
 const main = async () => {
   const connection = new Connection(rpcUrl);
@@ -12,13 +11,11 @@ const main = async () => {
     connection,
     authority: userKp,
   });
-  const program = FermiDex.getFermiDexProgram(userKp, connection);
-  // Placing buy ordes
+  // Placing buy order
   const buyPrice = 100;
   const buyQty = 1;
-  // const buyOrder = await client.placeBuyOrder(buyPrice,buyQty)
-  // const buyOrder = await client.placeBuyOrder(buyPrice, buyQty);
-  // console.log({ buyOrder });
+  const buyOrder = await client.placeBuyOrder(buyPrice, buyQty);
+  console.log({ buyOrder });
   // Placing sell order
   const sellPrice = 101;
   const sellQty = 1;

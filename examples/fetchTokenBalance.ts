@@ -14,7 +14,6 @@ const fetchTokenBalance = async () => {
     authority:userKp
   })
 
-  
   // Fetch custom token 
   const cutomTokenBalance = await FermiDex.getTokenBalance(userKp.publicKey,new PublicKey(markets[0].pcMint),connection);
   console.log({cutomTokenBalance})

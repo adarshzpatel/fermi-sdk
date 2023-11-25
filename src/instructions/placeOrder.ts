@@ -16,7 +16,6 @@ type PlaceOrderParams = {
 
 export async function createBidIx({coinMint,program,authority,marketPda,pcMint,price,qty}:PlaceOrderParams) {
   try {
-
     const [bidsPda] = await anchor.web3.PublicKey.findProgramAddress(
       [Buffer.from("bids", "utf-8"), marketPda.toBuffer()],
       program.programId
