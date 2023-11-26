@@ -2,7 +2,7 @@ import {BN} from "@project-serum/anchor"
  
 export const priceFromOrderId = (orderId: BN, decimals: number) => {
   const price = BN(orderId).shrn(64).toNumber();
-  return price / decimals
+  return price
 };
 
 export const timestampFromOrderId = (orderId: BN) => {

@@ -21,7 +21,7 @@ const main = async () => {
   const withdrawCoin = await client.withdrawCoinTokens(20);
   console.log({ withdrawCoin });
 
-  await FermiDex.sleep(30000, "Waiting for deposit to be processed"); // Remove this in local testing
+  await FermiDex.sleep(10000, "Waiting for deposit to be processed"); // Remove this in local testing
   const balanceAfterDeposit = await client.fetchOpenOrdersAccountBalances();
   console.log({ balanceAfterDeposit });
 };

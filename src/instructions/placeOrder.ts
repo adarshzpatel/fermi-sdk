@@ -1,20 +1,28 @@
-import * as anchor from '@project-serum/anchor';
-import * as spl from '@solana/spl-token';
-import { Keypair, PublicKey } from "@solana/web3.js"
+import * as anchor from "@project-serum/anchor";
+import * as spl from "@solana/spl-token";
+import { Keypair, PublicKey } from "@solana/web3.js";
 
-import { FermiDex } from '../types';
+import { FermiDex } from "../types";
 
 type PlaceOrderParams = {
-  authority: Keypair
-  price: number
-  qty:number
-  program:anchor.Program<FermiDex>
-  marketPda:PublicKey
-  coinMint:PublicKey
-  pcMint:PublicKey
-}
+  authority: Keypair;
+  price: number;
+  qty: number;
+  program: anchor.Program<FermiDex>;
+  marketPda: PublicKey;
+  coinMint: PublicKey;
+  pcMint: PublicKey;
+};
 
-export async function createBidIx({coinMint,program,authority,marketPda,pcMint,price,qty}:PlaceOrderParams) {
+export async function createBidIx({
+  coinMint,
+  program,
+  authority,
+  marketPda,
+  pcMint,
+  price,
+  qty,
+}: PlaceOrderParams) {
   try {
     const [bidsPda] = await anchor.web3.PublicKey.findProgramAddress(
       [Buffer.from("bids", "utf-8"), marketPda.toBuffer()],
@@ -24,7 +32,7 @@ export async function createBidIx({coinMint,program,authority,marketPda,pcMint,p
       [Buffer.from("asks", "utf-8"), marketPda.toBuffer()],
       program.programId
     );
-  
+
     const [reqQPda] = await anchor.web3.PublicKey.findProgramAddress(
       [Buffer.from("req-q", "utf-8"), marketPda.toBuffer()],
       program.programId
@@ -45,20 +53,19 @@ export async function createBidIx({coinMint,program,authority,marketPda,pcMint,p
       true
     );
 
-
     const authorityPcTokenAccount = await spl.getAssociatedTokenAddress(
       new anchor.web3.PublicKey(pcMint),
       authority.publicKey,
-      false,
+      false
     );
 
     const [openOrdersPda] = await anchor.web3.PublicKey.findProgramAddress(
       [
-        Buffer.from('open-orders', 'utf-8'),
+        Buffer.from("open-orders", "utf-8"),
         new anchor.web3.PublicKey(marketPda).toBuffer(),
         authority.publicKey.toBuffer(),
       ],
-      new anchor.web3.PublicKey(program.programId),
+      new anchor.web3.PublicKey(program.programId)
     );
 
     const tx = await program.methods
@@ -66,8 +73,8 @@ export async function createBidIx({coinMint,program,authority,marketPda,pcMint,p
         { bid: {} },
         new anchor.BN(price),
         new anchor.BN(qty),
-        new anchor.BN(price*qty),
-        { limit: {} },
+        new anchor.BN(price).mul(new anchor.BN(qty)),
+        { limit: {} }
       )
       .accounts({
         openOrders: openOrdersPda,
@@ -86,19 +93,25 @@ export async function createBidIx({coinMint,program,authority,marketPda,pcMint,p
       .signers([authority])
       .rpc();
 
-
     return {
       tx,
-      message: 'Placed limit order Buy price: ' + price,
+      message: "Placed limit order Buy price: " + price,
     };
-    
   } catch (err) {
-    console.log('something went wrong while placing a buy order!');
+    console.log("something went wrong while placing a buy order!");
     console.log(err);
   }
 }
 
-export async function createAskIx({coinMint,program,authority,marketPda,pcMint,price,qty}:PlaceOrderParams) {
+export async function createAskIx({
+  coinMint,
+  program,
+  authority,
+  marketPda,
+  pcMint,
+  price,
+  qty,
+}: PlaceOrderParams) {
   try {
     const [bidsPda] = await anchor.web3.PublicKey.findProgramAddress(
       [Buffer.from("bids", "utf-8"), marketPda.toBuffer()],
@@ -108,7 +121,7 @@ export async function createAskIx({coinMint,program,authority,marketPda,pcMint,p
       [Buffer.from("asks", "utf-8"), marketPda.toBuffer()],
       program.programId
     );
-  
+
     const [reqQPda] = await anchor.web3.PublicKey.findProgramAddress(
       [Buffer.from("req-q", "utf-8"), marketPda.toBuffer()],
       program.programId
@@ -132,26 +145,25 @@ export async function createAskIx({coinMint,program,authority,marketPda,pcMint,p
     const authorityCoinTokenAccount = await spl.getAssociatedTokenAddress(
       new anchor.web3.PublicKey(coinMint),
       authority.publicKey,
-      false,
+      false
     );
 
-    const [openOrdersPda] =
-      await anchor.web3.PublicKey.findProgramAddress(
-        [
-          Buffer.from('open-orders', 'utf-8'),
-          new anchor.web3.PublicKey(marketPda).toBuffer(),
-          authority.publicKey.toBuffer(),
-        ],
-        new anchor.web3.PublicKey(program.programId),
-      );
+    const [openOrdersPda] = await anchor.web3.PublicKey.findProgramAddress(
+      [
+        Buffer.from("open-orders", "utf-8"),
+        new anchor.web3.PublicKey(marketPda).toBuffer(),
+        authority.publicKey.toBuffer(),
+      ],
+      new anchor.web3.PublicKey(program.programId)
+    );
 
     const tx = await program.methods
       .newOrder(
         { ask: {} },
         new anchor.BN(price),
         new anchor.BN(qty),
-        new anchor.BN(price*qty),
-        { limit: {} },
+        new anchor.BN(price).mul(new anchor.BN(qty)),
+        { limit: {} }
       )
       .accounts({
         openOrders: openOrdersPda,
@@ -172,10 +184,10 @@ export async function createAskIx({coinMint,program,authority,marketPda,pcMint,p
 
     return {
       tx,
-      message: 'Placed limit order sell price: ' + price,
+      message: "Placed limit order sell price: " + price,
     };
   } catch (err) {
-    console.log('something went wrong while placing a sell order!');
+    console.log("something went wrong while placing a sell order!");
     console.log(err);
   }
 }

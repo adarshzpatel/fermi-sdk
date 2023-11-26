@@ -1,11 +1,9 @@
-import { Connection } from "@solana/web3.js";
+import { Connection, PublicKey } from "@solana/web3.js";
 import * as FermiDex from "../src";
 import { rpcUrl } from "../config.json";
 import * as anchor from "@project-serum/anchor";
 import * as os from "os";
 import * as path from "path";
-import { markets } from "./markets";
-import { privateDecrypt } from "crypto";
 
 const homeDirectory = os.homedir();
 const solanaConfigPath = path.join(homeDirectory, ".config/solana/id.json");
@@ -15,7 +13,6 @@ const main = async () => {
   const connection = new Connection(rpcUrl);
   const bobKp = FermiDex.getLocalKeypair("./test-keypairs/user1/key.json");
   const aliceKp = FermiDex.getLocalKeypair("./test-keypairs/user2/key.json");
-  
   const ownerWallet = new anchor.Wallet(owner);
 
   const provider = new anchor.AnchorProvider(
@@ -38,7 +35,13 @@ const main = async () => {
   await FermiDex.createMint(provider, BonkMint, 9);
   // 1. CREATE MARKET -- WORKING
 
-  const wSol_usdc_market = await FermiDex.initialiseMarketCustom(owner,provider,wSolMint.publicKey,USDCMint.publicKey);
+  const wSol_usdc_market = await FermiDex.initialiseMarketCustom(
+    owner,
+    provider,
+    wSolMint.publicKey,
+    USDCMint.publicKey
+  );
+
   const bonk_usdc_market = await FermiDex.initialiseMarketCustom(
     owner,
     provider,
@@ -46,134 +49,148 @@ const main = async () => {
     USDCMint.publicKey
   );
 
+  const aliceClient = new FermiDex.FermiClient({
+    authority: aliceKp,
+    connection,
+    market: wSol_usdc_market,
+  });
+
+  const bobClient = new FermiDex.FermiClient({
+    authority: aliceKp,
+    connection,
+    market: bonk_usdc_market,
+  });
+  await FermiDex.sleep(30000,'Waiting for market to be initialised...Sleeping for 30 sec');
   // 2. Airdrop Tokens -- WORKING
   console.log("AIRDROPPING TOKENS !!");
   console.log("------------------------");
 
-  console.log("sleeping for 20 sec");
-  await FermiDex.sleep(20000);
-  console.log("Sleep ended !");
+  // airdrop tokens to bob
+  await FermiDex.airdropToken({
+    receiverPk: bobKp.publicKey,
+    amount: 1000 * 10 ** 9,
+    connection,
+    mint: wSolMint.publicKey,
+    ownerKp: owner,
+  });
 
+  // airdrop pc acccounts
+  await FermiDex.airdropToken({
+    receiverPk: bobKp.publicKey,
+    amount: 1000 * 10 ** 6,
+    connection,
+    mint: USDCMint.publicKey,
+    ownerKp: owner,
+  });
+
+  await FermiDex.airdropToken({
+    receiverPk: bobKp.publicKey,
+    amount: 1000 * 10 ** 9,
+    connection,
+    mint: BonkMint.publicKey,
+    ownerKp: owner,
+  });
+
+  // AIRDROP TO ALICE
+  await FermiDex.airdropToken({
+    receiverPk: aliceKp.publicKey,
+    amount: 1000 * 10 ** 9,
+    connection,
+    mint: wSolMint.publicKey,
+    ownerKp: owner,
+  });
+
+
+  await FermiDex.airdropToken({
+    receiverPk: aliceKp.publicKey,
+    amount: 1000 * 10 ** 6,
+    connection,
+    mint: USDCMint.publicKey,
+    ownerKp: owner,
+  });
+
+  await FermiDex.airdropToken({
+    receiverPk: aliceKp.publicKey,
+    amount: 1000 * 10 ** 9,
+    connection,
+    mint: BonkMint.publicKey,
+    ownerKp: owner,
+  });
+
+
+
+  await FermiDex.sleep(30000,'Waiting for airdrop to be processed...Sleeping for 30 sec');
+  console.log("Sleep ended !");
 
   // 4. PLACING ORDERS
 
   // Alice places new Bid on both markets
   // Place Bid on USDC/wSol market
-  /*
-  await FermiDex.placeNewBuyOrderCustom({
-    kp: user1,
-    price: 20000000,//20 * 10e6
-    qty: 50,
-    connection,
-    marketPda: market1Pdas.marketPda,
-    coinMint: wSolMint.publicKey,
-    pcMint: USDCMint.publicKey,
-  }); */
+  await aliceClient.placeBuyOrder(20, 50);
   console.log("Alice placed bid for 50 wsol at 20 usdc price");
 
-  //Place Bid on USDC/Bonk market
-  await FermiDex.placeNewBuyOrderCustom({
-    kp: user1,
-    price: 1000, //0.01*10e6
-    qty: 100000,
-    connection,
-    marketPda: market2Pdas.marketPda,
-    coinMint: BonkMint.publicKey,
-    pcMint: USDCMint.publicKey,
-  });
+  //Place Bid on USDC/Bonk market    coinMint: BonkMint.publicKey,
+  // change market for aliceClient
+  aliceClient.setCurrentMarket(bonk_usdc_market);
+  await aliceClient.placeBuyOrder(0.01, 10000);
   console.log("Alice placed bid for 10000 bonk at 0.01 usdc price");
 
-  //await FermiDex.placeNewBuyOrder(user1, 36, connection);
-  //await FermiDex.placeNewSellOrder(user2, 35, connection);
-
   // Bob places new sell order on Bonk/USDC market, selling 500 USDC worth of Sol at the market price.
-  await FermiDex.placeNewSellOrderCustom({
-    kp: user2,
-    price: 1000, //0.01*10e6
-    qty: 50000,
-    connection,
-    marketPda: market2Pdas.marketPda,
-    coinMint: BonkMint.publicKey,
-    pcMint: USDCMint.publicKey,
-  });
-
+  await bobClient.placeSellOrder(0.01, 500000);
   console.log("Bob placed ask for 500000 bonk at 0.01 usdc price");
 
-  console.log("sleeping for 20 sec");
-  await FermiDex.sleep(20000);
+  await FermiDex.sleep(30000,"waiting for orders to be processed , sleeping for 30 sec");
   console.log("Sleep ended !");
 
   // 5. Finalise Orders
   //BOB FINALISES ORDERS
-  const authority = user2;
-  const counterparty = user1;
 
-  const openOrdersAuthority = await FermiDex.getOpenOrdersCustom(
-    authority,
-    connection,
-    market2Pdas.marketPda
-  );
+  const bobOpenOrdersAcc = await bobClient.getOpenOrders();
+  const aliceOpenOrdersAcc = await aliceClient.getOpenOrders();
+  
+  console.log({bobOpenOrdersAcc});
+  console.log({aliceOpenOrdersAcc});
 
-  const openOrdersCounterparty = await FermiDex.getOpenOrdersCustom(
-    counterparty,
-    connection,
-    market2Pdas.marketPda
-  );
+  const eventQmarket1 = await FermiDex.getParsedEventQ({
+    marketPda: new PublicKey(wSol_usdc_market.marketPda),
+    program: FermiDex.getFermiDexProgram(owner, connection),
+  });
 
-  console.log("user1", openOrdersAuthority);
-  console.log("user2", openOrdersCounterparty);
+  const eventQmarket2 = await FermiDex.getParsedEventQ({
+    marketPda: new PublicKey(wSol_usdc_market.marketPda),
+    program: FermiDex.getFermiDexProgram(owner, connection),
+  });
 
-  const eventQmarket1 = await FermiDex.getParsedEventQCustom(
-    user1,
-    connection,
-    market1Pdas.eventQPda
-  );
-  const eventQmarket2 = await FermiDex.getParsedEventQCustom(
-    user1,
-    connection,
-    market2Pdas.eventQPda
-  );
   console.log({ eventQmarket1, eventQmarket2 });
 
-  const matchedEvents = FermiDex.findMatchingEvents(
-    openOrdersAuthority.orders,
-    eventQmarket2
-  );
+  const matchedEvents = await bobClient.getFinalisableOrderMap();
 
-  console.log(matchedEvents.entries());
+  console.log({matchedEvents});
 
-  // for (const [orderId, match] of matchedEvents) {
-  //   const { orderIdMatched, orderIdSecondMatched } = match;
-  //   if (!orderIdMatched || !orderIdSecondMatched) continue;
-  //   console.log(
-  //     `GOING TO FINALIZE FOR ORDER ${orderId} and events ${orderIdMatched.idx} <-> ${orderIdSecondMatched?.idx}`
-  //   );
 
-  //   await FermiDex.finaliseMatchesAskCustom({
-  //     eventSlot1: orderIdSecondMatched.idx,
-  //     eventSlot2: orderIdMatched.idx,
-  //     authority: authority,
-  //     authoritySecond: counterparty,
-  //     openOrdersOwnerPda: openOrdersAuthority.pda,
-  //     openOrdersCounterpartyPda: openOrdersCounterparty.pda,
-  //     connection: connection,
-  //     marketPda: market2Pdas.marketPda,
-  //     coinMint: market2Pdas.coinMint,
-  //     pcMint: market2Pdas.pcMint,
-  //   });
+  console.log({ matchedEvents });
+  const matchedOrders = Object.keys(matchedEvents);
+  const orderIdToFinalise = matchedOrders[0];
+  const match = matchedEvents[orderIdToFinalise];
 
-  //   await FermiDex.finaliseMatchesBidCustom({
-  //     eventSlot1: orderIdSecondMatched.idx,
-  //     eventSlot2: orderIdMatched.idx,
-  //     authority: authority,
-  //     authoritySecond: counterparty,
-  //     openOrdersOwnerPda: openOrdersAuthority.pda,
-  //     openOrdersCounterpartyPda: openOrdersCounterparty.pda,
-  //     connection: connection,
-  //     marketPda: market2Pdas.marketPda,
-  //     coinMint: market2Pdas.coinMint,
-  //     pcMint: market2Pdas.pcMint,
-  //   });
+  if (match) {
+    const finaliseSellOrder = await aliceClient.finaliseSellOrder(
+      orderIdToFinalise,
+      aliceKp,
+      match.eventSlot1,
+      match.eventSlot2
+    );
+    console.log({ finaliseSellOrder });
+    const finaliseBuyOrder = await bobClient.finaliseBuyOrder(
+      orderIdToFinalise,
+      bobKp,
+      match.eventSlot1,
+      match.eventSlot2
+    );
+    console.log({ finaliseBuyOrder });
+  } else {
+    console.log("No matches found");
+  }
 
   //   console.log(
   //     ` ✅SUCCESSFULLY FINALIZED  ${orderId} and events ${orderIdMatched.idx} <-> ${orderIdSecondMatched?.idx}`

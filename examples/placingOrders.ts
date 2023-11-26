@@ -21,11 +21,15 @@ const main = async () => {
     authority:aliceKp
   })
   
-   // Bob places buy order
-  const buyOrder = await bobClient.placeBuyOrder(32,1)
+   //Bob places buy order
+  const buyOrder = await bobClient.placeBuyOrder(30,1)
   console.log({buyOrder})
-  const sellOrder = await aliceClient.placeSellOrder(32,1)
+
+
+  const sellOrder = await aliceClient.placeSellOrder(30,1)
   console.log({sellOrder})
+
+  
 };
 
 (async function () {

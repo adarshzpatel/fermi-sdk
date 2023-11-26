@@ -190,7 +190,7 @@ export const finaliseBidIx = async ({
       .rpc();
 
     return {
-      message: "Finalised ask successfully ",
+      message: "Finalised bid successfully ",
       tx: finalizeBidTx,
     };
   } catch (err) {

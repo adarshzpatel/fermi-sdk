@@ -19,6 +19,7 @@ import {
   fetchOpenOrdersAccount,
   findMatchingEvents,
   getParsedEventQ,
+  getTokenBalance,
   priceFromOrderId,
 } from "./utils";
 import * as anchor from "@project-serum/anchor";
@@ -31,6 +32,8 @@ type Market = {
 
 type FermiClientParams = {
   market: {
+    authority?: string;
+    programId?: string;
     marketPda: string;
     coinMint: string;
     pcMint: string;
@@ -42,7 +45,8 @@ type FermiClientParams = {
 export class FermiClient {
   private program: Program<FermiDex>;
   private market: Market;
-  private authority: Keypair;
+  public authority: Keypair;
+  public connection:Connection
 
   constructor({ market, connection, authority }: FermiClientParams) {
     this.authority = authority;
@@ -53,6 +57,7 @@ export class FermiClient {
       pcMint: new PublicKey(market.pcMint),
     };
     this.market = _market;
+    this.connection = connection;
   }
 
   setCurrentMarket(market: FermiClientParams["market"]) {
@@ -62,6 +67,10 @@ export class FermiClient {
       pcMint: new PublicKey(market.pcMint),
     };
     this.market = _market;
+  }
+
+  setConnection(conn:Connection){
+    this.connection = conn;
   }
   getCurrentMarket() {
     return this.market;
@@ -234,9 +243,11 @@ export class FermiClient {
         qty: Number(item?.qty) / 1000000000,
       };
     });
+
     return bids;
   }
   async getAsks() {
+
     const [asksPda] = await anchor.web3.PublicKey.findProgramAddress(
       [
         Buffer.from("asks", "utf-8"),
@@ -245,17 +256,28 @@ export class FermiClient {
       this.program.programId
     );
 
+
     const res = await this.program.account.orders.fetch(
       new anchor.web3.PublicKey(asksPda)
     );
+
     const asks = (res?.sorted as any[])?.map((item) => {
       return {
         ...item,
         orderId: item.orderId.toString(),
         price: priceFromOrderId(item?.orderId, 1000000),
-        qty: Number(item?.qty) / 1000000000,
+        qty:item.qty.toString(),
       };
     });
+
     return asks;
   }
+  async getWalletPcBalance(){
+    return getTokenBalance(this.authority.publicKey,new PublicKey(this.market.pcMint),this.connection);
+  }
+
+  async getWalletCoinBalance(){
+    return getTokenBalance(this.authority.publicKey,new PublicKey(this.market.coinMint),this.connection);
+  }
+
 }

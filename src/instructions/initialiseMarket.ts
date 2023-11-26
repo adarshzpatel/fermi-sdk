@@ -82,23 +82,12 @@ export async function initialiseMarket(
     .rpc();
 
   const marketConstants = {
-    programId: programId,
-    marketPda: marketPda,
-    // coinVault: coinVault,
-    // pcVault: pcVault,
-    coinMint: coinMint.publicKey,
-    pcMint: pcMint.publicKey,
-    // bidsPda: bidsPda,
-    // asksPda: asksPda,
-    // reqQPda: reqQPda,
-    // eventQPda: eventQPda,
-    authority: authority.publicKey,
+    programId: programId.toString(),
+    marketPda: marketPda.toString(),
+    coinMint: coinMint.publicKey.toString(),
+    pcMint: pcMint.publicKey.toString(),
+    authority: authority.publicKey.toString(),
   };
-
-  console.log(
-    "New market initilalized ✨",
-    JSON.stringify(marketConstants, null, 2)
-  );
 
   return marketConstants;
 }
@@ -175,23 +164,13 @@ export async function initialiseMarketCustom(
     .rpc();
 
   const marketConstants = {
-    programId: programId,
-    marketPda: marketPda,
-    // coinVault: coinVault,
-    // pcVault: pcVault,
-    coinMint: coinMint,
-    pcMint: pcMint,
-    // bidsPda: bidsPda,
-    // asksPda: asksPda,
-    // reqQPda: reqQPda,
-    // eventQPda: eventQPda,
-    authority: authority.publicKey,
+    programId: programId.toString(),
+    marketPda: marketPda.toString(),
+    authority:authority.publicKey.toString(),
+    coinMint: coinMint.toString(),
+    pcMint: pcMint.toString()
   };
 
-  console.log(
-    "New market initilalized ✨",
-    JSON.stringify(marketConstants, null, 2)
-  );
 
   // const fileContentString = `{
   //     "rpcUrl":"${connection.rpcEndpoint}",
