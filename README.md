@@ -1,21 +1,23 @@
-# Fermi SDK 
+# Fermi SDK
 
-## Setup Localnet 
+## Setup Localnet
 
 1. Run `solana-test-validator`
 2. Get the deployed programId of the FermiDex program.
-3. Paste the programId into the `config.json` in fermi-sdk 
+3. Paste the programId into the `config.json` in fermi-sdk
 4. Now create a new market by running `npx ts-node ./examples/newMarket.example.ts`
 5. Copy paste the generated market constants from the console output to the `config.json` marketConstants field.
 
-You now are ready to interact with the market through various functions available in sdk 
+You now are ready to interact with the market through various functions available in sdk
 
 `import * as FermiDex from "../src`
 
-## Setup for devnet 
+## Setup for devnet
+
 Go to `config.json`
+
 - Replace `rpcUrl` with `https://api.devnet.solana.com` or any custom endpoint for devnet
-- Replace  `programId` with address of deployed program on devnet [contact team for latest programID: tg: @dtree33]
+- Replace `programId` with address of deployed program on devnet [contact team for latest programID: tg: @dtree33]
 
 # Fermi Protocol SDK Tutorial
 
@@ -39,7 +41,8 @@ To begin, import the necessary modules and configurations:
 ```
 import { Connection, PublicKey } from "@solana/web3.js";
 import * as FermiDex from "../src";
-import { rpcUrl, marketConstants } from "../config.json";
+import { rpcUrl } from "../config.json";
+import {markets} from "./markets.ts"
 ```
 
 Initialize your connection:
@@ -64,15 +67,47 @@ To initialize a market:
 await FermiDex.initialiseMarket(owner, connection);
 ```
 
-## 3. Airdropping Tokens
+## 3. Create client
 
-Airdrop coin and PC tokens to both users:
+Create a client with a authority keypair , connection and specify which market to interact with
 
 ```
-await FermiDex.airdropCoinToken(user1, owner, connection);
-await FermiDex.airdropPcToken(user1, owner, connection);
-await FermiDex.airdropCoinToken(user2, owner, connection);
-await FermiDex.airdropPcToken(user2, owner, connection);
+/*
+Example market :
+{
+  marketPda: "6U2rPcw5vqdc6cpPq4APpNmmdhZe3Qfnv36Wgz4xi94H",
+  coinMint: "34ma6yJYJ1MANrzYB16iVTaAay8uisw5qUr42Np5Vze6",
+  pcMint: "HvhQgh71p4Tz7g7bBNbsMCYShpesPt16kG2YtaYFwFE4",
+}
+*/
+const client = new FermiDex.FermiClient({
+  market:markets[0],
+  connection,
+  authority:userKp
+})
+```
+
+## 3. Airdropping Tokens
+
+Airdrop coin and PC tokens
+
+```
+// airdrop coin tokens
+await FermiDex.airdropToken({
+    receiverPk: bobKp.publicKey,
+    amount: 1000 * (10 ** 9),
+    connection,
+    mint: new PublicKey(currentMarket.coinMint),
+    ownerKp: owner,
+});
+//airdrop pc tokens
+await FermiDex.airdropToken({
+    receiverPk: bobKp.publicKey,
+    amount: 1000 * (10 ** 9),
+    connection,
+    mint: new PublicKey(currentMarket.pcMint),
+    ownerKp: owner,
+});
 ```
 
 ## 4. Fetching Token Balances
@@ -80,23 +115,29 @@ await FermiDex.airdropPcToken(user2, owner, connection);
 To fetch and display the balances for both users:
 
 ```
-// fetch pc balance
-const pcmint = new PublicKey(marketConstants.pcMint)
-const pcTokenBalance = await FermiDex.getTokenBalance(user.publicKey,pcmint,connection);
-console.log("Pc balance :",pcTokenBalance)
-// fetch coin balance
-const coinmint = new PublicKey(marketConstants.coinMint)
-const coinTokenBalance = await FermiDex.getTokenBalance(user.publicKey,coinmint,connection);
-console.log("Coin balance :",coinTokenBalance);
+// Fetch custom token balance of wallet by specifying mint address of token
+const cutomTokenBalance = await FermiDex.getTokenBalance(userKp.publicKey,new PublicKey(selectedMarket.pcMint),connection);
+
+// Fetch Pc token balance of current market
+const pcTokenBalance = await client.getWalletPcBalance()
+
+// Fetch Coin token balance of current market
+const coinTokenBalance = await client.getWalletCoinBalance()
+
+// Fetch open orders account balance
+const openOrdersTokenBalances = await client.fetchOpenOrdersAccountBalances();
 ```
 
 ## 5. Placing Orders
 
-Place a sell order for `user2` and a buy order for `user1`:
+Place a buy order for `bob` and a sell order for `alice`:
 
 ```
-await FermiDex.placeNewBuyOrder(user1, 36, connection);
-await FermiDex.placeNewSellOrder(user2, 35, connection);
+const buyOrder = await bobClient.placeBuyOrder(30,1)
+console.log({buyOrder})
+
+const sellOrder = await aliceClient.placeSellOrder(30,1)
+console.log({sellOrder})
 ```
 
 ## 6. Finalizing Orders
@@ -104,40 +145,72 @@ await FermiDex.placeNewSellOrder(user2, 35, connection);
 Finalizing orders involves matching and executing trades. Here's how to do it:
 
 ```
-const authority = user2;
-const counterparty = user1;
+// Get a map of finalisable orders
+const matchedEventsAlice = await aliceClient.getFinalisableOrderMap();
 
-const openOrdersAuthority = await FermiDex.getOpenOrders(authority, connection);
-const openOrdersCounterparty = await FermiDex.getOpenOrders(counterparty, connection);
-const eventQ = await FermiDex.getParsedEventQ(user1, connection);
+console.log({ matchedEventsAlice });
+const matchedOrders = Object.keys(matchedEventsAlice); // Get
+const orderIdToFinalise = matchedOrders[0]; // Select which order to finalise
+const match = matchedEventsAlice[orderIdToFinalise];
 
-const matchedEvents = FermiDex.findMatchingEvents(openOrdersAuthority.orders, eventQ);
+const finaliseSellOrder = await aliceClient.finaliseSellOrder(
+  orderIdToFinalise, // string 
+  aliceKp, // Keypair
+  match.eventSlot1, // number 
+  match.eventSlot2 // number 
+);
+console.log({ finaliseSellOrder });
 
-for (const [orderId, match] of matchedEvents) {
-    const { orderIdMatched, orderIdSecondMatched } = match;
-    if (!orderIdMatched || !orderIdSecondMatched) continue;
-    
-    await FermiDex.finaliseMatchesAsk({
-      eventSlot1: orderIdSecondMatched.idx,
-      eventSlot2: orderIdMatched.idx,
-      authority: authority,
-      authoritySecond: counterparty,
-      openOrdersOwnerPda: openOrdersAuthority.pda,
-      openOrdersCounterpartyPda: openOrdersCounterparty.pda,
-      connection: connection
-    });
-
-    await FermiDex.finaliseMatchesBid({
-      eventSlot1: orderIdSecondMatched.idx,
-      eventSlot2: orderIdMatched.idx,
-      authority: authority,
-      authoritySecond: counterparty,
-      openOrdersOwnerPda: openOrdersAuthority.pda,
-      openOrdersCounterpartyPda: openOrdersCounterparty.pda,
-      connection: connection
-    });
-}
+const finaliseBuyOrder = await bobClient.finaliseBuyOrder(
+  orderIdToFinalise,
+  bobKp,
+  match.eventSlot1,
+  match.eventSlot2
+);
+console.log({ finaliseBuyOrder });
 ```
 
----
+## 7. Fetching market data like openOrders , asks , bids , eventQueue
 
+To fetch asks & bids
+
+```
+const bids = await client.getBids()
+const asks = await client.getAsks()
+```
+
+To fetch event queue
+
+```
+const eventQueue = await client.getEventQueue();
+```
+
+To fetch openOrders account 
+```
+const oo = await client.getOpenOrders()
+```
+
+# 8. Cancelling orders 
+To cancel order , you have to specify orderId which needs to be cancelled
+```
+// orderIdToCancel : string
+const cancelBuy = await client.cancelBuyOrder(orderIdToCancel);
+const cancelSell = await client.cancelSellOrder(orderIdToCancel);
+```
+
+# 9. Deposit Tokens 
+To deposit tokens in open orders account from wallet 
+```
+// amount: number
+const depositPc = await client.depositPcTokens(amount);
+const depositCoin = await client.depositCoinTokens(amount);
+```
+
+# 10. Withdraw Tokens
+To withdraw tokens from open orders account to wallet
+```
+// amount : number 
+const withdrawPc = await client.withdrawPcTokens(10);
+const withdrawCoins = await client.withdrawPcTokens(10);
+```
+---

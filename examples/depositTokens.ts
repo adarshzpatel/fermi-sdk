@@ -18,7 +18,7 @@ const main = async () => {
   const depositPc = await client.depositPcTokens(1000);
   console.log({ depositPc });
   // Deposit coin tokens
-  const depositCoin = await client.depositCoinTokens(1000 );
+  const depositCoin = await client.depositCoinTokens(1000);
   console.log({ depositCoin });
 
   await FermiDex.sleep(10000, "Waiting for deposit to be processed");

@@ -1,6 +1,4 @@
 {
   "rpcUrl": "https://api.devnet.solana.com ",
-  "programId": "4jde1a6MyoiwLVqB6UH5mBJp3gbpk1wcth8TZJfnf1V9",
-  // "programId2": "6yyiackuWxYr7qNQhU7s1CgggPSfPYFqPJUU8kVYG74g",
-  // "rpcUrl2": "http://127.0.0.1:8899"
+  "programId": "4jde1a6MyoiwLVqB6UH5mBJp3gbpk1wcth8TZJfnf1V9"
 }
