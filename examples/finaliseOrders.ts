@@ -43,13 +43,13 @@ const finalise = async () => {
 
   if (match) {
     const finaliseSellOrder = await aliceClient.finaliseSellOrder(
-      bobKp,
+      aliceKp.publicKey,
       match.eventSlot1,
       match.eventSlot2
     );
     console.log({ finaliseSellOrder });
     const finaliseBuyOrder = await bobClient.finaliseBuyOrder(
-      bobKp,
+      bobKp.publicKey,
       match.eventSlot1,
       match.eventSlot2
     );

@@ -159,14 +159,14 @@ export class FermiClient {
     });
   }
   async finaliseSellOrder(
-    counterparty: Keypair,
+    counterparty: PublicKey,
     eventSlot1: number,
     eventSlot2: number
   ) {
     return finaliseAskIx({
       program: this.program,
       authority: this.authority,
-      authoritySecond:counterparty,
+      counterparty:counterparty,
       coinMint: this.market.coinMint,
       pcMint: this.market.pcMint,
       eventSlot1,
@@ -175,14 +175,14 @@ export class FermiClient {
     });
   }
   async finaliseBuyOrder(
-    counterparty: Keypair,
+    counterparty: PublicKey,
     eventSlot1: number,
     eventSlot2: number
   ) {
     return finaliseBidIx({
       program: this.program,
       authority: this.authority,
-      authoritySecond:counterparty,
+      counterparty:counterparty,
       coinMint: this.market.coinMint,
       pcMint: this.market.pcMint,
       eventSlot1,

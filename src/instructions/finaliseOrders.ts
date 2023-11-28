@@ -1,4 +1,4 @@
-import { getFermiDexProgram } from "../utils/getFermiDexProgram";
+
 import { getAssociatedTokenAddress } from "@solana/spl-token";
 import * as anchor from "@project-serum/anchor";
 import * as spl from "@solana/spl-token";
@@ -9,7 +9,7 @@ export type FinaliseOrderParams = {
   eventSlot1: number;
   eventSlot2: number;
   authority: Keypair;
-  authoritySecond: Keypair;
+  counterparty: PublicKey;
   program: anchor.Program<FermiDex>;
   marketPda: anchor.web3.PublicKey;
   coinMint: anchor.web3.PublicKey;
@@ -22,8 +22,7 @@ export type FinaliseOrderParams = {
  * @param eventSlot1 - The event index of the event having orderIdSecond.
  * @param eventSlot2 - The event index of the event which doesn't have the orderIdSecond.
  * @param authority - The primary authority keypair.
- * @param authoritySecond - The secondary/counterparty authority keypair.
-
+ * @param counterparty - The secondary/counterparty authority publicKey.
  * @param connection - The Solana network connection object.
  * @param marketPda - Pda of market
  * @param coinMint - Mint of coin
@@ -34,8 +33,7 @@ export const finaliseAskIx = async ({
   eventSlot1,
   eventSlot2,
   authority,
-  authoritySecond,
-
+  counterparty,
   program,
   marketPda,
   coinMint,
@@ -78,7 +76,7 @@ export const finaliseAskIx = async ({
         [
           Buffer.from("open-orders", "utf-8"),
           marketPda.toBuffer(),
-          authoritySecond.publicKey.toBuffer(),
+          counterparty.toBuffer(),
         ],
         new anchor.web3.PublicKey(program.programId)
       );
@@ -95,7 +93,7 @@ export const finaliseAskIx = async ({
         eventQ: eventQPda,
         authority: authority.publicKey,
         coinpayer: authorityCoinTokenAccount,
-        authoritySecond: authoritySecond.publicKey,
+        authoritySecond: counterparty,
         coinVault: coinVault,
       })
       .signers([authority])
@@ -116,7 +114,7 @@ export const finaliseAskIx = async ({
  * @param eventSlot1 - The event index of the event having orderIdSecond.
  * @param eventSlot2 - The event index of the event which doesn't have the orderIdSecond.
  * @param authority - The primary authority keypair.
- * @param authoritySecond - The secondary/counterparty authority keypair.
+ * @param counterparty - The secondary/counterparty authority public key.
  * @param connection - The Solana network connection object.
  * @param marketPda - Pda of market
  * @returns A string representing the transaction or undefined in case of an error.
@@ -125,7 +123,7 @@ export const finaliseBidIx = async ({
   eventSlot1,
   eventSlot2,
   authority,
-  authoritySecond,
+  counterparty,
   program,
   marketPda,
   coinMint,
@@ -143,7 +141,7 @@ export const finaliseBidIx = async ({
 
     const authorityPcTokenAccount = await getAssociatedTokenAddress(
       new anchor.web3.PublicKey(pcMint),
-      authoritySecond.publicKey,
+      counterparty,
       true
     );
 
@@ -167,7 +165,7 @@ export const finaliseBidIx = async ({
         [
           Buffer.from("open-orders", "utf-8"),
           marketPda.toBuffer(),
-          authoritySecond.publicKey.toBuffer(),
+          counterparty.toBuffer(),
         ],
         new anchor.web3.PublicKey(program.programId)
       );
@@ -184,6 +182,7 @@ export const finaliseBidIx = async ({
         authority: authority.publicKey,
         coinMint: coinMint,
         pcMint: pcMint,
+        authoritySecond: counterparty,
         pcpayer: authorityPcTokenAccount,
       })
       .signers([authority])

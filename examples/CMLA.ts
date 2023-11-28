@@ -184,13 +184,13 @@ const main = async () => {
 
   if (match) {
     const finaliseSellOrder = await bobClient.finaliseSellOrder(
-      bobKp,
+      bobClient.authority.publicKey,
       match.eventSlot1,
       match.eventSlot2
     );
     console.log({ finaliseSellOrder });
     const finaliseBuyOrder = await aliceClient.finaliseBuyOrder(
-      aliceKp,
+      aliceClient.authority.publicKey,
       match.eventSlot1,
       match.eventSlot2
     );
