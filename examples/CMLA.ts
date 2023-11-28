@@ -56,11 +56,14 @@ const main = async () => {
   });
 
   const bobClient = new FermiDex.FermiClient({
-    authority: aliceKp,
+    authority: bobKp,
     connection,
     market: bonk_usdc_market,
   });
-  await FermiDex.sleep(30000,'Waiting for market to be initialised...Sleeping for 30 sec');
+  await FermiDex.sleep(
+    30000,
+    "Waiting for market to be initialised...Sleeping for 30 sec"
+  );
   // 2. Airdrop Tokens -- WORKING
   console.log("AIRDROPPING TOKENS !!");
   console.log("------------------------");
@@ -100,7 +103,6 @@ const main = async () => {
     ownerKp: owner,
   });
 
-
   await FermiDex.airdropToken({
     receiverPk: aliceKp.publicKey,
     amount: 1000 * 10 ** 6,
@@ -117,10 +119,22 @@ const main = async () => {
     ownerKp: owner,
   });
 
-
-
-  await FermiDex.sleep(30000,'Waiting for airdrop to be processed...Sleeping for 30 sec');
+  await FermiDex.sleep(
+    30000,
+    "Waiting for airdrop to be processed...Sleeping for 30 sec"
+  );
   console.log("Sleep ended !");
+  // CHECK balances
+  const bobPcBalance = await bobClient.getWalletPcBalance();
+  const bobCoinBalance = await bobClient.getWalletCoinBalance();
+  const alicePcBalance = await aliceClient.getWalletPcBalance();
+  const aliceCoinBalance = await aliceClient.getWalletCoinBalance();
+  console.log({
+    bobPcBalance,
+    bobCoinBalance,
+    alicePcBalance,
+    aliceCoinBalance,
+  });
 
   // 4. PLACING ORDERS
 
@@ -132,14 +146,17 @@ const main = async () => {
   //Place Bid on USDC/Bonk market    coinMint: BonkMint.publicKey,
   // change market for aliceClient
   aliceClient.setCurrentMarket(bonk_usdc_market);
-  await aliceClient.placeBuyOrder(0.01, 10000);
-  console.log("Alice placed bid for 10000 bonk at 0.01 usdc price");
+  await aliceClient.placeBuyOrder(1, 100);
+  console.log("Alice placed bid for 100 bonk at 0.01 usdc price");
 
   // Bob places new sell order on Bonk/USDC market, selling 500 USDC worth of Sol at the market price.
-  await bobClient.placeSellOrder(0.01, 500000);
-  console.log("Bob placed ask for 500000 bonk at 0.01 usdc price");
+  await bobClient.placeSellOrder(1, 500);
+  console.log("Bob placed ask for 500 bonk at 0.01 usdc price");
 
-  await FermiDex.sleep(30000,"waiting for orders to be processed , sleeping for 30 sec");
+  await FermiDex.sleep(
+    30000,
+    "waiting for orders to be processed , sleeping for 30 sec"
+  );
   console.log("Sleep ended !");
 
   // 5. Finalise Orders
@@ -147,26 +164,18 @@ const main = async () => {
 
   const bobOpenOrdersAcc = await bobClient.getOpenOrders();
   const aliceOpenOrdersAcc = await aliceClient.getOpenOrders();
-  
-  console.log({bobOpenOrdersAcc});
-  console.log({aliceOpenOrdersAcc});
 
-  const eventQmarket1 = await FermiDex.getParsedEventQ({
-    marketPda: new PublicKey(wSol_usdc_market.marketPda),
+  console.log({ bobOpenOrdersAcc });
+  console.log({ aliceOpenOrdersAcc });
+
+  const bonkMarketEventQ = await FermiDex.getParsedEventQ({
+    marketPda: new PublicKey(bonk_usdc_market.marketPda),
     program: FermiDex.getFermiDexProgram(owner, connection),
   });
 
-  const eventQmarket2 = await FermiDex.getParsedEventQ({
-    marketPda: new PublicKey(wSol_usdc_market.marketPda),
-    program: FermiDex.getFermiDexProgram(owner, connection),
-  });
-
-  console.log({ eventQmarket1, eventQmarket2 });
+  console.log({ bonkMarketEventQ });
 
   const matchedEvents = await bobClient.getFinalisableOrderMap();
-
-  console.log({matchedEvents});
-
 
   console.log({ matchedEvents });
   const matchedOrders = Object.keys(matchedEvents);
@@ -174,16 +183,14 @@ const main = async () => {
   const match = matchedEvents[orderIdToFinalise];
 
   if (match) {
-    const finaliseSellOrder = await aliceClient.finaliseSellOrder(
-      orderIdToFinalise,
-      aliceKp,
+    const finaliseSellOrder = await bobClient.finaliseSellOrder(
+      bobKp,
       match.eventSlot1,
       match.eventSlot2
     );
     console.log({ finaliseSellOrder });
-    const finaliseBuyOrder = await bobClient.finaliseBuyOrder(
-      orderIdToFinalise,
-      bobKp,
+    const finaliseBuyOrder = await aliceClient.finaliseBuyOrder(
+      aliceKp,
       match.eventSlot1,
       match.eventSlot2
     );
@@ -191,11 +198,6 @@ const main = async () => {
   } else {
     console.log("No matches found");
   }
-
-  //   console.log(
-  //     ` ✅SUCCESSFULLY FINALIZED  ${orderId} and events ${orderIdMatched.idx} <-> ${orderIdSecondMatched?.idx}`
-  //   );
-  // }
 };
 
 (async function () {

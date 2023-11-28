@@ -24,7 +24,6 @@ const finalise = async () => {
   console.log("alice :", aliceKp.publicKey.toString());
   console.log("bob:", bobKp.publicKey.toString());
 
-
   // Open orders
   const { orders: bobOpenOrders } = await bobClient.getOpenOrders();
   const { orders: aliceOpenOrders } = await aliceClient.getOpenOrders();
@@ -44,14 +43,12 @@ const finalise = async () => {
 
   if (match) {
     const finaliseSellOrder = await aliceClient.finaliseSellOrder(
-      orderIdToFinalise,
-      aliceKp,
+      bobKp,
       match.eventSlot1,
       match.eventSlot2
     );
     console.log({ finaliseSellOrder });
     const finaliseBuyOrder = await bobClient.finaliseBuyOrder(
-      orderIdToFinalise,
       bobKp,
       match.eventSlot1,
       match.eventSlot2

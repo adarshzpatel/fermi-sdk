@@ -159,7 +159,6 @@ export class FermiClient {
     });
   }
   async finaliseSellOrder(
-    orderId: string,
     counterparty: Keypair,
     eventSlot1: number,
     eventSlot2: number
@@ -176,7 +175,6 @@ export class FermiClient {
     });
   }
   async finaliseBuyOrder(
-    orderId: string,
     counterparty: Keypair,
     eventSlot1: number,
     eventSlot2: number

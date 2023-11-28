@@ -154,7 +154,6 @@ const orderIdToFinalise = matchedOrders[0]; // Select which order to finalise
 const match = matchedEventsAlice[orderIdToFinalise];
 
 const finaliseSellOrder = await aliceClient.finaliseSellOrder(
-  orderIdToFinalise, // string 
   aliceKp, // Keypair
   match.eventSlot1, // number 
   match.eventSlot2 // number 
@@ -162,7 +161,6 @@ const finaliseSellOrder = await aliceClient.finaliseSellOrder(
 console.log({ finaliseSellOrder });
 
 const finaliseBuyOrder = await bobClient.finaliseBuyOrder(
-  orderIdToFinalise,
   bobKp,
   match.eventSlot1,
   match.eventSlot2
