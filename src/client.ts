@@ -46,7 +46,7 @@ export class FermiClient {
   private program: Program<FermiDex>;
   private market: Market;
   public authority: Keypair;
-  public connection:Connection
+  public connection: Connection;
 
   constructor({ market, connection, authority }: FermiClientParams) {
     this.authority = authority;
@@ -69,7 +69,7 @@ export class FermiClient {
     this.market = _market;
   }
 
-  setConnection(conn:Connection){
+  setConnection(conn: Connection) {
     this.connection = conn;
   }
   getCurrentMarket() {
@@ -158,35 +158,33 @@ export class FermiClient {
       pcMint: this.market.pcMint,
     });
   }
-  async finaliseSellOrder(
-    counterparty: PublicKey,
-    eventSlot1: number,
-    eventSlot2: number
-  ) {
+  async finaliseSellOrder(orderId: string) {
+    const matchedOrders = await this.getFinalisableOrderMap();
+    const match = matchedOrders[orderId];
+
+    if (!match) throw new Error("No matching orders found");
     return finaliseAskIx({
       program: this.program,
       authority: this.authority,
-      counterparty:counterparty,
       coinMint: this.market.coinMint,
       pcMint: this.market.pcMint,
-      eventSlot1,
-      eventSlot2,
+      eventSlot1: match.eventSlot1,
+      eventSlot2: match.eventSlot2,
       marketPda: this.market.marketPda,
     });
   }
-  async finaliseBuyOrder(
-    counterparty: PublicKey,
-    eventSlot1: number,
-    eventSlot2: number
-  ) {
+  async finaliseBuyOrder(orderId: string) {
+    const matchedOrders = await this.getFinalisableOrderMap();
+    const match = matchedOrders[orderId];
+ 
+    if (!match) throw new Error("No matching orders found");
     return finaliseBidIx({
       program: this.program,
       authority: this.authority,
-      counterparty:counterparty,
       coinMint: this.market.coinMint,
       pcMint: this.market.pcMint,
-      eventSlot1,
-      eventSlot2,
+      eventSlot1: match.eventSlot1,
+      eventSlot2: match.eventSlot2,
       marketPda: this.market.marketPda,
     });
   }
@@ -245,7 +243,6 @@ export class FermiClient {
     return bids;
   }
   async getAsks() {
-
     const [asksPda] = await anchor.web3.PublicKey.findProgramAddress(
       [
         Buffer.from("asks", "utf-8"),
@@ -253,7 +250,6 @@ export class FermiClient {
       ],
       this.program.programId
     );
-
 
     const res = await this.program.account.orders.fetch(
       new anchor.web3.PublicKey(asksPda)
@@ -264,18 +260,25 @@ export class FermiClient {
         ...item,
         orderId: item.orderId.toString(),
         price: priceFromOrderId(item?.orderId, 1000000),
-        qty:item.qty.toString(),
+        qty: item.qty.toString(),
       };
     });
 
     return asks;
   }
-  async getWalletPcBalance(){
-    return getTokenBalance(this.authority.publicKey,new PublicKey(this.market.pcMint),this.connection);
+  async getWalletPcBalance() {
+    return getTokenBalance(
+      this.authority.publicKey,
+      new PublicKey(this.market.pcMint),
+      this.connection
+    );
   }
 
-  async getWalletCoinBalance(){
-    return getTokenBalance(this.authority.publicKey,new PublicKey(this.market.coinMint),this.connection);
+  async getWalletCoinBalance() {
+    return getTokenBalance(
+      this.authority.publicKey,
+      new PublicKey(this.market.coinMint),
+      this.connection
+    );
   }
-
 }

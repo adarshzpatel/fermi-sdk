@@ -9,7 +9,6 @@ export type FinaliseOrderParams = {
   eventSlot1: number;
   eventSlot2: number;
   authority: Keypair;
-  counterparty: PublicKey;
   program: anchor.Program<FermiDex>;
   marketPda: anchor.web3.PublicKey;
   coinMint: anchor.web3.PublicKey;
@@ -22,7 +21,6 @@ export type FinaliseOrderParams = {
  * @param eventSlot1 - The event index of the event having orderIdSecond.
  * @param eventSlot2 - The event index of the event which doesn't have the orderIdSecond.
  * @param authority - The primary authority keypair.
- * @param counterparty - The secondary/counterparty authority publicKey.
  * @param connection - The Solana network connection object.
  * @param marketPda - Pda of market
  * @param coinMint - Mint of coin
@@ -33,7 +31,6 @@ export const finaliseAskIx = async ({
   eventSlot1,
   eventSlot2,
   authority,
-  counterparty,
   program,
   marketPda,
   coinMint,
@@ -71,21 +68,21 @@ export const finaliseAskIx = async ({
       new anchor.web3.PublicKey(program.programId)
     );
 
-    const [openOrdersCounterpartyPda] =
-      await anchor.web3.PublicKey.findProgramAddress(
-        [
-          Buffer.from("open-orders", "utf-8"),
-          marketPda.toBuffer(),
-          counterparty.toBuffer(),
-        ],
-        new anchor.web3.PublicKey(program.programId)
-      );
+    // const [openOrdersCounterpartyPda] =
+    //   await anchor.web3.PublicKey.findProgramAddress(
+    //     [
+    //       Buffer.from("open-orders", "utf-8"),
+    //       marketPda.toBuffer(),
+    //       counterparty.toBuffer(),
+    //     ],
+    //     new anchor.web3.PublicKey(program.programId)
+    //   );
 
     const finalizeAskTx: string = await program.methods
       .finaliseMatchesAsk(eventSlot1, eventSlot2)
       .accounts({
         openOrdersOwner: openOrdersOwnerPda,
-        openOrdersCounterparty: openOrdersCounterpartyPda,
+        openOrdersCounterparty: openOrdersOwnerPda,
         market: marketPda,
         coinMint: coinMint,
         pcMint: pcMint,
@@ -93,7 +90,7 @@ export const finaliseAskIx = async ({
         eventQ: eventQPda,
         authority: authority.publicKey,
         coinpayer: authorityCoinTokenAccount,
-        authoritySecond: counterparty,
+        authoritySecond: authority.publicKey,
         coinVault: coinVault,
       })
       .signers([authority])
@@ -123,7 +120,6 @@ export const finaliseBidIx = async ({
   eventSlot1,
   eventSlot2,
   authority,
-  counterparty,
   program,
   marketPda,
   coinMint,
@@ -141,7 +137,7 @@ export const finaliseBidIx = async ({
 
     const authorityPcTokenAccount = await getAssociatedTokenAddress(
       new anchor.web3.PublicKey(pcMint),
-      counterparty,
+      authority.publicKey,
       true
     );
 
@@ -160,21 +156,21 @@ export const finaliseBidIx = async ({
       new anchor.web3.PublicKey(program.programId)
     );
 
-    const [openOrdersCounterpartyPda] =
-      await anchor.web3.PublicKey.findProgramAddress(
-        [
-          Buffer.from("open-orders", "utf-8"),
-          marketPda.toBuffer(),
-          counterparty.toBuffer(),
-        ],
-        new anchor.web3.PublicKey(program.programId)
-      );
+    // const [openOrdersCounterpartyPda] =
+    //   await anchor.web3.PublicKey.findProgramAddress(
+    //     [
+    //       Buffer.from("open-orders", "utf-8"),
+    //       marketPda.toBuffer(),
+    //       counterparty.toBuffer(),
+    //     ],
+    //     new anchor.web3.PublicKey(program.programId)
+    //   );
 
     const finalizeBidTx = await program.methods
       .finaliseMatchesBid(eventSlot1, eventSlot2)
       .accounts({
         openOrdersOwner: openOrdersOwnerPda,
-        openOrdersCounterparty: openOrdersCounterpartyPda,
+        openOrdersCounterparty: openOrdersOwnerPda,
         market: marketPda,
         pcVault: pcVault,
         reqQ: reqQPda,
@@ -182,7 +178,7 @@ export const finaliseBidIx = async ({
         authority: authority.publicKey,
         coinMint: coinMint,
         pcMint: pcMint,
-        authoritySecond: counterparty,
+        authoritySecond: authority.publicKey,
         pcpayer: authorityPcTokenAccount,
       })
       .signers([authority])

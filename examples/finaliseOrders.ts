@@ -33,30 +33,23 @@ const finalise = async () => {
   const eventQ = await aliceClient.getEventQueue();
   console.log({ eventQ });
 
-  // Matched Orders for alice
+  // Matched Orders 
   const matchedEventsAlice = await aliceClient.getFinalisableOrderMap();
-
+  const matchedEventsBob = await bobClient.getFinalisableOrderMap();
   console.log({ matchedEventsAlice });
-  const matchedOrders = Object.keys(matchedEventsAlice);
-  const orderIdToFinalise = matchedOrders[0];
-  const match = matchedEventsAlice[orderIdToFinalise];
+  const matchedOrdersAlice = Object.keys(matchedEventsAlice);
+  const matchedOrdersBob = Object.keys(matchedEventsBob);
+  const orderIdToFinaliseAlice = matchedOrdersAlice[0];
+  const orderIdToFinaliseBob = matchedOrdersBob[0];
 
-  if (match) {
     const finaliseSellOrder = await aliceClient.finaliseSellOrder(
-      aliceKp.publicKey,
-      match.eventSlot1,
-      match.eventSlot2
+      orderIdToFinaliseAlice
     );
     console.log({ finaliseSellOrder });
     const finaliseBuyOrder = await bobClient.finaliseBuyOrder(
-      bobKp.publicKey,
-      match.eventSlot1,
-      match.eventSlot2
+      orderIdToFinaliseBob
     );
     console.log({ finaliseBuyOrder });
-  } else {
-    console.log("No matches found");
-  }
 };
 
 (async function () {
