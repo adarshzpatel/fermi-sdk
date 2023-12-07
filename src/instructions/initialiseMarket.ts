@@ -15,14 +15,8 @@ import { programId } from "../../config.json";
  */
 export async function initialiseMarket(
   authority: Keypair,
-  connection: Connection
+  provider: anchor.AnchorProvider
 ) {
-  const wallet = new anchor.Wallet(authority);
-  const provider = new anchor.AnchorProvider(
-    connection,
-    wallet,
-    anchor.AnchorProvider.defaultOptions()
-  );
 
   const program = new anchor.Program(IDL, programId, provider);
 
@@ -88,61 +82,22 @@ export async function initialiseMarket(
     .rpc();
 
   const marketConstants = {
-    programId: programId,
-    marketPda: marketPda,
-    coinVault: coinVault,
-    pcVault: pcVault,
-    coinMint: coinMint.publicKey,
-    pcMint: pcMint.publicKey,
-    bidsPda: bidsPda,
-    asksPda: asksPda,
-    reqQPda: reqQPda,
-    eventQPda: eventQPda,
-    authority: authority.publicKey,
+    programId: programId.toString(),
+    marketPda: marketPda.toString(),
+    coinMint: coinMint.publicKey.toString(),
+    pcMint: pcMint.publicKey.toString(),
+    authority: authority.publicKey.toString(),
   };
 
-  console.log(
-    "New market initilalized ✨",
-    JSON.stringify(marketConstants, null, 2)
-  );
-
-  // const fileContentString = `{
-  //     "rpcUrl":"${connection.rpcEndpoint}",
-  //     "programId:"${programId}",
-  //     "marketConstants:{
-  //       ${Object.entries(marketConstants).map(([key, value]) => `${key} = "${value}";`)
-  //       .join("\n")}
-  //     }
-  //   }
-  // `;
-
-  // const CONSTANTS_FILE_PATH = `./constants.json`;
-
-  // // write to file
-  // fs.writeFile(CONSTANTS_FILE_PATH, fileContentString, (err) => {
-  //   if (err) {
-  //     console.error("Error writing to the file:", err);
-  //   } else {
-  //     console.log(
-  //       `Constants file '${CONSTANTS_FILE_PATH}' generated successfully.`
-  //     );
-  //   }
-  // });
   return marketConstants;
 }
 
 export async function initialiseMarketCustom(
   authority: Keypair,
-  connection: Connection,
+  provider:anchor.Provider,
   coinMint: PublicKey,
   pcMint: PublicKey,
 ) {
-  const wallet = new anchor.Wallet(authority);
-  const provider = new anchor.AnchorProvider(
-    connection,
-    wallet,
-    anchor.AnchorProvider.defaultOptions()
-  );
 
   const program = new anchor.Program(IDL, programId, provider);
 
@@ -209,23 +164,13 @@ export async function initialiseMarketCustom(
     .rpc();
 
   const marketConstants = {
-    programId: programId,
-    marketPda: marketPda,
-    coinVault: coinVault,
-    pcVault: pcVault,
-    coinMint: coinMint,
-    pcMint: pcMint,
-    bidsPda: bidsPda,
-    asksPda: asksPda,
-    reqQPda: reqQPda,
-    eventQPda: eventQPda,
-    authority: authority.publicKey,
+    programId: programId.toString(),
+    marketPda: marketPda.toString(),
+    authority:authority.publicKey.toString(),
+    coinMint: coinMint.toString(),
+    pcMint: pcMint.toString()
   };
 
-  console.log(
-    "New market initilalized ✨",
-    JSON.stringify(marketConstants, null, 2)
-  );
 
   // const fileContentString = `{
   //     "rpcUrl":"${connection.rpcEndpoint}",

@@ -1,18 +1,8 @@
 {
-  "rpcUrl": "http://127.0.0.1:8899",
-  "programId": "4jnBbnBjuJB4Qpv7YzBdqb56wEDgC4cVB6uzUzEGMsiH",
-  "marketConstants": {    
-
-      "programId": "4jnBbnBjuJB4Qpv7YzBdqb56wEDgC4cVB6uzUzEGMsiH",
-      "marketPda": "BykdMxni9QBVgYyLVu4NLq2ZrV5weu5P3zb3oGzWaogW",
-      "coinVault": "CvMgGVucrJg7hwEsQLHYSWrzLxWyXJ9v2cwWkfPtwEBR",
-      "pcVault": "BEpxCp447aPPSpmqyazy96keN63pkLKdyxYrqbPdFxWv",
-      "coinMint": "HDxtNLq9o561o46sEZeWqA6e3LCq5fMChYinEiX3i4CU",
-      "pcMint": "EE6FJnqHYAjn9sHWXx9GDdwcGfGcdiR9cFKSnLwetB7X",
-      "bidsPda": "BWxFNBfjRQnGuH8o2W7v9XjTaGoDfn7gyf8mJ4HCiDDm",
-      "asksPda": "Ew8HqjY5dTXzp4JqDkJfkgnq67yu391BsTyf4DkUn62K",
-      "reqQPda": "45tX2E2QznMQhKGzEJWURkdRtDVFrS5VUgeYYJyeMFk9",
-      "eventQPda": "4bevzxp2Pcg5FF4v6nE36W8asW7rcidarppe7XUGBqPx",
-      "authority": "DCEp8dRr3TeLTcFADbEfHs2iHx6usXE6JhJwzu46M12W"
-    }
+  "rpcUrl": "https://devnet.helius-rpc.com/?api-key=5163c3d1-8082-442e-8a15-c27bff3cfabb",
+  "programId": "2BM843fAN55fqsMGidaqNr1P4127YLcxvTM5W4B2gNpn",
+  "marketPda": "9Vax7sm4aKQu8yCAojxfSXn2WA6eVRPMZz6RmwWbszHb",
+  "coinMint": "4oMq5GVmWg1KLSGmVNyW16KUMfQjjJ7UbRaJXzoNfR6c",
+  "pcMint": "HRbRkFQqZ9v7FJcEJDDSv6Tkp56qqySwUj2RYChZDUqD",
+  "authority": "DCEp8dRr3TeLTcFADbEfHs2iHx6usXE6JhJwzu46M12W"
 }
