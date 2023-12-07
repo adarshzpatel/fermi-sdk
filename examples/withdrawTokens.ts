@@ -5,7 +5,7 @@ import { markets } from "./markets";
 
 const main = async () => {
   const connection = new Connection(rpcUrl);
-  const userKp = FermiDex.getLocalKeypair("./test-keypairs/user1/key.json");
+  const userKp = FermiDex.getLocalKeypair("./test-keypairs/user2/key.json");
   const client = new FermiDex.FermiClient({
     market: markets[0],
     connection,

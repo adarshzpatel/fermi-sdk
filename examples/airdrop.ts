@@ -12,6 +12,7 @@ const airdropTokens = async () => {
   const owner = FermiDex.getLocalKeypair(solanaConfigPath); // authority keypair of market owner
   const connection = new Connection(rpcUrl);
   const currentMarket = markets[0];
+  console.log(owner);
   // Airdrop to user 1
 
   const bobKp = FermiDex.getLocalKeypair("./test-keypairs/user1/key.json");

@@ -16,6 +16,9 @@ const fetchOpenOrders = async () => {
   const oo = await client.getOpenOrders()
   console.log({oo})
 
+  const oobal = await client.fetchOpenOrdersAccountBalances()
+  console.log({oobal})
+
 }
 
 (async function () {

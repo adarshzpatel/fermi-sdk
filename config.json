@@ -1,4 +1,8 @@
 {
   "rpcUrl": "https://devnet.helius-rpc.com/?api-key=5163c3d1-8082-442e-8a15-c27bff3cfabb",
-  "programId": "4jde1a6MyoiwLVqB6UH5mBJp3gbpk1wcth8TZJfnf1V9"
+  "programId": "2BM843fAN55fqsMGidaqNr1P4127YLcxvTM5W4B2gNpn",
+  "marketPda": "9Vax7sm4aKQu8yCAojxfSXn2WA6eVRPMZz6RmwWbszHb",
+  "coinMint": "4oMq5GVmWg1KLSGmVNyW16KUMfQjjJ7UbRaJXzoNfR6c",
+  "pcMint": "HRbRkFQqZ9v7FJcEJDDSv6Tkp56qqySwUj2RYChZDUqD",
+  "authority": "DCEp8dRr3TeLTcFADbEfHs2iHx6usXE6JhJwzu46M12W"
 }
