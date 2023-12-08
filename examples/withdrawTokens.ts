@@ -5,7 +5,7 @@ import { markets } from "./markets";
 
 const main = async () => {
   const connection = new Connection(rpcUrl);
-  const userKp = FermiDex.getLocalKeypair("./test-keypairs/user2/key.json");
+  const userKp = FermiDex.getLocalKeypair("./test-keypairs/user1/key.json");
   const client = new FermiDex.FermiClient({
     market: markets[0],
     connection,
@@ -15,10 +15,10 @@ const main = async () => {
   const balanceBeforeDeosit = await client.fetchOpenOrdersAccountBalances();
   console.log({ balanceBeforeDeosit });
   // Withdraw pc tokens
-  const withdrawPc = await client.withdrawPcTokens(10);
+  const withdrawPc = await client.withdrawPcTokens(1);
   console.log({ withdrawPc });
   // Withdraw coin tokens
-  const withdrawCoin = await client.withdrawCoinTokens(20);
+  const withdrawCoin = await client.withdrawCoinTokens(1);
   console.log({ withdrawCoin });
 
   await FermiDex.sleep(10000, "Waiting for deposit to be processed"); // Remove this in local testing

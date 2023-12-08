@@ -9,6 +9,7 @@ const main = async () => {
   const aliceKp = FermiDex.getLocalKeypair("./test-keypairs/user2/key.json");
   const selectedMarket = markets[0]
   
+  // Create a Market Client for Alice and Bob
   const bobClient = new FermiDex.FermiClient({
     market: selectedMarket,
     connection,
@@ -22,11 +23,13 @@ const main = async () => {
   })
   
    //Bob places buy order
-  const buyOrder = await bobClient.placeBuyOrder(30,1)
+   // Specify Price and Quantity
+  const buyOrder = await bobClient.placeBuyOrder(31,1)
   console.log({buyOrder})
 
 
-  const sellOrder = await aliceClient.placeSellOrder(30,1)
+   // Specify Price and Quantity
+  const sellOrder = await aliceClient.placeSellOrder(31,1)
   console.log({sellOrder})
 
   

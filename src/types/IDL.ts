@@ -527,12 +527,12 @@ export type FermiDex = {
       "accounts": [
         {
           "name": "openOrdersOwner",
-          "isMut": false,
+          "isMut": true,
           "isSigner": false
         },
         {
           "name": "openOrdersCounterparty",
-          "isMut": false,
+          "isMut": true,
           "isSigner": false
         },
         {
@@ -572,8 +572,8 @@ export type FermiDex = {
         },
         {
           "name": "authoritySecond",
-          "isMut": true,
-          "isSigner": true
+          "isMut": false,
+          "isSigner": false
         },
         {
           "name": "pcpayer",
@@ -625,12 +625,12 @@ export type FermiDex = {
       "accounts": [
         {
           "name": "openOrdersOwner",
-          "isMut": false,
+          "isMut": true,
           "isSigner": false
         },
         {
           "name": "openOrdersCounterparty",
-          "isMut": false,
+          "isMut": true,
           "isSigner": false
         },
         {
@@ -670,8 +670,8 @@ export type FermiDex = {
         },
         {
           "name": "authoritySecond",
-          "isMut": true,
-          "isSigner": true
+          "isMut": false,
+          "isSigner": false
         },
         {
           "name": "coinpayer",
@@ -1937,12 +1937,12 @@ export const IDL: FermiDex = {
       "accounts": [
         {
           "name": "openOrdersOwner",
-          "isMut": false,
+          "isMut": true,
           "isSigner": false
         },
         {
           "name": "openOrdersCounterparty",
-          "isMut": false,
+          "isMut": true,
           "isSigner": false
         },
         {
@@ -1982,8 +1982,8 @@ export const IDL: FermiDex = {
         },
         {
           "name": "authoritySecond",
-          "isMut": true,
-          "isSigner": true
+          "isMut": false,
+          "isSigner": false
         },
         {
           "name": "pcpayer",
@@ -2035,12 +2035,12 @@ export const IDL: FermiDex = {
       "accounts": [
         {
           "name": "openOrdersOwner",
-          "isMut": false,
+          "isMut": true,
           "isSigner": false
         },
         {
           "name": "openOrdersCounterparty",
-          "isMut": false,
+          "isMut": true,
           "isSigner": false
         },
         {
@@ -2080,8 +2080,8 @@ export const IDL: FermiDex = {
         },
         {
           "name": "authoritySecond",
-          "isMut": true,
-          "isSigner": true
+          "isMut": false,
+          "isSigner": false
         },
         {
           "name": "coinpayer",
