@@ -179,17 +179,24 @@ const main = async () => {
 
   console.log({ matchedEvents });
   // bob finalisess his sell order
+  // seller = counterparty
+
   let orderIdToFinalise = bobOpenOrdersAcc.orders[0];
   const finaliseSellOrder = await bobClient.finaliseSellOrder(
-    orderIdToFinalise
+    orderIdToFinalise,
+    bobClient.authority.publicKey
   );
   console.log({ finaliseSellOrder });
   // alice finalises her buy order
+
   orderIdToFinalise = aliceOpenOrdersAcc.orders[0];
+
   const finaliseBuyOrder = await aliceClient.finaliseBuyOrder(
-    orderIdToFinalise
+    orderIdToFinalise,  
+    bobClient.authority.publicKey
   );
   console.log({ finaliseBuyOrder });
+
 };
 
 (async function () {

@@ -10,23 +10,17 @@ export type FinaliseOrderParams = {
   eventSlot2: number;
   authority: Keypair;
   program: anchor.Program<FermiDex>;
+  counterparty: PublicKey;
   marketPda: anchor.web3.PublicKey;
   coinMint: anchor.web3.PublicKey;
   pcMint: anchor.web3.PublicKey;
+  
 };
 
-/**
- * Finalize ask side of the order.
- *
- * @param eventSlot1 - The event index of the event having orderIdSecond.
- * @param eventSlot2 - The event index of the event which doesn't have the orderIdSecond.
- * @param authority - The primary authority keypair.
- * @param connection - The Solana network connection object.
- * @param marketPda - Pda of market
- * @param coinMint - Mint of coin
- * @param pcMint - mint of payer coin
- * @returns A string representing the transaction or undefined in case of an error.
- */
+
+// Counterparty = Seller 
+// Authority = Buyer
+
 export const finaliseAskIx = async ({
   eventSlot1,
   eventSlot2,
@@ -35,6 +29,7 @@ export const finaliseAskIx = async ({
   marketPda,
   coinMint,
   pcMint,
+  counterparty
 }: FinaliseOrderParams) => {
   try {
     const [reqQPda] = await anchor.web3.PublicKey.findProgramAddress(
@@ -68,21 +63,21 @@ export const finaliseAskIx = async ({
       new anchor.web3.PublicKey(program.programId)
     );
 
-    // const [openOrdersCounterpartyPda] =
-    //   await anchor.web3.PublicKey.findProgramAddress(
-    //     [
-    //       Buffer.from("open-orders", "utf-8"),
-    //       marketPda.toBuffer(),
-    //       counterparty.toBuffer(),
-    //     ],
-    //     new anchor.web3.PublicKey(program.programId)
-    //   );
+    const [openOrdersCounterpartyPda] =
+      await anchor.web3.PublicKey.findProgramAddress(
+        [
+          Buffer.from("open-orders", "utf-8"),
+          marketPda.toBuffer(),
+          counterparty.toBuffer(),
+        ],
+        new anchor.web3.PublicKey(program.programId)
+      );
 
     const finalizeAskTx: string = await program.methods
       .finaliseMatchesAsk(eventSlot1, eventSlot2)
       .accounts({
         openOrdersOwner: openOrdersOwnerPda,
-        openOrdersCounterparty: openOrdersOwnerPda,
+        openOrdersCounterparty: openOrdersCounterpartyPda,
         market: marketPda,
         coinMint: coinMint,
         pcMint: pcMint,
@@ -105,22 +100,13 @@ export const finaliseAskIx = async ({
   }
 };
 
-/**
- * Finalize bid side of the order.
- *
- * @param eventSlot1 - The event index of the event having orderIdSecond.
- * @param eventSlot2 - The event index of the event which doesn't have the orderIdSecond.
- * @param authority - The primary authority keypair.
- * @param counterparty - The secondary/counterparty authority public key.
- * @param connection - The Solana network connection object.
- * @param marketPda - Pda of market
- * @returns A string representing the transaction or undefined in case of an error.
- */
+
 export const finaliseBidIx = async ({
   eventSlot1,
   eventSlot2,
   authority,
   program,
+  counterparty,
   marketPda,
   coinMint,
   pcMint,
@@ -156,21 +142,21 @@ export const finaliseBidIx = async ({
       new anchor.web3.PublicKey(program.programId)
     );
 
-    // const [openOrdersCounterpartyPda] =
-    //   await anchor.web3.PublicKey.findProgramAddress(
-    //     [
-    //       Buffer.from("open-orders", "utf-8"),
-    //       marketPda.toBuffer(),
-    //       counterparty.toBuffer(),
-    //     ],
-    //     new anchor.web3.PublicKey(program.programId)
-    //   );
+    const [openOrdersCounterpartyPda] =
+      await anchor.web3.PublicKey.findProgramAddress(
+        [
+          Buffer.from("open-orders", "utf-8"),
+          marketPda.toBuffer(),
+          counterparty.toBuffer(),
+        ],
+        new anchor.web3.PublicKey(program.programId)
+      );
 
     const finalizeBidTx = await program.methods
       .finaliseMatchesBid(eventSlot1, eventSlot2)
       .accounts({
         openOrdersOwner: openOrdersOwnerPda,
-        openOrdersCounterparty: openOrdersOwnerPda,
+        openOrdersCounterparty: openOrdersCounterpartyPda,
         market: marketPda,
         pcVault: pcVault,
         reqQ: reqQPda,
@@ -178,7 +164,7 @@ export const finaliseBidIx = async ({
         authority: authority.publicKey,
         coinMint: coinMint,
         pcMint: pcMint,
-        authoritySecond: authority.publicKey,
+        authoritySecond: counterparty,
         pcpayer: authorityPcTokenAccount,
       })
       .signers([authority])

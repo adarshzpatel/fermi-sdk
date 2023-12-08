@@ -33,7 +33,7 @@ const finalise = async () => {
   const eventQ = await aliceClient.getEventQueue();
   console.log({ eventQ });
 
-  // Matched Orders 
+  // Matched Orders
   const matchedEventsAlice = await aliceClient.getFinalisableOrderMap();
   const matchedEventsBob = await bobClient.getFinalisableOrderMap();
   console.log({ matchedEventsAlice });
@@ -42,14 +42,17 @@ const finalise = async () => {
   const orderIdToFinaliseAlice = matchedOrdersAlice[0];
   const orderIdToFinaliseBob = matchedOrdersBob[0];
 
-    const finaliseSellOrder = await aliceClient.finaliseSellOrder(
-      orderIdToFinaliseAlice
-    );
-    console.log({ finaliseSellOrder });
-    const finaliseBuyOrder = await bobClient.finaliseBuyOrder(
-      orderIdToFinaliseBob
-    );
-    console.log({ finaliseBuyOrder });
+  const finaliseSellOrder = await aliceClient.finaliseSellOrder(
+    orderIdToFinaliseAlice,
+    aliceKp.publicKey
+  );
+  console.log({ finaliseSellOrder });
+
+  const finaliseBuyOrder = await bobClient.finaliseBuyOrder(
+    orderIdToFinaliseBob,
+    aliceKp.publicKey
+  );
+  console.log({ finaliseBuyOrder });
 };
 
 (async function () {

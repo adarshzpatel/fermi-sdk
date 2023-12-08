@@ -158,7 +158,7 @@ export class FermiClient {
       pcMint: this.market.pcMint,
     });
   }
-  async finaliseSellOrder(orderId: string) {
+  async finaliseSellOrder(orderId: string,counterpartyPk:PublicKey) {
     const matchedOrders = await this.getFinalisableOrderMap();
     const match = matchedOrders[orderId];
 
@@ -171,9 +171,10 @@ export class FermiClient {
       eventSlot1: match.eventSlot1,
       eventSlot2: match.eventSlot2,
       marketPda: this.market.marketPda,
+      counterparty:counterpartyPk
     });
   }
-  async finaliseBuyOrder(orderId: string) {
+  async finaliseBuyOrder(orderId: string,counterpartyPk:PublicKey) {
     const matchedOrders = await this.getFinalisableOrderMap();
     const match = matchedOrders[orderId];
  
@@ -186,6 +187,7 @@ export class FermiClient {
       eventSlot1: match.eventSlot1,
       eventSlot2: match.eventSlot2,
       marketPda: this.market.marketPda,
+      counterparty: counterpartyPk
     });
   }
 
