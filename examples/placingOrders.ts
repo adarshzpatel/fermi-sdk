@@ -24,12 +24,12 @@ const main = async () => {
   
    //Bob places buy order
    // Specify Price and Quantity
-  const buyOrder = await bobClient.placeBuyOrder(31,1)
+  const buyOrder = await bobClient.placeBuyOrder(73,1)
   console.log({buyOrder})
 
 
    // Specify Price and Quantity
-  const sellOrder = await aliceClient.placeSellOrder(31,1)
+  const sellOrder = await aliceClient.placeSellOrder(73,1)
   console.log({sellOrder})
 
   

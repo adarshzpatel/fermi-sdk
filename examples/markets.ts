@@ -1,5 +1,19 @@
 export const markets = [
   {
+    programId: '3Ek56WB263s9WH7bhGtjpNkFk8V2UDXmvsKxDJ9RzmGR',
+    marketPda: '7XoZMMz9cJZPSmz1FiU5dQTh7E86wqt2sQswgvkP9VhF',
+    coinMint: 'DuNZaUv9ojm7H1GRtcA7uUTJtnCyV8CopRe8oUjygPqr',
+    pcMint: '3nku2o8TMFH1Q42hRzat7e5LQshSVJVTmuPWfFCLBm7n',
+    authority: 'DCEp8dRr3TeLTcFADbEfHs2iHx6usXE6JhJwzu46M12W'
+  },
+  {
+    programId: '2BM843fAN55fqsMGidaqNr1P4127YLcxvTM5W4B2gNpn',
+    marketPda: 'J1k7s4siQdEChKmsP9vQnFD3JDVrxMjfwXhBVGFB3L1A',
+    coinMint: 'BhApat4VgaMUhCMQyF4jZaKWGDQLD8WJZjC7sdXGUyRd',
+    pcMint: '2CXqs2cQnZgY3whxCivQoF9TrHkoU1hnFEtaGQv8j516',
+    authority: 'DCEp8dRr3TeLTcFADbEfHs2iHx6usXE6JhJwzu46M12W'
+  },
+  {
   programId: '2BM843fAN55fqsMGidaqNr1P4127YLcxvTM5W4B2gNpn',
   marketPda: 'CfoTMTErnBrcUsGqoxv4L5DiN7Yofz9cu5p6RNWzVL4f',
   coinMint: 'GNe1yaF6TJSTxQRJs3Zs4QkucDUQTdwdWBUWQkpYCmYu',
