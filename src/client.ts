@@ -7,6 +7,7 @@ import { getFermiDexProgram } from "./utils/getFermiDexProgram";
 import {
   cancelAskIx,
   cancelBidIx,
+  cancelWithPenalty,
   createAskIx,
   createBidIx,
   depositCoinTokensIx,
@@ -103,6 +104,19 @@ export class FermiClient {
       qty: qty,
     });
   }
+
+  async cancelWithPenalty(eventSlot1:number,eventSlot2:number,side:"Ask"|"Bid",askerPk:PublicKey,bidderPk:PublicKey){
+    return cancelWithPenalty({
+      authority: this.authority,
+      program: this.program,
+      marketPda: this.market.marketPda,
+      askerPk,
+      bidderPk,
+      eventSlot1,
+      eventSlot2,
+      side
+    })
+  }
   async cancelBuyOrder(orderId: string) {
     return cancelBidIx({
       marketPda: this.market.marketPda,
@@ -190,6 +204,7 @@ export class FermiClient {
       counterparty: counterpartyPk
     });
   }
+
 
   async getOpenOrders() {
     return fetchOpenOrdersAccount(

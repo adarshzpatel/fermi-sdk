@@ -4,3 +4,4 @@ export * from "./deposit";
 export * from "./initialiseMarket";
 export * from "./placeOrder";
 export * from "./withdraw";
+export * from "./cancelWithPenalty"
