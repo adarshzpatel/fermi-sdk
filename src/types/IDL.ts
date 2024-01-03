@@ -523,6 +523,42 @@ export type FermiDex = {
       ]
     },
     {
+      "name": "cancelWithPenalty",
+      "accounts": [
+        {
+          "name": "openOrdersBidder",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "openOrdersAsker",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "eventQ",
+          "isMut": true,
+          "isSigner": false
+        }
+      ],
+      "args": [
+        {
+          "name": "side",
+          "type": {
+            "defined": "Side"
+          }
+        },
+        {
+          "name": "eventSlot1",
+          "type": "u8"
+        },
+        {
+          "name": "eventSlot2",
+          "type": "u8"
+        }
+      ]
+    },
+    {
       "name": "finaliseMatchesBid",
       "accounts": [
         {
@@ -1402,8 +1438,38 @@ export type FermiDex = {
     },
     {
       "code": 6016,
+      "name": "BothEventsFinalised",
+      "msg": "BothEventsAlreadyFinalised"
+    },
+    {
+      "code": 6017,
+      "name": "SideAlreadyFinalised",
+      "msg": "ThisSideAlreadyFinalised"
+    },
+    {
+      "code": 6018,
+      "name": "FinalizeNotExpired",
+      "msg": "EventNotExpired"
+    },
+    {
+      "code": 6019,
+      "name": "EventFinalised",
+      "msg": "EventAlreadyFinalised"
+    },
+    {
+      "code": 6020,
+      "name": "WrongSide",
+      "msg": "WrongSideProvided"
+    },
+    {
+      "code": 6021,
       "name": "Error",
       "msg": "Error"
+    },
+    {
+      "code": 6022,
+      "name": "ApprovalFailed",
+      "msg": "ApprovalFailed"
     }
   ]
 };
@@ -1933,6 +1999,42 @@ export const IDL: FermiDex = {
       ]
     },
     {
+      "name": "cancelWithPenalty",
+      "accounts": [
+        {
+          "name": "openOrdersBidder",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "openOrdersAsker",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "eventQ",
+          "isMut": true,
+          "isSigner": false
+        }
+      ],
+      "args": [
+        {
+          "name": "side",
+          "type": {
+            "defined": "Side"
+          }
+        },
+        {
+          "name": "eventSlot1",
+          "type": "u8"
+        },
+        {
+          "name": "eventSlot2",
+          "type": "u8"
+        }
+      ]
+    },
+    {
       "name": "finaliseMatchesBid",
       "accounts": [
         {
@@ -2812,8 +2914,38 @@ export const IDL: FermiDex = {
     },
     {
       "code": 6016,
+      "name": "BothEventsFinalised",
+      "msg": "BothEventsAlreadyFinalised"
+    },
+    {
+      "code": 6017,
+      "name": "SideAlreadyFinalised",
+      "msg": "ThisSideAlreadyFinalised"
+    },
+    {
+      "code": 6018,
+      "name": "FinalizeNotExpired",
+      "msg": "EventNotExpired"
+    },
+    {
+      "code": 6019,
+      "name": "EventFinalised",
+      "msg": "EventAlreadyFinalised"
+    },
+    {
+      "code": 6020,
+      "name": "WrongSide",
+      "msg": "WrongSideProvided"
+    },
+    {
+      "code": 6021,
       "name": "Error",
       "msg": "Error"
+    },
+    {
+      "code": 6022,
+      "name": "ApprovalFailed",
+      "msg": "ApprovalFailed"
     }
   ]
 };
