@@ -19,29 +19,35 @@ const cancelWithPenaltyEg = async () => {
   })
 
   // Bob places a limit buy order
-  // await bobClient.placeBuyOrder(100,1).then(res=>{
-  //   console.log("Bob placed buy order")
-  //   console.log(res)
-  // })
+  await bobClient.placeBuyOrder(10000,1).then(res=>{
+    console.log("Bob placed buy order")
+    console.log(res)
+  })
 
-  // // Alice places a limit sell order
-  // await aliceClient.placeSellOrder(100,1).then(res=>{
-  //   console.log("Alice placed sell order")
-  //   console.log(res)
-  // })
+  // Alice places a limit sell order
+  await aliceClient.placeSellOrder(10000,1).then(res=>{
+    console.log("Alice placed sell order")
+    console.log(res)
+  })
   // wait for 60 seconds
-  // await FermiDex.sleep(65000,"Waiting for 65 seconds")
+  await FermiDex.sleep(65000,"Waiting for 65 seconds")
 
   const matchedEvents = await aliceClient.getFinalisableOrderMap()
   console.log({matchedEvents})
   const orderToCancel = Object.keys(matchedEvents)[0]
-  console.log("Order to cancel",orderToCancel)
-  const {eventSlot1,eventSlot2} = matchedEvents[orderToCancel]
-  console.log("Event slots",eventSlot1,eventSlot2)
+  
+  if(orderToCancel){
+    console.log("Order to cancel",orderToCancel)
+    const {eventSlot1,eventSlot2} = matchedEvents[orderToCancel]
+    console.log("Event slots",eventSlot1,eventSlot2)
 
-  // args - [eventSlot1,eventSlot2,side:"Ask" | "Bid",askerPk,bidderPk]
-  const cancel = await aliceClient.cancelWithPenalty(eventSlot1,eventSlot2,"Bid",aliceKp.publicKey,bobKp.publicKey)
-  console.log(cancel)
+    // // args - [eventSlot1,eventSlot2,side:"Ask" | "Bid",askerPk,bidderPk]
+    // const cancelAsk = await aliceClient.cancelWithPenalty(eventSlot1,eventSlot2,"Ask",aliceKp.publicKey,bobKp.publicKey)
+    // console.log(cancelAsk)
+
+    const cancelBid = await bobClient.cancelWithPenalty(eventSlot1,eventSlot2,"Bid",aliceKp.publicKey,bobKp.publicKey)
+    console.log(cancelBid)
+  }
 
 }
 
