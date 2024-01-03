@@ -19,13 +19,15 @@ const cancelWithPenaltyEg = async () => {
   })
 
   // Bob places a limit buy order
-  await bobClient.placeBuyOrder(10000,1).then(res=>{
+  await bobClient.placeBuyOrder(99,1).then(res=>{
     console.log("Bob placed buy order")
     console.log(res)
   })
 
+  await FermiDex.sleep(5000,"Waiting for 65 seconds")
+
   // Alice places a limit sell order
-  await aliceClient.placeSellOrder(10000,1).then(res=>{
+  await aliceClient.placeSellOrder(99,1).then(res=>{
     console.log("Alice placed sell order")
     console.log(res)
   })
