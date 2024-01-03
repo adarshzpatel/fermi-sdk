@@ -178,24 +178,28 @@ const main = async () => {
   const matchedEvents = await bobClient.getFinalisableOrderMap();
 
   console.log({ matchedEvents });
+
+  await FermiDex.sleep(62000, "Sleeping for 62 sec");
+
+
   // bob finalisess his sell order
   // seller = counterparty
 
-  let orderIdToFinalise = bobOpenOrdersAcc.orders[0];
-  const finaliseSellOrder = await bobClient.finaliseSellOrder(
-    orderIdToFinalise,
-    bobClient.authority.publicKey
-  );
-  console.log({ finaliseSellOrder });
-  // alice finalises her buy order
+  // let orderIdToFinalise = bobOpenOrdersAcc.orders[0];
+  // const finaliseSellOrder = await bobClient.finaliseSellOrder(
+  //   orderIdToFinalise,
+  //   bobClient.authority.publicKey
+  // );
+  // console.log({ finaliseSellOrder });
+  // // alice finalises her buy order
 
-  orderIdToFinalise = aliceOpenOrdersAcc.orders[0];
+  // orderIdToFinalise = aliceOpenOrdersAcc.orders[0];
 
-  const finaliseBuyOrder = await aliceClient.finaliseBuyOrder(
-    orderIdToFinalise,  
-    bobClient.authority.publicKey
-  );
-  console.log({ finaliseBuyOrder });
+  // const finaliseBuyOrder = await aliceClient.finaliseBuyOrder(
+  //   orderIdToFinalise,  
+  //   bobClient.authority.publicKey
+  // );
+  // console.log({ finaliseBuyOrder });
 
 };
 

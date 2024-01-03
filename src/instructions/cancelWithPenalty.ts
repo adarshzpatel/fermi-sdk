@@ -58,6 +58,10 @@ export const cancelWithPenalty = async ({
       ],
       new anchor.web3.PublicKey(program.programId)
     );
+
+    console.log("openOrdersAsker",openOrdersAsker.toString())
+    console.log("openOrdersBidder",openOrdersBidder.toString())
+    
     let canceWithPenaltyIx;
 
     if (side == "Ask") {
