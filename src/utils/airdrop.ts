@@ -1,16 +1,15 @@
-import * as anchor from "@project-serum/anchor";
+import * as anchor from "@coral-xyz/anchor";
 import * as spl from "@solana/spl-token";
-import { createAssociatedTokenAccount } from "../utils/createAssociatedTokenAccount";
-import { mintTo } from "../utils/mintTo";
-import { Keypair, Connection, PublicKey } from "@solana/web3.js";
+import { type Keypair, type Connection, type PublicKey } from "@solana/web3.js";
+import { createAssociatedTokenAccount, mintTo } from "./helpers";
 
-type AirdropTokenParams = {
+interface AirdropTokenParams {
   receiverPk: PublicKey;
   ownerKp: Keypair;
   connection: Connection;
   mint: PublicKey;
   amount: number;
-};
+}
 
 export async function airdropToken({
   receiverPk,
@@ -18,7 +17,7 @@ export async function airdropToken({
   connection,
   mint,
   amount,
-}: AirdropTokenParams) {
+}: AirdropTokenParams): Promise<void> {
   try {
     const wallet = new anchor.Wallet(ownerKp);
     const provider = new anchor.AnchorProvider(
@@ -33,9 +32,9 @@ export async function airdropToken({
       false
     );
 
-    if (!(await connection.getAccountInfo(receiverTokenAccount))) {
+    if ((await connection.getAccountInfo(receiverTokenAccount)) == null) {
       console.log("ATA not found, creating one...");
-      await createAssociatedTokenAccount(
+    await createAssociatedTokenAccount(
         provider,
         new anchor.web3.PublicKey(mint),
         receiverTokenAccount,
@@ -56,7 +55,7 @@ export async function airdropToken({
       receiverTokenAccount.toString()
     );
 
-    return receiverTokenAccount;
+    // return receiverTokenAccount;
   } catch (err) {
     console.log("Something went wrong while airdropping coin token.");
     console.log(err);

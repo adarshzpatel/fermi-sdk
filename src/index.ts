@@ -1,5 +1,3 @@
-export * from "./instructions"
-export * from "./utils"
-export * from "./types"
 export * from "./client"
-
+export * from "./openbook_v2"
+export * from "./utils"
