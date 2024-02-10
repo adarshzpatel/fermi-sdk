@@ -520,6 +520,7 @@ export class FermiClient {
     delegateAccount: PublicKey | null = null,
     openOrdersIndexer: PublicKey | null = null
   ): Promise<PublicKey> {
+    
     const [ixs, openOrdersAccount] = await this.createOpenOrdersIx(
       market,
       accountIndex,

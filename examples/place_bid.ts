@@ -5,7 +5,7 @@ import { Side, checkOrCreateAssociatedTokenAccount } from "../src";
 import { BN } from "@coral-xyz/anchor";
 
 const main = async () => {
-  const bobClient = initClientWithKeypairPath("./test-keypairs/bob/key.json");
+  const bobClient = initClientWithKeypairPath("./test-keypairs/alice/key.json");
   const market = await bobClient.deserializeMarketAccount(
     new PublicKey(marketPda)
   );
@@ -30,10 +30,10 @@ const main = async () => {
   const orderArgs = {
     side: Side.Bid, // or Side.Ask
     // side: 'bid',
-    priceLots: new BN(50), // Replace with the appropriate value for price in lots
+    priceLots: new BN(101), // Replace with the appropriate value for price in lots
     maxBaseLots: new BN(1), // Replace with the appropriate value for max base quantity in lots
-    maxQuoteLotsIncludingFees: new BN(50), // Replace with the appropriate value for max quote quantity in lots, including fees
-    clientOrderId: new BN(5),
+    maxQuoteLotsIncludingFees: new BN(101), // Replace with the appropriate value for max quote quantity in lots, including fees
+    clientOrderId: new BN(6),
     orderType: { limit: {} }, // 'limit' for a limit order, 'market' for a market order, etc.
     expiryTimestamp: new BN(Math.floor(Date.now() / 1000) + 3600), // Unix timestamp, e.g., 1 hour from now.
     selfTradeBehavior: { decrementTake: {} }, // Options might include 'decrementTake', 'cancelProvide', 'abortTransaction', etc.
@@ -63,3 +63,4 @@ main().catch((err) => {
   console.log(err);
   process.exit(1);
 });
+xx

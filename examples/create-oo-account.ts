@@ -15,7 +15,8 @@ const main = async () => {
   if(market === null) throw new Error("Market not found")
 
 
-  const accountIndex = new BN(1)
+  // maker sure accountIndex is = length from result of  client.findAllOpenOrders + 1
+  const accountIndex = new BN(2)
   
   const ooPkBob = await bobClient.createOpenOrders(
     bobKp, // payer keypair

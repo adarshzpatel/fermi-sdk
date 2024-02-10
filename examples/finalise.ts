@@ -6,13 +6,13 @@ import { checkOrCreateAssociatedTokenAccount, getLocalKeypair } from "../src";
 
 
 const main = async () => {
-  const client = initClientWithKeypairPath("./test-keypairs/bob/key.json");
+  const client = initClientWithKeypairPath("./test-keypairs/alice/key.json");
   const market = await client.deserializeMarketAccount(new PublicKey(marketPda))
 
   if(market == null) throw new Error("Market not found")
   const provider = client.provider
-  const makerpubkey = getLocalKeypair("./test-keypairs/bob/key.json").publicKey
-  const takerpubkey = getLocalKeypair("./test-keypairs/alice/key.json").publicKey
+  const makerpubkey = getLocalKeypair("./test-keypairs/alice/key.json").publicKey
+  const takerpubkey = getLocalKeypair("./test-keypairs/bob/key.json").publicKey
 
   const makerAtaPubKey = new PublicKey(await checkOrCreateAssociatedTokenAccount(provider, market.baseMint, makerpubkey));
   const takerAtaPubKey = new PublicKey(await checkOrCreateAssociatedTokenAccount(provider, market.baseMint, takerpubkey));

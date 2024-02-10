@@ -10,6 +10,7 @@
     "clean": "rm -rf dist",
     "lint": "eslint . --ext .ts --fix",
     "test": "mocha --require ts-node/register test/**/*ts"
+
   },
   "keywords": [],
   "license": "MIT",
