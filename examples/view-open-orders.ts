@@ -19,12 +19,12 @@ const getOrdersFromAccount = (openOrdersAccount: OpenOrdersAccount) => {
 
 const getPositionsFromAccount = (openOrdersAccount:OpenOrdersAccount) => {
   const positions = openOrdersAccount.position; 
-  const parsedPositions = Object.keys(positions).map((key) => positions[key].toString());
+  const parsedPositions = Object.keys(positions).map((key) => `${key} : ${positions[key].toString()}`);
   return parsedPositions;
 }
 
 const main = async () => {
-  const client = initClientWithKeypairPath("./test-keypairs/bob/key.json");
+  const client = initClientWithKeypairPath("./test-keypairs/alice/key.json");
 
   const openOrdersAccounts = await client.findOpenOrdersForMarket(
     client.walletPk,

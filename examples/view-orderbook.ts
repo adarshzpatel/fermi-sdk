@@ -14,24 +14,28 @@ const main = async () => {
   const asksAcc = await client.deserializeBookSide(market.asks);
   const bids =
     bidsAcc &&
-    client
-      .getLeafNodes(bidsAcc)
-      .map((bid) => ({
-        ...bid,
-        key: bid.key.toString(),
-        price: new BN(bid.key).shrn(64).toString(),
-      }));
+    client.getLeafNodes(bidsAcc).map((bid) => ({
+      ...bid,
+      key: bid.key.toString(),
+      price: new BN(bid.key).shrn(64).toString(),
+    }));
   const asks =
     asksAcc &&
-    client
-      .getLeafNodes(asksAcc)
-      .map((ask) => ({
-        ...ask,
-        key: ask.key.toString(),
-        price: new BN(ask.key).shrn(64).toString(),
-      }));
-  const orderbook = { bids, asks };
-  console.log("Orderbook", JSON.stringify(orderbook, null, 2));
+    client.getLeafNodes(asksAcc).map((ask) => ({
+      ...ask,
+      key: ask.key.toString(),
+      price: new BN(ask.key).shrn(64).toString(),
+    }));
+
+  const stringifiedBids = bids?.map((bid) =>
+    Object.keys(bid).map((key) => `${key} : ${bid[key].toString()}`)
+  );
+  const stringifiedAsks = asks?.map((ask) =>
+    Object.keys(ask).map((key) => `${key} : ${ask[key].toString()}`)
+  );
+
+  const orderbook = { bids:stringifiedBids, asks:stringifiedAsks };
+  console.log(orderbook)
 };
 
 main().catch((err) => {
