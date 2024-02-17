@@ -11,7 +11,7 @@ export const initClientWithKeypairPath = (path: string) => {
 
   const conn = new Connection(rpcUrl);
   const provider = new AnchorProvider(conn, wallet, {
-    commitment: "finalized",
+    commitment: "confirmed",
   });
   const client = new FermiClient(provider, new PublicKey(programId),{
     postSendTxCallback:(tx)=>console.log("Tx Sent:",`https://solana.fm/tx/${tx.txid}?cluster=devnet-solana`)

@@ -12,7 +12,7 @@ import {
 } from "@solana/spl-token";
 import * as anchor from "@coral-xyz/anchor";
 import * as spl from "@solana/spl-token";
-import fs from 'fs'
+import fs from "fs";
 
 export const Side = {
   Bid: { bid: {} },
@@ -116,29 +116,34 @@ export const createMint = async (
   mint: anchor.web3.Keypair,
   decimal: number
 ): Promise<void> => {
-  // const programId = getDevPgmId();
-  const tx = new anchor.web3.Transaction();
-  tx.add(
-    anchor.web3.SystemProgram.createAccount({
-      programId: spl.TOKEN_PROGRAM_ID,
-      // programId: programId,
-      fromPubkey: provider.wallet.publicKey,
-      newAccountPubkey: mint.publicKey,
-      space: spl.MintLayout.span,
-      lamports: await provider.connection.getMinimumBalanceForRentExemption(
-        spl.MintLayout.span
-      ),
-    })
-  );
-  tx.add(
-    spl.createInitializeMintInstruction(
-      mint.publicKey,
-      decimal,
-      provider.wallet.publicKey,
-      provider.wallet.publicKey
-    )
-  );
-  await provider.sendAndConfirm(tx, [mint]);
+  try {
+    // const programId = getDevPgmId();
+    const tx = new anchor.web3.Transaction();
+    tx.add(
+      anchor.web3.SystemProgram.createAccount({
+        programId: spl.TOKEN_PROGRAM_ID,
+        // programId: programId,
+        fromPubkey: provider.wallet.publicKey,
+        newAccountPubkey: mint.publicKey,
+        space: spl.MintLayout.span,
+        lamports: await provider.connection.getMinimumBalanceForRentExemption(
+          spl.MintLayout.span
+        ),
+      })
+    );
+    tx.add(
+      spl.createInitializeMintInstruction(
+        mint.publicKey,
+        decimal,
+        provider.wallet.publicKey,
+        provider.wallet.publicKey
+      )
+    );
+    await provider.sendAndConfirm(tx, [mint]);
+  } catch (err: any) {
+    console.error("[Error]: createMint");
+    console.error(err)
+  }
 };
 
 export const checkOrCreateAssociatedTokenAccount = async (
@@ -234,8 +239,6 @@ export const fetchTokenBalance = async (
     throw error;
   }
 };
-
-
 
 export const getLocalKeypair = (path: string) => {
   const secretKey = JSON.parse(fs.readFileSync(path, "utf-8"));

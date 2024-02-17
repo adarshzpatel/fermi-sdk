@@ -16,8 +16,8 @@ const main = async () => {
 
 
   // maker sure accountIndex is = length from result of  client.findAllOpenOrders + 1
-  const accountIndex = new BN(2)
-  
+  const accountIndex = new BN(1)
+
   const ooPkBob = await bobClient.createOpenOrders(
     bobKp, // payer keypair
     new PublicKey(marketPda),
