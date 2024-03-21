@@ -1043,6 +1043,11 @@ export interface OpenbookV2 {
           isSigner: false
         },
         {
+          name: 'taker',
+          isMut: true,
+          isSigner: false
+        },
+        {
           name: 'tokenProgram',
           isMut: false,
           isSigner: false
@@ -4712,6 +4717,11 @@ export const IDL: OpenbookV2 = {
         },
         {
           name: 'maker',
+          isMut: true,
+          isSigner: false
+        },
+        {
+          name: 'taker',
           isMut: true,
           isSigner: false
         },

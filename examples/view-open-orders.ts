@@ -3,7 +3,7 @@ import { initClientWithKeypairPath } from "./utils";
 import { marketPda } from "./constants";
 
 const main = async () => {
-  const client = initClientWithKeypairPath("./test-keypairs/bob/key.json");
+  const client = initClientWithKeypairPath("./test-keypairs/kp3/key.json");
 
   const openOrdersAccounts = await client.findOpenOrdersForMarket(
     client.walletPk,

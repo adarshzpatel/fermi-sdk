@@ -3,6 +3,7 @@ import { initClientWithKeypairPath } from "./utils";
 import { marketPda } from "./constants";
 import { BN } from "@coral-xyz/anchor";
 import { checkOrCreateAssociatedTokenAccount, getLocalKeypair } from "../src";
+import { takeCoverage } from "v8";
 
 
 const main = async () => {
@@ -17,6 +18,7 @@ const main = async () => {
   const makerAtaPubKey = new PublicKey(await checkOrCreateAssociatedTokenAccount(provider, market.baseMint, makerpubkey));
   const takerAtaPubKey = new PublicKey(await checkOrCreateAssociatedTokenAccount(provider, market.baseMint, takerpubkey));
 
+  const takerOpenmOrders = (await client.findOpenOrdersForMarket(takerpubkey, new PublicKey(marketPda)))[0]
   const slotsToConsume = new BN(1)
   const makerOpenOrders = (await client.findOpenOrdersForMarket(client.walletPk, new PublicKey(marketPda)))[0]
   console.log("maker open orders",makerOpenOrders.toString())
@@ -42,6 +44,7 @@ const main = async () => {
     market.marketBaseVault,
     market.marketQuoteVault,
     makerOpenOrders,
+    takerOpenmOrders,
     slotsToConsume
   );
 

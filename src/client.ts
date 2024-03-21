@@ -1077,6 +1077,7 @@ export class FermiClient {
     marketVaultBasePublicKey: PublicKey,
     marketVaultQuotePublicKey: PublicKey,
     maker: PublicKey,
+    taker: PublicKey,
     // tokenProgramPublicKey: PublicKey,
     //marketAuthorityPDA,
     slotsToConsume: BN
@@ -1090,6 +1091,7 @@ export class FermiClient {
       marketVaultBase: marketVaultBasePublicKey,
       marketVaultQuote: marketVaultQuotePublicKey,
       maker: maker,
+      taker: taker,
       //marketAuthorityPDA: marketAuthorityPDA,
       // tokenProgram: tokenProgramPublicKey,
       // Add other accounts as required by the instruction
