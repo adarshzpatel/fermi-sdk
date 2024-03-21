@@ -3,8 +3,8 @@ import { initClientWithKeypairPath } from "./utils";
 import { marketPda } from "./constants";
 
 const main = async () => {
-  const client = initClientWithKeypairPath("./test-keypairs/kp3/key.json");
-
+  const client2 = initClientWithKeypairPath("./test-keypairs/kp3/key.json");
+  const client = initClientWithKeypairPath("./test-keypairs/bob/key.json");
   const openOrdersAccounts = await client.findOpenOrdersForMarket(
     client.walletPk,
     new PublicKey(marketPda)
@@ -28,6 +28,8 @@ const main = async () => {
       id: o.id.toString(),
       clientId: o.clientId.toString(),
       lockedPrice: o.lockedPrice.toString(),
+      position: JSON.stringify(openOrdersAcc?.position, null)
+      ,
     }))
   );
 };
