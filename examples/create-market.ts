@@ -1,5 +1,5 @@
 import { Connection, Keypair, PublicKey } from "@solana/web3.js";
-import { FermiClient ,createMint, getLocalKeypair } from "../src";
+import { FermiClient, createMint, getLocalKeypair } from "../src";
 import { Wallet, AnchorProvider, BN } from "@coral-xyz/anchor";
 import { programId, rpcUrl } from "./constants";
 
@@ -15,8 +15,8 @@ const OWNER_KEYPAIR = Keypair.fromSecretKey(
 );
 
 const main = async () => {
-  // const authority = getLocalKeypair(secretKeyPath);
-  const authority = OWNER_KEYPAIR
+  const authority = getLocalKeypair(secretKeyPath);
+  // const authority = OWNER_KEYPAIR
   const payer = authority;
   console.log("Authority Public Key:", OWNER_KEYPAIR.publicKey.toString());
   // wrap authority keypair in an anchor wallet
@@ -29,13 +29,12 @@ const main = async () => {
   const client = new FermiClient(provider, new PublicKey(programId));
   const coinMint = Keypair.generate();
   const pcMint = Keypair.generate();
-  
+
   await createMint(provider, coinMint, 9);
   await createMint(provider, pcMint, 6);
-  
+
   const quoteMint = new PublicKey(coinMint.publicKey.toBase58());
   const baseMint = new PublicKey(pcMint.publicKey.toBase58());
-  
 
   // Define market parameter
   const quoteLotSize = new BN(1000000);
@@ -44,7 +43,10 @@ const main = async () => {
   const takerFee = new BN(0);
   const timeExpiry = new BN(0);
 
-  const [[bidIx, askIx, eventHeapIx, ix], [market, bidsKeypair, askKeypair, eventHeapKeypair]] = await client.createMarketIx(
+  const [
+    [bidIx, askIx, eventHeapIx, ix],
+    [market, bidsKeypair, askKeypair, eventHeapKeypair],
+  ] = await client.createMarketIx(
     payer.publicKey,
     "Market Name",
     quoteMint,
@@ -58,14 +60,19 @@ const main = async () => {
     null, // oracleB
     null, // openOrdersAdmin
     null, // consumeEventsAdmin
-    null, // closeMarketAdmin
+    null // closeMarketAdmin
   );
-  
-  console.log("Creating New Market....")
-  await client.sendAndConfirmTransaction([bidIx, askIx, eventHeapIx, ix], {
-    additionalSigners: [payer, market, bidsKeypair, askKeypair, eventHeapKeypair],
-  });
 
+  console.log("Creating New Market....");
+  await client.sendAndConfirmTransaction([bidIx, askIx, eventHeapIx, ix], {
+    additionalSigners: [
+      payer,
+      market,
+      bidsKeypair,
+      askKeypair,
+      eventHeapKeypair,
+    ],
+  });
 
   console.log("New Market created:", market.publicKey.toString());
 };

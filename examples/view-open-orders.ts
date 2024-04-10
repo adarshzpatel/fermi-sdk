@@ -24,7 +24,7 @@ const getPositionsFromAccount = (openOrdersAccount:OpenOrdersAccount) => {
 }
 
 const main = async () => {
-  const client = initClientWithKeypairPath("./test-keypairs/bob/key.json");
+  const client = initClientWithKeypairPath("./test-keypairs/alice/key.json");
   const openOrdersAccounts = await client.findOpenOrdersForMarket(
     client.walletPk,
     new PublicKey(marketPda)
