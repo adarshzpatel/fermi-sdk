@@ -17,14 +17,20 @@ const main = async () => {
   const provider = client.provider;
 
   const makerpubkey = getLocalKeypair("./test-keypairs/bob/key.json").publicKey;
+
   const takerpubkey = getLocalKeypair(
     "./test-keypairs/alice/key.json"
   ).publicKey;
 
+  /**
+   *  For Ask side, maker ata should be for base token, taker ata for quote token.
+   *  For Bid side, maker ata should be for quote token, taker ata for base token.
+   */
+
   const makerAtaPubKey = new PublicKey(
     await checkOrCreateAssociatedTokenAccount(
       provider,
-      market.baseMint,
+      market.quoteMint,
       makerpubkey
     )
   );
@@ -37,6 +43,7 @@ const main = async () => {
   );
 
   const slotsToConsume = new BN(0);
+
   const makerOpenOrders = (
     await client.findOpenOrdersForMarket(makerpubkey, new PublicKey(marketPda))
   )[0];
@@ -70,9 +77,8 @@ const main = async () => {
     args.taker,
     args.slotsToConsume
   );
-  
 
-  await client.sendAndConfirmTransaction(ixs,{});
+  await client.sendAndConfirmTransaction(ixs, {});
   console.log("Finalised successfully");
 };
 

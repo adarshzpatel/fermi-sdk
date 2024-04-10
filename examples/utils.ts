@@ -14,7 +14,7 @@ export const initClientWithKeypairPath = (path: string) => {
     commitment: "finalized",
   });
   const client = new FermiClient(provider, new PublicKey(programId),{
-    postSendTxCallback:(tx)=>console.log("Tx Sent:",`https://solana.fm/tx/${tx.txid}?cluster=devnet-solana`)
+    postSendTxCallback:(tx)=>console.log("Tx Sent:",`https://solana.fm/tx/${tx.txid}?cluster=devnet-alpha`)
   });
 
   return client
