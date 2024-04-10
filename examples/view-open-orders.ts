@@ -24,12 +24,12 @@ const getPositionsFromAccount = (openOrdersAccount:OpenOrdersAccount) => {
 }
 
 const main = async () => {
-  const client = initClientWithKeypairPath("./test-keypairs/alice/key.json");
-
+  const client = initClientWithKeypairPath("./test-keypairs/bob/key.json");
   const openOrdersAccounts = await client.findOpenOrdersForMarket(
     client.walletPk,
     new PublicKey(marketPda)
   );
+  console.log("OPEN ORDERS ACCOUNT",openOrdersAccounts)
   if (openOrdersAccounts.length === 0)
     throw new Error("Please run 'create-oo-accounts.ts' example first");
   const openOrdersPk = openOrdersAccounts[0];

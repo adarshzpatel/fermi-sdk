@@ -30,10 +30,10 @@ const main = async () => {
   const orderArgs = {
     side: Side.Ask, // or Side.Ask
     // side: 'bid',
-    priceLots: new BN(50), // Replace with the appropriate value for price in lots
+    priceLots: new BN(100), // Replace with the appropriate value for price in lots
     maxBaseLots: new BN(1), // Replace with the appropriate value for max base quantity in lots
-    maxQuoteLotsIncludingFees: new BN(50), // Replace with the appropriate value for max quote quantity in lots, including fees
-    clientOrderId: new BN(6),
+    maxQuoteLotsIncludingFees: new BN(100), // Replace with the appropriate value for max quote quantity in lots, including fees
+    clientOrderId: new BN(2),
     orderType: { limit: {} }, // 'limit' for a limit order, 'market' for a market order, etc.
     expiryTimestamp: new BN(Math.floor(Date.now() / 1000) + 3600), // Unix timestamp, e.g., 1 hour from now.
     selfTradeBehavior: { decrementTake: {} }, // Options might include 'decrementTake', 'cancelProvide', 'abortTransaction', etc.

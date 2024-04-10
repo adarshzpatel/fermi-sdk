@@ -15,11 +15,12 @@ const OWNER_KEYPAIR = Keypair.fromSecretKey(
 );
 
 const main = async () => {
-  const authority = getLocalKeypair(secretKeyPath);
+  // const authority = getLocalKeypair(secretKeyPath);
+  const authority = OWNER_KEYPAIR
   const payer = authority;
-  console.log("Authority Public Key:", authority.publicKey.toString());
+  console.log("Authority Public Key:", OWNER_KEYPAIR.publicKey.toString());
   // wrap authority keypair in an anchor wallet
-  const wallet = new Wallet(OWNER_KEYPAIR);
+  const wallet = new Wallet(authority);
 
   const conn = new Connection(rpcUrl);
   const provider = new AnchorProvider(conn, wallet, {

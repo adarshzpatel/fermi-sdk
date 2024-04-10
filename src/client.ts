@@ -4,8 +4,8 @@ import {
   Program,
   type IdlTypes,
   type IdlAccounts,
-} from '@coral-xyz/anchor';
-import { utf8 } from '@coral-xyz/anchor/dist/cjs/utils/bytes';
+} from "@coral-xyz/anchor";
+import { utf8 } from "@coral-xyz/anchor/dist/cjs/utils/bytes";
 import {
   NATIVE_MINT,
   ASSOCIATED_TOKEN_PROGRAM_ID,
@@ -13,7 +13,7 @@ import {
   createCloseAccountInstruction,
   createInitializeAccount3Instruction,
   getAssociatedTokenAddressSync,
-} from '@solana/spl-token';
+} from "@solana/spl-token";
 import {
   type AccountInfo,
   type Commitment,
@@ -26,27 +26,31 @@ import {
   type TransactionSignature,
   Transaction,
   type AccountMeta,
-} from '@solana/web3.js';
-import { Idl, type OpenbookV2 } from './openbook_v2';
-import { sendTransaction } from './utils/rpc';
-import { Side, checkMintOfATA } from './utils/helpers';
+  ComputeBudgetProgram,
+} from "@solana/web3.js";
+import { IDL, type OpenbookV2 } from "./openbook_v2";
+import { sendTransaction } from "./utils/rpc";
+import {
+  Side,
+  checkMintOfATA,
+  checkOrCreateAssociatedTokenAccount,
+} from "./utils/helpers";
 
-
-export type IdsSource = 'api' | 'static' | 'get-program-accounts';
-export type PlaceOrderArgs = IdlTypes<OpenbookV2>['PlaceOrderArgs'];
-export type PlaceOrderPeggedArgs = IdlTypes<OpenbookV2>['PlaceOrderPeggedArgs'];
-export type OracleConfigParams = IdlTypes<OpenbookV2>['OracleConfigParams'];
-export type OracleConfig = IdlTypes<OpenbookV2>['OracleConfig'];
-export type MarketAccount = IdlAccounts<OpenbookV2>['market'];
-export type OpenOrdersAccount = IdlAccounts<OpenbookV2>['openOrdersAccount'];
+export type IdsSource = "api" | "static" | "get-program-accounts";
+export type PlaceOrderArgs = IdlTypes<OpenbookV2>["PlaceOrderArgs"];
+export type PlaceOrderPeggedArgs = IdlTypes<OpenbookV2>["PlaceOrderPeggedArgs"];
+export type OracleConfigParams = IdlTypes<OpenbookV2>["OracleConfigParams"];
+export type OracleConfig = IdlTypes<OpenbookV2>["OracleConfig"];
+export type MarketAccount = IdlAccounts<OpenbookV2>["market"];
+export type OpenOrdersAccount = IdlAccounts<OpenbookV2>["openOrdersAccount"];
 export type OpenOrdersIndexerAccount =
-  IdlAccounts<OpenbookV2>['openOrdersIndexer'];
-export type EventHeapAccount = IdlAccounts<OpenbookV2>['eventHeap'];
-export type BookSideAccount = IdlAccounts<OpenbookV2>['bookSide'];
-export type LeafNode = IdlTypes<OpenbookV2>['LeafNode'];
-export type AnyNode = IdlTypes<OpenbookV2>['AnyNode'];
-export type FillEvent = IdlTypes<OpenbookV2>['FillEvent'];
-export type OutEvent = IdlTypes<OpenbookV2>['OutEvent'];
+  IdlAccounts<OpenbookV2>["openOrdersIndexer"];
+export type EventHeapAccount = IdlAccounts<OpenbookV2>["eventHeap"];
+export type BookSideAccount = IdlAccounts<OpenbookV2>["bookSide"];
+export type LeafNode = IdlTypes<OpenbookV2>["LeafNode"];
+export type AnyNode = IdlTypes<OpenbookV2>["AnyNode"];
+export type FillEvent = IdlTypes<OpenbookV2>["FillEvent"];
+export type OutEvent = IdlTypes<OpenbookV2>["OutEvent"];
 
 export interface OpenBookClientOptions {
   idsSource?: IdsSource;
@@ -56,7 +60,7 @@ export interface OpenBookClientOptions {
 }
 
 export function nameToString(name: number[]): string {
-  return utf8.decode(new Uint8Array(name)).split('\x00')[0];
+  return utf8.decode(new Uint8Array(name)).split("\x00")[0];
 }
 
 const BooksideSpace = 90944 + 8;
@@ -64,28 +68,28 @@ const EventHeapSpace = 91280 + 8;
 
 // program id: E6cNbXn2BNoMjXUg7biSTYhmTuyJWQtAnRX1fVPa7y5v
 export const OPENBOOK_PROGRAM_ID = new PublicKey(
-  'E6cNbXn2BNoMjXUg7biSTYhmTuyJWQtAnRX1fVPa7y5v',
+  "E6cNbXn2BNoMjXUg7biSTYhmTuyJWQtAnRX1fVPa7y5v"
 );
 
 export const OPENBOOK_PROGRAM_OG = new PublicKey(
-  'opnb2LAfJYbRMAHHvqjCwQxanZn7ReEHp1k81EohpZb',
+  "opnb2LAfJYbRMAHHvqjCwQxanZn7ReEHp1k81EohpZb"
 );
 
 export class FermiClient {
   public program: Program<OpenbookV2>;
 
   private readonly idsSource: IdsSource;
-  private readonly postSendTxCallback?: ({ txid }) => void;
+  private readonly postSendTxCallback?: ({ txid }: any) => void;
   private readonly prioritizationFee: number;
   private readonly txConfirmationCommitment: Commitment;
 
   constructor(
     public provider: AnchorProvider,
     public programId: PublicKey = OPENBOOK_PROGRAM_ID,
-    public opts: OpenBookClientOptions = {},
+    public opts: OpenBookClientOptions = {}
   ) {
-    this.program = new Program<OpenbookV2>(Idl, programId, provider);
-    this.idsSource = opts.idsSource ?? 'get-program-accounts';
+    this.program = new Program<OpenbookV2>(IDL, programId, provider);
+    this.idsSource = opts.idsSource ?? "get-program-accounts";
     this.prioritizationFee = opts?.prioritizationFee ?? 0;
     this.postSendTxCallback = opts?.postSendTxCallback;
     this.txConfirmationCommitment =
@@ -93,7 +97,7 @@ export class FermiClient {
       ((this.program.provider as AnchorProvider).opts !== undefined
         ? (this.program.provider as AnchorProvider).opts.commitment
         : undefined) ??
-      'processed';
+      "processed";
     // TODO: evil side effect, but limited backtraces are a nightmare
     Error.stackTraceLimit = 1000;
   }
@@ -108,13 +112,13 @@ export class FermiClient {
   }
 
   public setProvider(provider: AnchorProvider): void {
-    this.program = new Program<OpenbookV2>(Idl, this.programId, provider);
+    this.program = new Program<OpenbookV2>(IDL, this.programId, provider);
   }
 
   /// Transactions
   public async sendAndConfirmTransaction(
     ixs: TransactionInstruction[],
-    opts: any = {},
+    opts: any = {}
   ): Promise<string> {
     return await sendTransaction(
       this.program.provider as AnchorProvider,
@@ -125,16 +129,16 @@ export class FermiClient {
         prioritizationFee: this.prioritizationFee,
         txConfirmationCommitment: this.txConfirmationCommitment,
         ...opts,
-      },
+      }
     );
   }
 
   public async createProgramAccount(
     authority: Keypair,
-    size: number,
+    size: number
   ): Promise<PublicKey> {
     const lamports = await this.connection.getMinimumBalanceForRentExemption(
-      size,
+      size
     );
     const address = Keypair.generate();
 
@@ -145,7 +149,7 @@ export class FermiClient {
         lamports,
         space: size,
         programId: this.programId,
-      }),
+      })
     ).instructions;
 
     await this.sendAndConfirmTransaction(tx, {
@@ -156,10 +160,10 @@ export class FermiClient {
 
   public async createProgramAccountIx(
     authority: PublicKey,
-    size: number,
+    size: number
   ): Promise<[TransactionInstruction, Signer]> {
     const lamports = await this.connection.getMinimumBalanceForRentExemption(
-      size,
+      size
     );
     const address = Keypair.generate();
 
@@ -175,19 +179,19 @@ export class FermiClient {
 
   // Get the MarketAccount from the market publicKey
   public async deserializeMarketAccount(
-    publicKey: PublicKey,
+    publicKey: PublicKey
   ): Promise<MarketAccount | null> {
     try {
       return await this.program.account.market.fetch(publicKey);
     } catch (error) {
       console.error("Error in deserializeMarketAccount:", error);
+
       return null;
     }
-  }    
+  }
 
-  
   public async deserializeOpenOrderAccount(
-    publicKey: PublicKey,
+    publicKey: PublicKey
   ): Promise<OpenOrdersAccount | null> {
     try {
       return await this.program.account.openOrdersAccount.fetch(publicKey);
@@ -197,7 +201,7 @@ export class FermiClient {
   }
 
   public async deserializeOpenOrdersIndexerAccount(
-    publicKey: PublicKey,
+    publicKey: PublicKey
   ): Promise<OpenOrdersIndexerAccount | null> {
     try {
       return await this.program.account.openOrdersIndexer.fetch(publicKey);
@@ -207,7 +211,7 @@ export class FermiClient {
   }
 
   public async deserializeEventHeapAccount(
-    publicKey: PublicKey,
+    publicKey: PublicKey
   ): Promise<EventHeapAccount | null> {
     try {
       return await this.program.account.eventHeap.fetch(publicKey);
@@ -217,7 +221,7 @@ export class FermiClient {
   }
 
   public async deserializeBookSide(
-    publicKey: PublicKey,
+    publicKey: PublicKey
   ): Promise<BookSideAccount | null> {
     try {
       return await this.program.account.bookSide.fetch(publicKey);
@@ -234,13 +238,13 @@ export class FermiClient {
   // Get bids or asks from a bookside account
   public getLeafNodes(bookside: BookSideAccount): LeafNode[] {
     const leafNodesData = bookside.nodes.nodes.filter(
-      (x: AnyNode) => x.tag === 2,
+      (x: AnyNode) => x.tag === 2
     );
     const leafNodes: LeafNode[] = [];
     for (const x of leafNodesData) {
       const leafNode: LeafNode = this.program.coder.types.decode(
-        'LeafNode',
-        Buffer.from([0, ...x.data]),
+        "LeafNode",
+        Buffer.from([0, ...x.data])
       );
       leafNodes.push(leafNode);
     }
@@ -267,43 +271,41 @@ export class FermiClient {
       maxStalenessSlots: 100,
     },
     market = Keypair.generate(),
-    collectFeeAdmin?: PublicKey,
+    collectFeeAdmin?: PublicKey
   ): Promise<[TransactionInstruction[], Signer[]]> {
     const [bidIx, bidsKeypair] = await this.createProgramAccountIx(
       payer,
-      BooksideSpace,
+      BooksideSpace
     );
     const [askIx, askKeypair] = await this.createProgramAccountIx(
       payer,
-      BooksideSpace,
+      BooksideSpace
     );
     const [eventHeapIx, eventHeapKeypair] = await this.createProgramAccountIx(
       payer,
-      EventHeapSpace,
+      EventHeapSpace
     );
 
     const [marketAuthority] = PublicKey.findProgramAddressSync(
-      [Buffer.from('Market'), market.publicKey.toBuffer()],
-      this.program.programId,
+      [Buffer.from("Market"), market.publicKey.toBuffer()],
+      this.program.programId
     );
-
-    console.log("market authority is: ", marketAuthority.toString()); 
 
     const baseVault = getAssociatedTokenAddressSync(
       baseMint,
       marketAuthority,
-      true,
+      true
     );
 
     const quoteVault = getAssociatedTokenAddressSync(
       quoteMint,
       marketAuthority,
-      true,
+      true
     );
 
     const [eventAuthority] = PublicKey.findProgramAddressSync(
-      [Buffer.from('__event_authority')],
-      this.program.programId,
+      [Buffer.from("__event_authority")],
+      this.program.programId
     );
 
     const ix = await this.program.methods
@@ -314,7 +316,7 @@ export class FermiClient {
         baseLotSize,
         makerFee,
         takerFee,
-        timeExpiry,
+        timeExpiry
       )
       .accounts({
         market: market.publicKey,
@@ -353,7 +355,7 @@ export class FermiClient {
     marketPublicKey: PublicKey,
     market: MarketAccount,
     solDestination: PublicKey,
-    closeMarketAdmin: Keypair | null = null,
+    closeMarketAdmin: Keypair | null = null
   ): Promise<[TransactionInstruction, Signer[]]> {
     const ix = await this.program.methods
       .closeMarket()
@@ -381,14 +383,14 @@ export class FermiClient {
   // Each owner has one open order indexer
   public findOpenOrdersIndexer(owner: PublicKey = this.walletPk): PublicKey {
     const [openOrdersIndexer] = PublicKey.findProgramAddressSync(
-      [Buffer.from('OpenOrdersIndexer'), owner.toBuffer()],
-      this.programId,
+      [Buffer.from("OpenOrdersIndexer"), owner.toBuffer()],
+      this.programId
     );
     return openOrdersIndexer;
   }
 
   public async createOpenOrdersIndexer(
-    openOrdersIndexer: PublicKey,
+    openOrdersIndexer: PublicKey
   ): Promise<TransactionSignature> {
     const ix = await this.program.methods
       .createOpenOrdersIndexer()
@@ -405,7 +407,7 @@ export class FermiClient {
 
   public async createOpenOrdersIndexerIx(
     openOrdersIndexer: PublicKey,
-    owner: PublicKey = this.walletPk,
+    owner: PublicKey = this.walletPk
   ): Promise<TransactionInstruction> {
     return await this.program.methods
       .createOpenOrdersIndexer()
@@ -418,40 +420,40 @@ export class FermiClient {
   }
 
   public async findAllOpenOrders(
-    owner: PublicKey = this.walletPk,
+    owner: PublicKey = this.walletPk
   ): Promise<PublicKey[]> {
     const indexer = this.findOpenOrdersIndexer(owner);
     const indexerAccount = await this.deserializeOpenOrdersIndexerAccount(
-      indexer,
+      indexer
     );
     return indexerAccount?.addresses ?? [];
   }
 
   public findOpenOrderAtIndex(
     owner: PublicKey = this.walletPk,
-    accountIndex: BN,
+    accountIndex: BN
   ): PublicKey {
     const [openOrders] = PublicKey.findProgramAddressSync(
       [
-        Buffer.from('OpenOrders'),
+        Buffer.from("OpenOrders"),
         owner.toBuffer(),
-        accountIndex.toArrayLike(Buffer, 'le', 4),
+        accountIndex.toArrayLike(Buffer, "le", 4),
       ],
-      this.programId,
+      this.programId
     );
     return openOrders;
   }
 
   public async findOpenOrdersForMarket(
     owner: PublicKey = this.walletPk,
-    market: PublicKey,
+    market: PublicKey
   ): Promise<PublicKey[]> {
     const openOrdersForMarket: PublicKey[] = [];
     const allOpenOrders = await this.findAllOpenOrders(owner);
 
     for await (const openOrders of allOpenOrders) {
       const openOrdersAccount = await this.deserializeOpenOrderAccount(
-        openOrders,
+        openOrders
       );
       if (openOrdersAccount?.market.toString() === market.toString()) {
         openOrdersForMarket.push(openOrders);
@@ -462,38 +464,31 @@ export class FermiClient {
 
   public async createOpenOrdersIx(
     market: PublicKey,
-    accountIndex: BN,
     name: string,
     owner: PublicKey = this.walletPk,
-    delegateAccount: PublicKey | null,
-    openOrdersIndexer?: PublicKey | null,
+    delegateAccount: PublicKey | null
   ): Promise<[TransactionInstruction[], PublicKey]> {
     const ixs: TransactionInstruction[] = [];
+    let accountIndex = new BN(1);
 
-    if (openOrdersIndexer == null) {
-      openOrdersIndexer = this.findOpenOrdersIndexer(owner);
-      try {
-        const storedIndexer = await this.connection.getAccountInfo(
-          openOrdersIndexer,
-        );
-        if (storedIndexer == null) {
-          ixs.push(
-            await this.createOpenOrdersIndexerIx(openOrdersIndexer, owner),
-          );
-        }
-      } catch {
+    const openOrdersIndexer = this.findOpenOrdersIndexer(owner);
+
+    try {
+      const storedIndexer = await this.deserializeOpenOrdersIndexerAccount(
+        openOrdersIndexer
+      );
+      if (storedIndexer == null) {
         ixs.push(
-          await this.createOpenOrdersIndexerIx(openOrdersIndexer, owner),
+          await this.createOpenOrdersIndexerIx(openOrdersIndexer, owner)
         );
+      } else {
+        accountIndex = new BN(storedIndexer.createdCounter + 1);
       }
+    } catch {
+      ixs.push(await this.createOpenOrdersIndexerIx(openOrdersIndexer, owner));
     }
-    if (accountIndex.toNumber() === 0) {
-      throw Object.assign(new Error('accountIndex can not be 0'), {
-        code: 403,
-      });
-    }
-    const openOrdersAccount = this.findOpenOrderAtIndex(owner, accountIndex);
 
+    const openOrdersAccount = this.findOpenOrderAtIndex(owner, accountIndex);
     ixs.push(
       await this.program.methods
         .createOpenOrdersAccount(name)
@@ -506,7 +501,7 @@ export class FermiClient {
           payer: this.walletPk,
           // systemProgram: SystemProgram.programId,
         })
-        .instruction(),
+        .instruction()
     );
 
     return [ixs, openOrdersAccount];
@@ -515,19 +510,15 @@ export class FermiClient {
   public async createOpenOrders(
     payer: Keypair,
     market: PublicKey,
-    accountIndex: BN,
     name: string,
     owner: Keypair = payer,
-    delegateAccount: PublicKey | null = null,
-    openOrdersIndexer: PublicKey | null = null,
+    delegateAccount: PublicKey | null = null
   ): Promise<PublicKey> {
     const [ixs, openOrdersAccount] = await this.createOpenOrdersIx(
       market,
-      accountIndex,
       name,
       owner.publicKey,
-      delegateAccount,
-      openOrdersIndexer,
+      delegateAccount
     );
     const additionalSigners = [payer];
     if (owner !== payer) {
@@ -540,7 +531,6 @@ export class FermiClient {
 
     return openOrdersAccount;
   }
-
   public async depositIx(
     openOrdersPublicKey: PublicKey,
     openOrdersAccount: OpenOrdersAccount,
@@ -548,7 +538,7 @@ export class FermiClient {
     userBaseAccount: PublicKey,
     userQuoteAccount: PublicKey,
     baseAmount: BN,
-    quoteAmount: BN,
+    quoteAmount: BN
   ): Promise<TransactionInstruction> {
     const ix = await this.program.methods
       .deposit(baseAmount, quoteAmount)
@@ -574,7 +564,7 @@ export class FermiClient {
     userBaseAccount: PublicKey,
     userQuoteAccount: PublicKey,
     baseAmount: BN,
-    quoteAmount: BN,
+    quoteAmount: BN
   ): Promise<[TransactionInstruction[], Signer[]]> {
     const wrappedSolAccount: Keypair | undefined = new Keypair();
     let preInstructions: TransactionInstruction[] = [];
@@ -594,14 +584,14 @@ export class FermiClient {
       createInitializeAccount3Instruction(
         wrappedSolAccount.publicKey,
         NATIVE_MINT,
-        openOrdersAccount.owner,
+        openOrdersAccount.owner
       ),
     ];
     postInstructions = [
       createCloseAccountInstruction(
         wrappedSolAccount.publicKey,
         openOrdersAccount.owner,
-        openOrdersAccount.owner,
+        openOrdersAccount.owner
       ),
     ];
     additionalSigners.push(wrappedSolAccount);
@@ -624,7 +614,7 @@ export class FermiClient {
   }
 
   public decodeMarket(data: Buffer): any {
-    return this.program.coder.accounts.decode('Market', data);
+    return this.program.coder.accounts.decode("Market", data);
   }
 
   public async placeOrderIx(
@@ -636,7 +626,7 @@ export class FermiClient {
     openOrdersAdmin: PublicKey | null,
     args: PlaceOrderArgs,
     remainingAccounts: PublicKey[],
-    openOrdersDelegate?: Keypair,
+    openOrdersDelegate?: Keypair
   ): Promise<[TransactionInstruction, Signer[]]> {
     const marketVault =
       args.side === Side.Bid ? market.marketQuoteVault : market.marketBaseVault;
@@ -645,14 +635,7 @@ export class FermiClient {
       isSigner: false,
       isWritable: true,
     }));
-    console.log("side is: ", args.side);
-    console.log(marketVault.toString());
     const MVmint = await checkMintOfATA(this.connection, marketVault);
-    try {
-    console.log("marketvault mint is:", MVmint.toString());
-    } catch {
-      console.log("go");
-    }
 
     const ix = await this.program.methods
       .placeOrder(args)
@@ -691,7 +674,7 @@ export class FermiClient {
     openOrdersAdmin: PublicKey | null,
     args: PlaceOrderPeggedArgs,
     remainingAccounts: PublicKey[],
-    openOrdersDelegate?: Keypair,
+    openOrdersDelegate?: Keypair
   ): Promise<[TransactionInstruction, Signer[]]> {
     const marketVault =
       args.side === Side.Bid ? market.marketQuoteVault : market.marketBaseVault;
@@ -738,7 +721,7 @@ export class FermiClient {
     args: PlaceOrderArgs,
     referrerAccount: PublicKey | null,
     remainingAccounts: PublicKey[],
-    openOrdersDelegate?: Keypair,
+    openOrdersDelegate?: Keypair
   ): Promise<[TransactionInstruction, Signer[]]> {
     const accountsMeta: AccountMeta[] = remainingAccounts.map((remaining) => ({
       pubkey: remaining,
@@ -785,7 +768,7 @@ export class FermiClient {
     openOrdersAdmin: PublicKey | null,
     cancelClientOrdersIds: BN[],
     placeOrders: PlaceOrderArgs[],
-    openOrdersDelegate?: Keypair,
+    openOrdersDelegate?: Keypair
   ): Promise<[TransactionInstruction, Signer[]]> {
     const ix = await this.program.methods
       .cancelAndPlaceOrders(cancelClientOrdersIds, placeOrders)
@@ -821,7 +804,7 @@ export class FermiClient {
     openOrdersAccount: OpenOrdersAccount,
     market: MarketAccount,
     orderId: BN,
-    openOrdersDelegate?: Keypair,
+    openOrdersDelegate?: Keypair
   ): Promise<[TransactionInstruction, Signer[]]> {
     const ix = await this.program.methods
       .cancelOrder(orderId)
@@ -845,7 +828,7 @@ export class FermiClient {
     openOrdersAccount: OpenOrdersAccount,
     market: MarketAccount,
     clientOrderId: BN,
-    openOrdersDelegate?: Keypair,
+    openOrdersDelegate?: Keypair
   ): Promise<[TransactionInstruction, Signer[]]> {
     const ix = await this.program.methods
       .cancelOrderByClientOrderId(clientOrderId)
@@ -867,7 +850,7 @@ export class FermiClient {
   public async closeOpenOrdersIndexerIx(
     owner: Keypair,
     market: MarketAccount,
-    openOrdersIndexer?: PublicKey,
+    openOrdersIndexer?: PublicKey
   ): Promise<[TransactionInstruction, Signer[]]> {
     if (openOrdersIndexer == null) {
       openOrdersIndexer = this.findOpenOrdersIndexer(owner.publicKey);
@@ -890,7 +873,7 @@ export class FermiClient {
 
       return [ix, additionalSigners];
     }
-    throw new Error('No open order indexer for the specified owner');
+    throw new Error("No open order indexer for the specified owner");
   }
 
   public async settleFundsIx(
@@ -898,17 +881,37 @@ export class FermiClient {
     openOrdersAccount: OpenOrdersAccount,
     marketPublicKey: PublicKey,
     market: MarketAccount,
-    openOrdersDelegate?: Keypair,
+    openOrdersDelegate?: Keypair
   ): Promise<[TransactionInstruction, Signer[]]> {
+    const userPk = openOrdersAccount.owner;
+    const userBaseAccount = new PublicKey(
+      await checkOrCreateAssociatedTokenAccount(
+        this.provider,
+        market.baseMint,
+        userPk
+      )
+    );
+    const userQuoteAccount = new PublicKey(
+      await checkOrCreateAssociatedTokenAccount(
+        this.provider,
+        market.quoteMint,
+        userPk
+      )
+    );
+
     const ix = await this.program.methods
       .settleFunds()
       .accounts({
         owner: openOrdersDelegate?.publicKey ?? openOrdersAccount.owner,
-        market: marketPublicKey,
+        penaltyPayer: openOrdersAccount.owner,
         openOrdersAccount: openOrdersPublicKey,
+        market: marketPublicKey,
         marketAuthority: market.marketAuthority,
         marketBaseVault: market.marketBaseVault,
         marketQuoteVault: market.marketQuoteVault,
+        userBaseAccount,
+        userQuoteAccount,
+        referrerAccount: market.marketQuoteVault,
         tokenProgram: TOKEN_PROGRAM_ID,
       })
       .instruction();
@@ -925,7 +928,7 @@ export class FermiClient {
     openOrdersPublicKey: PublicKey,
     market: MarketAccount,
     solDestination: PublicKey = this.walletPk,
-    openOrdersIndexer?: PublicKey,
+    openOrdersIndexer?: PublicKey
   ): Promise<[TransactionInstruction, Signer[]]> {
     if (openOrdersIndexer == null) {
       openOrdersIndexer = this.findOpenOrdersIndexer(owner.publicKey);
@@ -948,7 +951,7 @@ export class FermiClient {
       }
       return [ix, additionalSigners];
     }
-    throw new Error('No open order indexer for the specified owner');
+    throw new Error("No open order indexer for the specified owner");
   }
 
   // Use getAccountsToConsume as a helper
@@ -956,7 +959,7 @@ export class FermiClient {
     marketPublicKey: PublicKey,
     market: MarketAccount,
     limit: BN,
-    remainingAccounts: PublicKey[],
+    remainingAccounts: PublicKey[]
   ): Promise<TransactionInstruction> {
     const accountsMeta: AccountMeta[] = remainingAccounts.map((remaining) => ({
       pubkey: remaining,
@@ -986,9 +989,9 @@ export class FermiClient {
   public async consumeEventsForAccountIx(
     marketPublicKey: PublicKey,
     market: MarketAccount,
-    openOrdersAccount: PublicKey,
- // ): Promise<TransactionInstruction> {
-  ){
+    openOrdersAccount: PublicKey
+    // ): Promise<TransactionInstruction> {
+  ) {
     const slots = await this.getSlotsToConsume(openOrdersAccount, market);
 
     const allAccounts = await this.getAccountsToConsume(market);
@@ -1023,8 +1026,9 @@ export class FermiClient {
     marketVaultBasePublicKey: PublicKey,
     marketVaultQuotePublicKey: PublicKey,
     maker: PublicKey,
-    slotsToConsume: BN,
-  ): Promise<[TransactionInstruction, Signer[]]> {
+    taker: PublicKey,
+    slotsToConsume: BN
+  ): Promise<[TransactionInstruction[], Signer[]]> {
     const accounts = {
       market: marketPublicKey,
       marketAuthority: marketAuthority,
@@ -1034,28 +1038,33 @@ export class FermiClient {
       marketVaultBase: marketVaultBasePublicKey,
       marketVaultQuote: marketVaultQuotePublicKey,
       maker: maker,
+      taker: taker,
       // marketAuthorityPDA: marketAuthorityPDA,
       // tokenProgram: tokenProgramPublicKey,
       // Add other accounts as required by the instruction
     };
 
     const argsForAtomicFinalizeGivenEvents = [
-      { name: "slots", type: { vec: slotsToConsume } }
+      { name: "slots", type: { vec: slotsToConsume } },
       // Add other arguments as required by the method's signature
     ];
+    const modifyComputeUnits = ComputeBudgetProgram.setComputeUnitLimit({ 
+      units: 300000
+    });
+
     const ix = await this.program.methods
       .atomicFinalizeGivenEvents(slotsToConsume)
-      .accounts(accounts)
+      .accounts(accounts).preInstructions([modifyComputeUnits])
       .instruction();
 
     const signers: Signer[] = [];
     // Add any additional signers if necessary
 
-    return [ix, signers];
+    return [[modifyComputeUnits,ix], signers];
   }
 
   public async createCancelGivenEventIx(
-    side: PlaceOrderArgs['side'],
+    side: PlaceOrderArgs["side"],
     marketPublicKey: PublicKey,
     marketAuthority: PublicKey,
     eventHeapPublicKey: PublicKey,
@@ -1065,7 +1074,7 @@ export class FermiClient {
     marketVaultQuotePublicKey: PublicKey,
     maker: PublicKey,
     taker: PublicKey,
-    slotsToConsume: BN,
+    slotsToConsume: BN
   ): Promise<[TransactionInstruction, Signer[]]> {
     const accounts = {
       market: marketPublicKey,
@@ -1084,7 +1093,14 @@ export class FermiClient {
 
     const ix = await this.program.methods
       .cancelWithPenalty(side, slotsToConsume)
-      .accounts(accounts)
+      .accounts({
+        maker: maker,
+        taker: taker,
+        eventHeap: eventHeapPublicKey,
+        makerAta: makerAtaPublicKey,
+        takerAta: takerAtaPublicKey,
+        market: marketPublicKey,
+      })
       .instruction();
 
     const signers: Signer[] = [];
@@ -1092,9 +1108,6 @@ export class FermiClient {
 
     return [ix, signers];
   }
-
-
-
 
   public async createFinalizeEventsInstruction(
     marketPublicKey: PublicKey,
@@ -1106,9 +1119,10 @@ export class FermiClient {
     marketVaultBasePublicKey: PublicKey,
     marketVaultQuotePublicKey: PublicKey,
     maker: PublicKey,
+    taker: PublicKey,
     // tokenProgramPublicKey: PublicKey,
     // marketAuthorityPDA,
-    slotsToConsume: BN,
+    slotsToConsume: BN
   ): Promise<[TransactionInstruction, Signer[]]> {
     const accounts = {
       market: marketPublicKey,
@@ -1119,14 +1133,19 @@ export class FermiClient {
       marketVaultBase: marketVaultBasePublicKey,
       marketVaultQuote: marketVaultQuotePublicKey,
       maker: maker,
+      taker: taker,
       //marketAuthorityPDA: marketAuthorityPDA,
       // tokenProgram: tokenProgramPublicKey,
       // Add other accounts as required by the instruction
     };
-
+    const additionalComputeBudgetInstruction =
+      ComputeBudgetProgram.setComputeUnitLimit({
+        units: 400000,
+      });
     const ix = await this.program.methods
       .atomicFinalizeEvents(slotsToConsume)
       .accounts(accounts)
+      .preInstructions([additionalComputeBudgetInstruction])
       .instruction();
 
     const signers: Signer[] = [];
@@ -1140,8 +1159,8 @@ export class FermiClient {
     marketPublicKey: PublicKey,
     market: MarketAccount,
     slots: BN[],
-    remainingAccounts: PublicKey[],
- // ): Promise<TransactionInstruction> {
+    remainingAccounts: PublicKey[]
+    // ): Promise<TransactionInstruction> {
   ) {
     const accountsMeta: AccountMeta[] = remainingAccounts.map((remaining) => ({
       pubkey: remaining,
@@ -1165,7 +1184,7 @@ export class FermiClient {
     market: MarketAccount,
     openOrdersPublicKey: PublicKey,
     limit: number,
-    closeMarketAdmin: Keypair | null = null,
+    closeMarketAdmin: Keypair | null = null
   ): Promise<[TransactionInstruction, Signer[]]> {
     const ix = await this.program.methods
       .pruneOrders(limit)
@@ -1188,7 +1207,7 @@ export class FermiClient {
   }
 
   public async getAccountsToConsume(
-    market: MarketAccount,
+    market: MarketAccount
   ): Promise<PublicKey[]> {
     let accounts: PublicKey[] = new Array<PublicKey>();
     const eventHeap = await this.deserializeEventHeapAccount(market.eventHeap);
@@ -1196,8 +1215,8 @@ export class FermiClient {
       for (const node of eventHeap.nodes) {
         if (node.event.eventType === 0) {
           const fillEvent: FillEvent = this.program.coder.types.decode(
-            'FillEvent',
-            Buffer.from([0, ...node.event.padding]),
+            "FillEvent",
+            Buffer.from([0, ...node.event.padding])
           );
           console.log("FillEvent Details:", fillEvent);
           accounts = accounts
@@ -1205,8 +1224,8 @@ export class FermiClient {
             .concat([fillEvent.maker]);
         } else {
           const outEvent: OutEvent = this.program.coder.types.decode(
-            'OutEvent',
-            Buffer.from([0, ...node.event.padding]),
+            "OutEvent",
+            Buffer.from([0, ...node.event.padding])
           );
           accounts = accounts
             .filter((a) => a !== outEvent.owner)
@@ -1221,7 +1240,7 @@ export class FermiClient {
 
   public async getSlotsToConsume(
     key: PublicKey,
-    market: MarketAccount,
+    market: MarketAccount
   ): Promise<BN[]> {
     const slots: BN[] = new Array<BN>();
 
@@ -1230,14 +1249,14 @@ export class FermiClient {
       for (const [i, node] of eventHeap.nodes.entries()) {
         if (node.event.eventType === 0) {
           const fillEvent: FillEvent = this.program.coder.types.decode(
-            'FillEvent',
-            Buffer.from([0, ...node.event.padding]),
+            "FillEvent",
+            Buffer.from([0, ...node.event.padding])
           );
           if (key === fillEvent.maker) slots.push(new BN(i));
         } else {
           const outEvent: OutEvent = this.program.coder.types.decode(
-            'OutEvent',
-            Buffer.from([0, ...node.event.padding]),
+            "OutEvent",
+            Buffer.from([0, ...node.event.padding])
           );
           if (key === outEvent.owner) slots.push(new BN(i));
         }
@@ -1250,29 +1269,29 @@ export class FermiClient {
 export async function getFilteredProgramAccounts(
   connection: Connection,
   programId: PublicKey,
-  filters:any,
+  filters: any
 ): Promise<Array<{ publicKey: PublicKey; accountInfo: AccountInfo<Buffer> }>> {
   // @ts-expect-error not need check
-  const resp = await connection._rpcRequest('getProgramAccounts', [
+  const resp = await connection._rpcRequest("getProgramAccounts", [
     programId.toBase58(),
     {
       commitment: connection.commitment,
       filters,
-      encoding: 'base64',
+      encoding: "base64",
     },
   ]);
   if (resp.error !== null) {
     throw new Error(resp.error.message);
   }
   return resp.result.map(
-    ({ pubkey, account: { data, executable, owner, lamports } }) => ({
+    ({ pubkey, account: { data, executable, owner, lamports } }: any) => ({
       publicKey: new PublicKey(pubkey),
       accountInfo: {
-        data: Buffer.from(data[0], 'base64'),
+        data: Buffer.from(data[0], "base64"),
         executable,
         owner: new PublicKey(owner),
         lamports,
       },
-    }),
+    })
   );
 }

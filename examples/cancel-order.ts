@@ -4,7 +4,7 @@ import { marketPda } from "./constants";
 import { BN } from "@coral-xyz/anchor";
 
 const main = async () => {
-  const client = initClientWithKeypairPath("./test-keypairs/bob/key.json");
+  const client = initClientWithKeypairPath("./test-keypairs/alice/key.json");
   const market = await client.deserializeMarketAccount(
     new PublicKey(marketPda)
   );
@@ -14,13 +14,13 @@ const main = async () => {
     client.walletPk,
     new PublicKey(marketPda)
   );
-  if (oo.length === 0)
+  if (oo.length === 0) 
     throw new Error("Please run 'create-oo-accounts.ts' example first");
   const openOrdersPk = oo[0];
   const ooAcc = await client.deserializeOpenOrderAccount(openOrdersPk);
   if (ooAcc == null) throw new Error("Open orders account not found");
 
-  const orderIdToCancel = "940783947759187132413";
+  const orderIdToCancel = "1881567895518374264830";
   const [ix, signers] = await client
     .cancelOrderById(openOrdersPk, ooAcc, market, new BN(orderIdToCancel))
 

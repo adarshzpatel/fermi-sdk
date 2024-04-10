@@ -12,16 +12,12 @@ const main = async () => {
   const bobClient = initClientWithKeypairPath("./test-keypairs/bob/key.json")
   const aliceClient = initClientWithKeypairPath("./test-keypairs/alice/key.json")
   const market = await bobClient.deserializeMarketAccount(new PublicKey(marketPda))
+
   if(market === null) throw new Error("Market not found")
-
-
-  // maker sure accountIndex is = length from result of  client.findAllOpenOrders + 1
-  const accountIndex = new BN(1)
 
   const ooPkBob = await bobClient.createOpenOrders(
     bobKp, // payer keypair
     new PublicKey(marketPda),
-    accountIndex,
     "Bob",
     bobKp
   )
@@ -31,7 +27,6 @@ const main = async () => {
   const ooPkAlice = await aliceClient.createOpenOrders(
     aliceKp, // payer keypair
     new PublicKey(marketPda),
-    accountIndex,
     "Alice",
     aliceKp
   )

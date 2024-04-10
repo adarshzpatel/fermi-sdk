@@ -939,39 +939,7 @@ export interface OpenbookV2 {
       ]
     },
     {
-      "name": "cancelWithPenalty",
-      "docs": [
-        "Process up to `limit` [events](crate::state::AnyEvent).",
-        "",
-        "When a user places a 'take' order, they do not know beforehand which",
-        "market maker will have placed the 'make' order that they get executed",
-        "against. This prevents them from passing in a market maker's",
-        "[`OpenOrdersAccount`](crate::state::OpenOrdersAccount), which is needed",
-        "to credit/debit the relevant tokens to/from the maker. As such, Openbook",
-        "uses a 'crank' system, where `place_order` only emits events, and",
-        "`consume_events` handles token settlement.",
-        "",
-        "Currently, there are two types of events: [`FillEvent`](crate::state::FillEvent)s",
-        "and [`OutEvent`](crate::state::OutEvent)s.",
-        "",
-        "A `FillEvent` is emitted when an order is filled, and it is handled by",
-        "debiting whatever the taker is selling from the taker and crediting",
-        "it to the maker, and debiting whatever the taker is buying from the",
-        "maker and crediting it to the taker. Note that *no tokens are moved*,",
-        "these are just debits and credits to each party's [`Position`](crate::state::Position).",
-        "",
-        "An `OutEvent` is emitted when a limit order needs to be removed from",
-        "the book during a `place_order` invocation, and it is handled by",
-        "crediting whatever the maker would have sold (quote token in a bid,",
-        "base token in an ask) back to the maker.",
-        "",
-        "The `consume_events` instruction is called by the taker, and it handles",
-        "the actual token settlement. It is passed in the taker's own",
-        "[`OpenOrdersAccount`](crate::state::OpenOrdersAccount), which is used",
-        "to debit/credit tokens to/from the taker, and the maker's",
-        "[`OpenOrdersAccount`](crate::state::OpenOrdersAccount), which is used",
-        "to debit/credit tokens to/from the maker."
-      ],
+      "name": "cancelWithPenalty",  
       "accounts": [
         {
           "name": "market",
@@ -1092,6 +1060,11 @@ export interface OpenbookV2 {
           "isSigner": false
         },
         {
+          "name": "taker",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
           "name": "tokenProgram",
           "isMut": false,
           "isSigner": false
@@ -1152,6 +1125,11 @@ export interface OpenbookV2 {
         },
         {
           "name": "maker",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "taker",
           "isMut": true,
           "isSigner": false
         },
@@ -4816,38 +4794,7 @@ export interface OpenbookV2 {
       },
       {
         "name": "cancelWithPenalty",
-        "docs": [
-          "Process up to `limit` [events](crate::state::AnyEvent).",
-          "",
-          "When a user places a 'take' order, they do not know beforehand which",
-          "market maker will have placed the 'make' order that they get executed",
-          "against. This prevents them from passing in a market maker's",
-          "[`OpenOrdersAccount`](crate::state::OpenOrdersAccount), which is needed",
-          "to credit/debit the relevant tokens to/from the maker. As such, Openbook",
-          "uses a 'crank' system, where `place_order` only emits events, and",
-          "`consume_events` handles token settlement.",
-          "",
-          "Currently, there are two types of events: [`FillEvent`](crate::state::FillEvent)s",
-          "and [`OutEvent`](crate::state::OutEvent)s.",
-          "",
-          "A `FillEvent` is emitted when an order is filled, and it is handled by",
-          "debiting whatever the taker is selling from the taker and crediting",
-          "it to the maker, and debiting whatever the taker is buying from the",
-          "maker and crediting it to the taker. Note that *no tokens are moved*,",
-          "these are just debits and credits to each party's [`Position`](crate::state::Position).",
-          "",
-          "An `OutEvent` is emitted when a limit order needs to be removed from",
-          "the book during a `place_order` invocation, and it is handled by",
-          "crediting whatever the maker would have sold (quote token in a bid,",
-          "base token in an ask) back to the maker.",
-          "",
-          "The `consume_events` instruction is called by the taker, and it handles",
-          "the actual token settlement. It is passed in the taker's own",
-          "[`OpenOrdersAccount`](crate::state::OpenOrdersAccount), which is used",
-          "to debit/credit tokens to/from the taker, and the maker's",
-          "[`OpenOrdersAccount`](crate::state::OpenOrdersAccount), which is used",
-          "to debit/credit tokens to/from the maker."
-        ],
+
         "accounts": [
           {
             "name": "market",
@@ -4968,6 +4915,11 @@ export interface OpenbookV2 {
             "isSigner": false
           },
           {
+            "name": "taker",
+            "isMut": true,
+            "isSigner": false
+          },
+          {
             "name": "tokenProgram",
             "isMut": false,
             "isSigner": false
@@ -5028,6 +4980,11 @@ export interface OpenbookV2 {
           },
           {
             "name": "maker",
+            "isMut": true,
+            "isSigner": false
+          },
+          {
+            "name": "taker",
             "isMut": true,
             "isSigner": false
           },
@@ -7678,8 +7635,8 @@ export interface OpenbookV2 {
       }
     ]
   }
-};
-  export const Idl: OpenbookV2 = {
+}
+  export const IDL: OpenbookV2 = {
   "version": "0.1.0",
   "name": "openbook_v2",
   "instructions": [
@@ -8620,38 +8577,7 @@ export interface OpenbookV2 {
     },
     {
       "name": "cancelWithPenalty",
-      "docs": [
-        "Process up to `limit` [events](crate::state::AnyEvent).",
-        "",
-        "When a user places a 'take' order, they do not know beforehand which",
-        "market maker will have placed the 'make' order that they get executed",
-        "against. This prevents them from passing in a market maker's",
-        "[`OpenOrdersAccount`](crate::state::OpenOrdersAccount), which is needed",
-        "to credit/debit the relevant tokens to/from the maker. As such, Openbook",
-        "uses a 'crank' system, where `place_order` only emits events, and",
-        "`consume_events` handles token settlement.",
-        "",
-        "Currently, there are two types of events: [`FillEvent`](crate::state::FillEvent)s",
-        "and [`OutEvent`](crate::state::OutEvent)s.",
-        "",
-        "A `FillEvent` is emitted when an order is filled, and it is handled by",
-        "debiting whatever the taker is selling from the taker and crediting",
-        "it to the maker, and debiting whatever the taker is buying from the",
-        "maker and crediting it to the taker. Note that *no tokens are moved*,",
-        "these are just debits and credits to each party's [`Position`](crate::state::Position).",
-        "",
-        "An `OutEvent` is emitted when a limit order needs to be removed from",
-        "the book during a `place_order` invocation, and it is handled by",
-        "crediting whatever the maker would have sold (quote token in a bid,",
-        "base token in an ask) back to the maker.",
-        "",
-        "The `consume_events` instruction is called by the taker, and it handles",
-        "the actual token settlement. It is passed in the taker's own",
-        "[`OpenOrdersAccount`](crate::state::OpenOrdersAccount), which is used",
-        "to debit/credit tokens to/from the taker, and the maker's",
-        "[`OpenOrdersAccount`](crate::state::OpenOrdersAccount), which is used",
-        "to debit/credit tokens to/from the maker."
-      ],
+      
       "accounts": [
         {
           "name": "market",
@@ -8772,6 +8698,11 @@ export interface OpenbookV2 {
           "isSigner": false
         },
         {
+          "name": "taker",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
           "name": "tokenProgram",
           "isMut": false,
           "isSigner": false
@@ -8832,6 +8763,11 @@ export interface OpenbookV2 {
         },
         {
           "name": "maker",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "taker",
           "isMut": true,
           "isSigner": false
         },
@@ -12496,38 +12432,6 @@ export interface OpenbookV2 {
       },
       {
         "name": "cancelWithPenalty",
-        "docs": [
-          "Process up to `limit` [events](crate::state::AnyEvent).",
-          "",
-          "When a user places a 'take' order, they do not know beforehand which",
-          "market maker will have placed the 'make' order that they get executed",
-          "against. This prevents them from passing in a market maker's",
-          "[`OpenOrdersAccount`](crate::state::OpenOrdersAccount), which is needed",
-          "to credit/debit the relevant tokens to/from the maker. As such, Openbook",
-          "uses a 'crank' system, where `place_order` only emits events, and",
-          "`consume_events` handles token settlement.",
-          "",
-          "Currently, there are two types of events: [`FillEvent`](crate::state::FillEvent)s",
-          "and [`OutEvent`](crate::state::OutEvent)s.",
-          "",
-          "A `FillEvent` is emitted when an order is filled, and it is handled by",
-          "debiting whatever the taker is selling from the taker and crediting",
-          "it to the maker, and debiting whatever the taker is buying from the",
-          "maker and crediting it to the taker. Note that *no tokens are moved*,",
-          "these are just debits and credits to each party's [`Position`](crate::state::Position).",
-          "",
-          "An `OutEvent` is emitted when a limit order needs to be removed from",
-          "the book during a `place_order` invocation, and it is handled by",
-          "crediting whatever the maker would have sold (quote token in a bid,",
-          "base token in an ask) back to the maker.",
-          "",
-          "The `consume_events` instruction is called by the taker, and it handles",
-          "the actual token settlement. It is passed in the taker's own",
-          "[`OpenOrdersAccount`](crate::state::OpenOrdersAccount), which is used",
-          "to debit/credit tokens to/from the taker, and the maker's",
-          "[`OpenOrdersAccount`](crate::state::OpenOrdersAccount), which is used",
-          "to debit/credit tokens to/from the maker."
-        ],
         "accounts": [
           {
             "name": "market",
@@ -12648,6 +12552,11 @@ export interface OpenbookV2 {
             "isSigner": false
           },
           {
+            "name": "taker",
+            "isMut": true,
+            "isSigner": false
+          },
+          {
             "name": "tokenProgram",
             "isMut": false,
             "isSigner": false
@@ -12708,6 +12617,11 @@ export interface OpenbookV2 {
           },
           {
             "name": "maker",
+            "isMut": true,
+            "isSigner": false
+          },
+          {
+            "name": "taker",
             "isMut": true,
             "isSigner": false
           },
