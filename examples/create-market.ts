@@ -3,7 +3,7 @@ import { FermiClient, createMint, getLocalKeypair } from "../src";
 import { Wallet, AnchorProvider, BN } from "@coral-xyz/anchor";
 import { programId, rpcUrl } from "./constants";
 
-const secretKeyPath = "/Users/zero/.config/solana/id.json";
+const secretKeyPath = "/Users/dm/.config/solana/id.json";
 
 const OWNER_KEYPAIR = Keypair.fromSecretKey(
   Uint8Array.from([

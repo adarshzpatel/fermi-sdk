@@ -4,7 +4,7 @@ import { marketPda } from "./constants"
 import { initClientWithKeypairPath } from "./utils"
 
 const main = async () => {
-  const marketOwnerKp = getLocalKeypair("/Users/zero/.config/solana/id.json");
+  const marketOwnerKp = getLocalKeypair("/Users/dm/.config/solana/id.json");
   const bobClient:FermiClient = initClientWithKeypairPath("./test-keypairs/bob/key.json")
   const aliceClient:FermiClient= initClientWithKeypairPath("./test-keypairs/alice/key.json")
 
