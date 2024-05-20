@@ -1017,6 +1017,7 @@ export class FermiClient {
     return ix; */
   }
 
+
   public async createFinalizeGivenEventsInstruction(
     marketPublicKey: PublicKey,
     marketAuthority: PublicKey,
@@ -1044,23 +1045,20 @@ export class FermiClient {
       // Add other accounts as required by the instruction
     };
 
-    const argsForAtomicFinalizeGivenEvents = [
-      { name: "slots", type: { vec: slotsToConsume } },
-      // Add other arguments as required by the method's signature
-    ];
-    const modifyComputeUnits = ComputeBudgetProgram.setComputeUnitLimit({ 
-      units: 300000
+    const modifyComputeUnits = ComputeBudgetProgram.setComputeUnitLimit({
+      units: 300000,
     });
 
     const ix = await this.program.methods
       .atomicFinalizeGivenEvents(slotsToConsume)
-      .accounts(accounts).preInstructions([modifyComputeUnits])
+      .accounts(accounts)
+      .preInstructions([modifyComputeUnits])
       .instruction();
 
     const signers: Signer[] = [];
     // Add any additional signers if necessary
 
-    return [[modifyComputeUnits,ix], signers];
+    return [[modifyComputeUnits, ix], signers];
   }
 
   public async createCancelGivenEventIx(
@@ -1108,7 +1106,46 @@ export class FermiClient {
 
     return [ix, signers];
   }
+  public async atomicFinalizeEventsDirect(
+    market: PublicKey,
+    marketAuthority: PublicKey,
+    eventHeap: PublicKey,
+    takerBaseAccount: PublicKey,
+    takerQuoteAccount: PublicKey,
+    makerBaseAccount: PublicKey,
+    makerQuoteAccount: PublicKey,
+    marketVaultQuote: PublicKey,
+    marketVaultBase: PublicKey,
+    maker: PublicKey,
+    taker: PublicKey,
+    limit: BN
+  ): Promise<[TransactionInstruction[], Signer[]]> {
+    const modifyComputeUnits = ComputeBudgetProgram.setComputeUnitLimit({
+      units: 300000,
+    });
 
+    const ix = await this.program.methods
+      .atomicFinalizeEventsDirect(limit)
+      .accounts({
+        market,
+        marketAuthority,
+        eventHeap,
+        takerBaseAccount,
+        takerQuoteAccount,
+        makerBaseAccount,
+        makerQuoteAccount,
+        marketVaultQuote,
+        marketVaultBase,
+        maker,
+        taker,
+        tokenProgram: TOKEN_PROGRAM_ID,
+        systemProgram: SystemProgram.programId,
+      })
+      .preInstructions([modifyComputeUnits])
+      .instruction();
+
+    return [[ix], []];
+  }
   public async createFinalizeEventsInstruction(
     marketPublicKey: PublicKey,
     // market: MarketAccount,
