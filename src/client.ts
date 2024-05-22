@@ -1106,6 +1106,55 @@ export class FermiClient {
 
     return [ix, signers];
   }
+
+  public async atomicFinalizeEventsDirect(
+    market: PublicKey,
+    marketAuthority: PublicKey,
+    eventHeap: PublicKey,
+    takerBaseAccount: PublicKey,
+    takerQuoteAccount: PublicKey,
+    makerBaseAccount: PublicKey,
+    makerQuoteAccount: PublicKey,
+    marketVaultQuote: PublicKey,
+    marketVaultBase: PublicKey,
+    maker: PublicKey,
+    taker: PublicKey,
+    limit: BN
+): Promise<TransactionInstruction[]> {
+    // Create the additional compute budget instructions
+    const computeUnitLimitInstruction = ComputeBudgetProgram.setComputeUnitLimit({
+        units: 800000,
+    });
+
+    // Create the main instruction with the required accounts
+    const mainInstruction = await this.program.methods
+        .atomicFinalizeEventsDirect(limit)
+        .accounts({
+            market,
+            marketAuthority,
+            eventHeap,
+            takerBaseAccount,
+            takerQuoteAccount,
+            makerBaseAccount,
+            makerQuoteAccount,
+            marketVaultQuote,
+            marketVaultBase,
+            maker,
+            taker,
+            tokenProgram: TOKEN_PROGRAM_ID,
+            systemProgram: SystemProgram.programId,
+        })
+        .instruction();
+
+    // Initialize the instructions array
+    const instructions: TransactionInstruction[] = [mainInstruction];
+
+    // Prepend the compute budget instruction
+    instructions.unshift(computeUnitLimitInstruction);
+
+    return instructions;
+}
+/*
   public async atomicFinalizeEventsDirect(
     market: PublicKey,
     marketAuthority: PublicKey,
@@ -1122,7 +1171,7 @@ export class FermiClient {
   ): Promise<TransactionInstruction[]> {
  const additionalComputeBudgetInstruction =
    ComputeBudgetProgram.setComputeUnitLimit({
-     units: 400000,
+     units: 600_000,
    });
     const ix = await this.program.methods
       .atomicFinalizeEventsDirect(limit)
@@ -1145,7 +1194,8 @@ export class FermiClient {
       .instruction();
 
     return [ix];
-  }
+  } */
+
   public async createFinalizeEventsInstruction(
     marketPublicKey: PublicKey,
     // market: MarketAccount,
