@@ -120,7 +120,7 @@ export async function sendTransaction(
     ).value;
   }
   if (status.err !== '' && status.err !== null) {
-    console.warn('Tx status: ', status);
+    console.warn('Tx status: ', JSON.stringify(status));
     throw new OpenBookError({
       txid: signature,
       message: `${JSON.stringify(status)}`,

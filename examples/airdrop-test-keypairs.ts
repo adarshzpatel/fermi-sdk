@@ -1,10 +1,12 @@
-import { PublicKey } from "@solana/web3.js"
 import { FermiClient, airdropToken, getLocalKeypair } from "../src"
-import { marketPda } from "./constants"
+import { OWNER_KEYPAIR, marketPda } from "./constants"
+
+import { PublicKey } from "@solana/web3.js"
 import { initClientWithKeypairPath } from "./utils"
 
 const main = async () => {
-  const marketOwnerKp = getLocalKeypair("/Users/dm/.config/solana/id.json");
+  // const marketOwnerKp = getLocalKeypair("/Users/dm/.config/solana/id.json");
+  const marketOwnerKp = OWNER_KEYPAIR
   const bobClient:FermiClient = initClientWithKeypairPath("./test-keypairs/bob/key.json")
   const aliceClient:FermiClient= initClientWithKeypairPath("./test-keypairs/alice/key.json")
 

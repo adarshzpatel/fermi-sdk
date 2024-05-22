@@ -1,24 +1,18 @@
 import { AnchorProvider, BN, Wallet } from "@coral-xyz/anchor";
 import { Connection, Keypair, PublicKey } from "@solana/web3.js";
 import { FermiClient, createMint, getLocalKeypair } from "../src";
-import { programId, rpcUrl } from "./constants";
+import { OWNER_KEYPAIR, programId, rpcUrl } from "./constants";
 
-const secretKeyPath = "/Users/dm/.config/solana/id.json";
+const secretKeyPath = "/Users/Zero/.config/solana/id.json";
 
-const OWNER_KEYPAIR = Keypair.fromSecretKey(
-  Uint8Array.from([
-    229, 207, 192, 114, 233, 58, 53, 201, 119, 77, 46, 179, 94, 131, 174, 205,
-    54, 177, 178, 55, 62, 42, 240, 50, 60, 78, 34, 14, 181, 90, 90, 57, 181, 45,
-    63, 255, 32, 103, 173, 51, 75, 240, 141, 152, 55, 52, 35, 133, 252, 111,
-    202, 141, 174, 123, 200, 180, 83, 1, 183, 161, 227, 154, 145, 39,
-  ])
-);
+
 
 const main = async () => {
-  const authority = getLocalKeypair(secretKeyPath);
-  // const authority = OWNER_KEYPAIR
+  // const authority = getLocalKeypair(secretKeyPath);
+  const authority = OWNER_KEYPAIR
   const payer = authority;
-  console.log("Authority Public Key:", OWNER_KEYPAIR.publicKey.toString());
+  console.log("Authority Public Key:", payer.publicKey.toString());
+  
   // wrap authority keypair in an anchor wallet
   const wallet = new Wallet(authority);
 

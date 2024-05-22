@@ -1119,11 +1119,11 @@ export class FermiClient {
     maker: PublicKey,
     taker: PublicKey,
     limit: BN
-  ): Promise<[TransactionInstruction[], Signer[]]> {
-    const modifyComputeUnits = ComputeBudgetProgram.setComputeUnitLimit({
-      units: 300000,
-    });
-
+  ): Promise<TransactionInstruction[]> {
+ const additionalComputeBudgetInstruction =
+   ComputeBudgetProgram.setComputeUnitLimit({
+     units: 400000,
+   });
     const ix = await this.program.methods
       .atomicFinalizeEventsDirect(limit)
       .accounts({
@@ -1141,10 +1141,10 @@ export class FermiClient {
         tokenProgram: TOKEN_PROGRAM_ID,
         systemProgram: SystemProgram.programId,
       })
-      .preInstructions([modifyComputeUnits])
+      .preInstructions([additionalComputeBudgetInstruction])
       .instruction();
 
-    return [[ix], []];
+    return [ix];
   }
   public async createFinalizeEventsInstruction(
     marketPublicKey: PublicKey,

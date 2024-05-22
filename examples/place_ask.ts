@@ -1,8 +1,9 @@
+import { Side, checkOrCreateAssociatedTokenAccount } from "../src";
+
+import { BN } from "@coral-xyz/anchor";
 import { PublicKey } from "@solana/web3.js";
 import { initClientWithKeypairPath } from "./utils";
 import { marketPda } from "./constants";
-import { Side, checkOrCreateAssociatedTokenAccount } from "../src";
-import { BN } from "@coral-xyz/anchor";
 
 const main = async () => {
   const aliceClient = initClientWithKeypairPath("./test-keypairs/alice/key.json");
@@ -33,7 +34,7 @@ const main = async () => {
     priceLots: new BN(100), // Replace with the appropriate value for price in lots
     maxBaseLots: new BN(1), // Replace with the appropriate value for max base quantity in lots
     maxQuoteLotsIncludingFees: new BN(100), // Replace with the appropriate value for max quote quantity in lots, including fees
-    clientOrderId: new BN(2),
+    clientOrderId: new BN(1),
     orderType: { limit: {} }, // 'limit' for a limit order, 'market' for a market order, etc.
     expiryTimestamp: new BN(Math.floor(Date.now() / 1000) + 3600), // Unix timestamp, e.g., 1 hour from now.
     selfTradeBehavior: { decrementTake: {} }, // Options might include 'decrementTake', 'cancelProvide', 'abortTransaction', etc.

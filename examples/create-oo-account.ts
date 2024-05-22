@@ -1,8 +1,7 @@
 import { PublicKey } from "@solana/web3.js"
+import { getLocalKeypair } from "../src"
 import { initClientWithKeypairPath } from "./utils"
 import { marketPda } from "./constants"
-import { BN } from "@coral-xyz/anchor"
-import { getLocalKeypair } from "../src"
 
 const main = async () => {
   // Create an OpenOrders accounts for bob and alice
