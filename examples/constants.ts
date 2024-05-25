@@ -2,9 +2,9 @@ import { Keypair } from "@solana/web3.js";
 
 export const rpcUrl =
   "http://api.devnet.solana.com";
-//"http://127.0.0.1:8899";
+
 export const programId = "o9QBwW81vjiH22NWLpLZm23ifn5itMGz9Hka49YoJkv";
-// let market;
+
 export const marketPda = "8VBaW4pm3detxtxY63m9g6RXMCnUC3u5D1SFnVhJ9mwN";
 export const OWNER_KEYPAIR = Keypair.fromSecretKey(
   Uint8Array.from([

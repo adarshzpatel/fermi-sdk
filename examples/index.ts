@@ -1,7 +1,9 @@
 import { stdin, stdout } from "process";
-import readline from "readline";
-import { execSync } from "child_process";
 
+import { execSync } from "child_process";
+import readline from "readline";
+
+// Create a readline interface to read user input
 const rl = readline.createInterface({
   input: stdin,
   output: stdout,
@@ -14,15 +16,19 @@ const examples = [
   { id: 4, name: "Place Bid Order ", fileName: "place_bid" },
   { id: 5, name: "Place Ask Order", fileName: "place_ask" },
   { id: 6, name: "Cancel Order", fileName: "cancel-order" },
-  { id: 7, name: "Finalise Order", fileName: "finalise" },
+  { id: 7, name: "Finalise Order", fileName: "finalise" }, 
   { id: 8, name: "Settle Funds", fileName: "settle-funds" },
   { id: 9, name: "View Eevent Heap", fileName: "view-events" },
   { id: 10, name: "View Open Orders", fileName: "view-open-orders" },
   { id: 11, name: "View Orderbook", fileName: "view-orderbook" },
+  { id: 12, name: "Finalise Direct", fileName: "finalise-direct" },
 ];
 
+// Render the options for the user to select from
 const renderOptions = examples.map((e) => `${e.id}. ${e.name} `).join("\n");
 
+
+// Function to execute examples files using ts-node command
 async function executeFile(filename: string) {
   const command = `npx ts-node ./examples/${filename}.ts`;
   try {
@@ -43,6 +49,7 @@ async function executeFile(filename: string) {
 
 let running = true;
 
+// Function to ask user to select an example to run
 async function askQuestion(question: string): Promise<string> {
   return new Promise((resolve) => {
     rl.question(question, (answer) => {
@@ -51,6 +58,7 @@ async function askQuestion(question: string): Promise<string> {
   });
 }
 
+// Function to run examples
 async function runExamples() {
   while (running) {
     const answer = await askQuestion(

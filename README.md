@@ -18,6 +18,7 @@ Go to `config.json`
 
 - Replace `rpcUrl` with `https://api.devnet.solana.com` or any custom endpoint for devnet
 - Replace `programId` with address of deployed program on devnet [contact team for latest programID: tg: @dtree33]
+- Run `npx ts-node ./examples`
 
 # Fermi Protocol SDK Tutorial
 

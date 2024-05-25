@@ -1,8 +1,9 @@
 import { AnchorProvider, Wallet } from "@coral-xyz/anchor";
-import { EventHeapAccount, FermiClient, FillEvent, OutEvent, getLocalKeypair } from "../src";
 import { Connection, PublicKey } from "@solana/web3.js";
+import { EventHeapAccount, FermiClient, FillEvent, OutEvent, getLocalKeypair } from "../src";
 import { programId, rpcUrl } from "./constants";
 
+// Function to initilize the client with the keypair path
 export const initClientWithKeypairPath = (path: string) => {
   const authority = getLocalKeypair(path);
 
@@ -20,7 +21,7 @@ export const initClientWithKeypairPath = (path: string) => {
   return client
 };
 
-
+// Function to parse the event heap into readable format
 export const parseEventHeap = (
   client: FermiClient,
   eventHeap: EventHeapAccount | null,

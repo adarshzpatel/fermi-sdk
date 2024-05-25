@@ -2,6 +2,9 @@ import { PublicKey } from "@solana/web3.js";
 import { initClientWithKeypairPath } from "./utils";
 import { marketPda } from "./constants";
 
+/**
+ * Settle funds from the open orders account into your personal wallet
+ * */
 const main = async () => {
   const bobClient = initClientWithKeypairPath("./test-keypairs/bob/key.json");
 
@@ -26,11 +29,6 @@ const main = async () => {
 
   if (!market) throw new Error("Market not found!!");
 
-  // Args
-  // openOrdersPublicKey: PublicKey,
-  // openOrdersAccount: OpenOrdersAccount,
-  // marketPublicKey: PublicKey,
-  // market: MarketAccount,
 
   const [ix, signers] = await bobClient.settleFundsIx(
     openOrdersPk,

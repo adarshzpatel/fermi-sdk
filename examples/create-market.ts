@@ -20,8 +20,9 @@ const main = async () => {
   const provider = new AnchorProvider(conn, wallet, {
     commitment: "confirmed",
   });
+  
   const client = new FermiClient(provider, new PublicKey(programId));
-  const coinMint = Keypair.generate();
+  const coinMint = Keypair.generate(); 
   const pcMint = Keypair.generate();
 
   await createMint(provider, coinMint, 9);

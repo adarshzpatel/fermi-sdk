@@ -1,9 +1,11 @@
+import { initClientWithKeypairPath, parseEventHeap } from "./utils";
 
 import { PublicKey } from "@solana/web3.js";
-import { initClientWithKeypairPath, parseEventHeap } from "./utils";
 import { marketPda } from "./constants";
 
-
+/**
+ * Vew events from the event heap
+ */
 const main = async () => {
   const client = initClientWithKeypairPath("./test-keypairs/bob/key.json");
   const market = await client.deserializeMarketAccount(

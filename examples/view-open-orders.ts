@@ -1,7 +1,9 @@
+import { OpenOrdersAccount } from "../src";
 import { PublicKey } from "@solana/web3.js";
 import { initClientWithKeypairPath } from "./utils";
 import { marketPda } from "./constants";
-import { OpenOrdersAccount } from "../src";
+
+// Grt orders from open orders account
 
 const getOrdersFromAccount = (openOrdersAccount: OpenOrdersAccount) => {
   // remove empty orders
@@ -17,11 +19,13 @@ const getOrdersFromAccount = (openOrdersAccount: OpenOrdersAccount) => {
   return parsedOrders;
 };
 
+// Get positions balances from open orders account
 const getPositionsFromAccount = (openOrdersAccount:OpenOrdersAccount) => {
   const positions = openOrdersAccount.position; 
   const parsedPositions = Object.keys(positions).map((key) => `${key} : ${positions[key].toString()}`);
   return parsedPositions;
 }
+
 
 const main = async () => {
   const client = initClientWithKeypairPath("./test-keypairs/alice/key.json");

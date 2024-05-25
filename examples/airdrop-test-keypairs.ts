@@ -15,6 +15,7 @@ const main = async () => {
   const baseMint = market?.baseMint
   const quoteMint = market?.quoteMint
   if(!baseMint || !quoteMint) throw new Error("Invalid market")
+    
   // airdrop tokens to bob 
   await airdropToken({
     amount:1000 * market?.baseLotSize.toNumber(),
