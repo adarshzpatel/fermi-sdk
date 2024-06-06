@@ -18,9 +18,9 @@ const main = async () => {
     aliceClient.walletPk,
     new PublicKey(marketPda)
   );
-  if (openOrdersAccounts.length === 0)
+  /*if (openOrdersAccounts.length === 0)
     throw new Error("Please run 'create-oo-accounts.ts' example first");
-  const openOrdersPk = openOrdersAccounts[0];
+  const openOrdersPk = openOrdersAccounts[0]; */
 
   const userBaseTokenAccount = new PublicKey(
     await checkOrCreateAssociatedTokenAccount(
@@ -37,7 +37,7 @@ const main = async () => {
     )
   );
   const orderArgs = {
-    side: Side.Ask, // or Side.Ask
+    side: Side.Bid, // or Side.Ask
     // side: 'bid',
     priceLots: new BN(100), // Replace with the appropriate value for price in lots
     maxBaseLots: new BN(1), // Replace with the appropriate value for max base quantity in lots
@@ -77,7 +77,7 @@ const main = async () => {
     .sendAndConfirmTransaction([ix], {
       additionalSigners: signers,
     })
-    .then(() => console.log("Placed ask order successfully"));
+    .then(() => console.log("Placed bid order successfully"));
 };
 
 main().catch((err) => {
