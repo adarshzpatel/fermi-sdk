@@ -1,10 +1,10 @@
+import { BN } from "@coral-xyz/anchor";
 import { PublicKey } from "@solana/web3.js";
 import { initClientWithKeypairPath } from "./utils";
 import { marketPda } from "./constants";
-import { BN } from "@coral-xyz/anchor";
 
 const main = async () => {
-  const client = initClientWithKeypairPath("./test-keypairs/bob/key.json");
+  const client = initClientWithKeypairPath("./test-keypairs/alice/key.json");
   const market = await client.deserializeMarketAccount(
     new PublicKey(marketPda)
   );
