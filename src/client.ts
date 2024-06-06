@@ -719,8 +719,8 @@ export class FermiClient {
     userQuoteAccount: PublicKey,
     openOrdersAdmin: PublicKey | null,
     args: PlaceOrderArgs,
-    referrerAccount: PublicKey | null,
     remainingAccounts: PublicKey[],
+    referrerAccount: PublicKey | null,
     openOrdersDelegate?: Keypair
   ): Promise<[TransactionInstruction, Signer[]]> {
     const accountsMeta: AccountMeta[] = remainingAccounts.map((remaining) => ({
@@ -1017,7 +1017,6 @@ export class FermiClient {
     return ix; */
   }
 
-
   public async createFinalizeGivenEventsInstruction(
     marketPublicKey: PublicKey,
     marketAuthority: PublicKey,
@@ -1120,31 +1119,32 @@ export class FermiClient {
     maker: PublicKey,
     taker: PublicKey,
     limit: BN
-): Promise<TransactionInstruction[]> {
+  ): Promise<TransactionInstruction[]> {
     // Create the additional compute budget instructions
-    const computeUnitLimitInstruction = ComputeBudgetProgram.setComputeUnitLimit({
+    const computeUnitLimitInstruction =
+      ComputeBudgetProgram.setComputeUnitLimit({
         units: 800000,
-    });
+      });
 
     // Create the main instruction with the required accounts
     const mainInstruction = await this.program.methods
-        .atomicFinalizeEventsDirect(limit)
-        .accounts({
-            market,
-            marketAuthority,
-            eventHeap,
-            takerBaseAccount,
-            takerQuoteAccount,
-            makerBaseAccount,
-            makerQuoteAccount,
-            marketVaultQuote,
-            marketVaultBase,
-            maker,
-            taker,
-            tokenProgram: TOKEN_PROGRAM_ID,
-            systemProgram: SystemProgram.programId,
-        })
-        .instruction();
+      .atomicFinalizeEventsDirect(limit)
+      .accounts({
+        market,
+        marketAuthority,
+        eventHeap,
+        takerBaseAccount,
+        takerQuoteAccount,
+        makerBaseAccount,
+        makerQuoteAccount,
+        marketVaultQuote,
+        marketVaultBase,
+        maker,
+        taker,
+        tokenProgram: TOKEN_PROGRAM_ID,
+        systemProgram: SystemProgram.programId,
+      })
+      .instruction();
 
     // Initialize the instructions array
     const instructions: TransactionInstruction[] = [mainInstruction];
@@ -1153,8 +1153,8 @@ export class FermiClient {
     instructions.unshift(computeUnitLimitInstruction);
 
     return instructions;
-}
-/*
+  }
+  /*
   public async atomicFinalizeEventsDirect(
     market: PublicKey,
     marketAuthority: PublicKey,
