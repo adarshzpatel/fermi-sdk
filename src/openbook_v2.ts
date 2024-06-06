@@ -1173,6 +1173,12 @@ export interface OpenbookV2 {
       ];
       args: [
         {
+          name: "slots";
+          type: {
+            option: "u64";
+          };
+        },
+        {
           name: "limit";
           type: "u64";
         }
@@ -1250,6 +1256,12 @@ export interface OpenbookV2 {
       ];
       args: [
         {
+          name: "slots";
+          type: {
+            option: "u64";
+          };
+        },
+        {
           name: "limit";
           type: "u64";
         }
@@ -1265,7 +1277,7 @@ export interface OpenbookV2 {
         },
         {
           name: "marketAuthority";
-          isMut: true;
+          isMut: true;f
           isSigner: false;
           docs: ["CHECK : not usafe."];
         },
@@ -5161,6 +5173,12 @@ export interface OpenbookV2 {
         ];
         args: [
           {
+            name: "slots";
+            type: {
+              option: "u64";
+            };
+          },
+          {
             name: "limit";
             type: "u64";
           }
@@ -5237,6 +5255,12 @@ export interface OpenbookV2 {
           }
         ];
         args: [
+          {
+            name: "slots";
+            type: {
+              option: "u64";
+            };
+          },
           {
             name: "limit";
             type: "u64";
@@ -9077,6 +9101,12 @@ export const IDL: OpenbookV2 = {
       ],
       args: [
         {
+          name: "slots",
+          type: {
+            option: "u64",
+          },
+        },
+        {
           name: "limit",
           type: "u64",
         },
@@ -9153,6 +9183,12 @@ export const IDL: OpenbookV2 = {
         },
       ],
       args: [
+        {
+          name: "slots",
+          type: {
+            option: "u64",
+          },
+        },
         {
           name: "limit",
           type: "u64",
@@ -13065,6 +13101,12 @@ export const IDL: OpenbookV2 = {
         ],
         args: [
           {
+            name: "slots",
+            type: {
+              option: "u64",
+            },
+          },
+          {
             name: "limit",
             type: "u64",
           },
@@ -13141,6 +13183,12 @@ export const IDL: OpenbookV2 = {
           },
         ],
         args: [
+          {
+            name: "slots",
+            type: {
+              option: "u64",
+            },
+          },
           {
             name: "limit",
             type: "u64",
