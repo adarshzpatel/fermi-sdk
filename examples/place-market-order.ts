@@ -37,7 +37,7 @@ const main = async () => {
     )
   );
   const orderArgs = {
-    side: Side.Bid, // or Side.Ask
+    side: Side.Ask, // or Side.Ask
     priceLots: new BN(100), // Replace with the appropriate value for price in lots
     maxBaseLots: new BN(1), // Replace with the appropriate value for max base quantity in lots
     maxQuoteLotsIncludingFees: new BN(100), // Replace with the appropriate value for max quote quantity in lots, including fees
@@ -76,7 +76,7 @@ const main = async () => {
     .sendAndConfirmTransaction([ix], {
       additionalSigners: signers,
     })
-    .then(() => console.log("Placed bid order successfully"));
+    .then(() => console.log("Placed ask order successfully"));
 };
 
 main().catch((err) => {

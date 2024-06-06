@@ -1118,7 +1118,9 @@ export class FermiClient {
     marketVaultBase: PublicKey,
     maker: PublicKey,
     taker: PublicKey,
+    slots: BN, 
     limit: BN
+
   ): Promise<TransactionInstruction[]> {
     // Create the additional compute budget instructions
     const computeUnitLimitInstruction =
@@ -1128,7 +1130,7 @@ export class FermiClient {
 
     // Create the main instruction with the required accounts
     const mainInstruction = await this.program.methods
-      .atomicFinalizeEventsDirect(limit)
+      .atomicFinalizeEventsDirect(slots, limit)
       .accounts({
         market,
         marketAuthority,
@@ -1167,6 +1169,7 @@ export class FermiClient {
     marketVaultBase: PublicKey,
     maker: PublicKey,
     taker: PublicKey,
+    slots: BN,
     limit: BN
   ): Promise<TransactionInstruction[]> {
     // Create the additional compute budget instructions
@@ -1177,7 +1180,7 @@ export class FermiClient {
 
     // Create the main instruction with the required accounts
     const mainInstruction = await this.program.methods
-      .atomicFinalizeMarket(limit)
+      .atomicFinalizeMarket(slots, limit)
       .accounts({
         market,
         marketAuthority,

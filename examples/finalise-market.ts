@@ -73,8 +73,8 @@ const main = async () => {
     makerBaseAccount: makerBaseAccount,
     makerQuoteAccount: makerQuoteAccount,
     maker: makerOpenOrders,
-    taker: takerOpenOrders,
-    limit: new BN(2),
+    taker: makerOpenOrders,
+    limit: new BN(0),
   };
   console.log(args);
 
@@ -90,6 +90,7 @@ const main = async () => {
     args.marketVaultBase,
     args.maker,
     args.taker,
+    new BN(0) ,
     args.limit
   );
 
