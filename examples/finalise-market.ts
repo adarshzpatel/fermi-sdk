@@ -54,6 +54,7 @@ const main = async () => {
     )
   );
 
+
   const makerOpenOrders = (
     await client.findOpenOrdersForMarket(makerpubkey, new PublicKey(marketPda))
   )[0];
@@ -63,7 +64,7 @@ const main = async () => {
 
   const args = {
     market: new PublicKey(marketPda),
-    marketAuthority: market.marketAuthority,
+  marketAuthority: market.marketAuthority,
     eventHeap: market.eventHeap,
     marketVaultQuote: market.marketQuoteVault,
     marketVaultBase: market.marketBaseVault,
@@ -77,7 +78,7 @@ const main = async () => {
   };
   console.log(args);
 
-  const ixs = await client.atomicFinalizeEventsDirect(
+  const ixs = await client.atomicFinalizeEventsMarket(
     args.market,
     args.marketAuthority,
     args.eventHeap,
