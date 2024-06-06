@@ -10202,7 +10202,7 @@ export const IDL: OpenbookV2 = {
             type: {
               array: [
                 {
-                  defined: "OpenOrder",
+                  defined: "openOrder",
                 },
                 24,
               ],
