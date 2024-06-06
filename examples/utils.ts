@@ -1,6 +1,12 @@
 import { AnchorProvider, Wallet } from "@coral-xyz/anchor";
 import { Connection, PublicKey } from "@solana/web3.js";
-import { EventHeapAccount, FermiClient, FillEvent, OutEvent, getLocalKeypair } from "../src";
+import {
+  EventHeapAccount,
+  FermiClient,
+  FillEvent,
+  OutEvent,
+  getLocalKeypair,
+} from "../src";
 import { programId, rpcUrl } from "./constants";
 
 // Function to initilize the client with the keypair path
@@ -14,29 +20,51 @@ export const initClientWithKeypairPath = (path: string) => {
   const provider = new AnchorProvider(conn, wallet, {
     commitment: "finalized",
   });
-  const client = new FermiClient(provider, new PublicKey(programId),{
-    postSendTxCallback:(tx)=>console.log("Tx Sent:",`https://solana.fm/tx/${tx.txid}?cluster=devnet-alpha`)
+  const client = new FermiClient(provider, new PublicKey(programId), {
+    postSendTxCallback: (tx) =>
+      console.log(
+        "Tx Sent:",
+        `https://solana.fm/tx/${tx.txid}?cluster=devnet-alpha`
+      ),
   });
 
-  return client
+  return client;
 };
 
 // Function to parse the event heap into readable format
 export const parseEventHeap = (
   client: FermiClient,
-  eventHeap: EventHeapAccount | null,
+  eventHeap: EventHeapAccount | null
 ) => {
   if (eventHeap == null) throw new Error("Event Heap not found");
-  const  fillEvents: any = [];
+  const fillEvents: any = [];
   const outEvents: any = [];
-  // let nodes: any = [];
+  const fillDirectEvents: any = [];
+
   if (eventHeap !== null) {
+    // find nodes having eventType = 2
     (eventHeap.nodes as any).forEach((node: any, i: number) => {
-      // nodes.push(node.event);
-      if (node.event.eventType === 0) {
+      if (node.event.eventType === 2) {
+        const fillDirectEvent: any = client.program.coder.types.decode(
+          "FillEventDirect",
+          Buffer.from([0, ...node.event.padding])
+        );
+        if (fillDirectEvent.timestamp.toString() !== "0") {
+          fillDirectEvents.push({
+            ...fillDirectEvent,
+            index: i,
+            maker: fillDirectEvent.maker.toString(),
+            taker: fillDirectEvent.taker.toString(),
+            price: fillDirectEvent.price.toString(),
+            quantity: fillDirectEvent.quantity.toString(),
+            makerClientOrderId: fillDirectEvent.makerClientOrderId.toString(),
+            takerClientOrderId: fillDirectEvent.takerClientOrderId.toString(),
+          });
+        }
+      } else if (node.event.eventType === 0) {
         const fillEvent: FillEvent = client.program.coder.types.decode(
           "FillEvent",
-          Buffer.from([0, ...node.event.padding]),
+          Buffer.from([0, ...node.event.padding])
         );
         if (fillEvent.timestamp.toString() !== "0") {
           fillEvents.push({
@@ -50,17 +78,17 @@ export const parseEventHeap = (
             takerClientOrderId: fillEvent.takerClientOrderId.toString(),
           });
         }
-      } else {
+      } else if (node.event.eventType === 1) {
         const outEvent: OutEvent = client.program.coder.types.decode(
           "OutEvent",
-          Buffer.from([0, ...node.event.padding]),
+          Buffer.from([0, ...node.event.padding])
         );
-        
+
         if (outEvent.timestamp.toString() !== "0")
-          outEvents.push({ ...outEvent, index: i, });
+          outEvents.push({ ...outEvent, index: i });
       }
     });
   }
 
-  return {fillEvents,outEvents};
+  return { fillEvents, outEvents, fillDirectEvents };
 };
