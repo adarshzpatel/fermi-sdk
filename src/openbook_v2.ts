@@ -1277,7 +1277,7 @@ export interface OpenbookV2 {
         },
         {
           name: "marketAuthority";
-          isMut: true;f
+          isMut: true;
           isSigner: false;
           docs: ["CHECK : not usafe."];
         },
