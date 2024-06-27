@@ -66,14 +66,7 @@ export function nameToString(name: number[]): string {
 const BooksideSpace = 90944 + 8;
 const EventHeapSpace = 91280 + 8;
 
-// program id: E6cNbXn2BNoMjXUg7biSTYhmTuyJWQtAnRX1fVPa7y5v
-export const OPENBOOK_PROGRAM_ID = new PublicKey(
-  "E6cNbXn2BNoMjXUg7biSTYhmTuyJWQtAnRX1fVPa7y5v"
-);
 
-export const OPENBOOK_PROGRAM_OG = new PublicKey(
-  "opnb2LAfJYbRMAHHvqjCwQxanZn7ReEHp1k81EohpZb"
-);
 
 export class FermiClient {
   public program: Program<OpenbookV2>;
@@ -85,7 +78,7 @@ export class FermiClient {
 
   constructor(
     public provider: AnchorProvider,
-    public programId: PublicKey = OPENBOOK_PROGRAM_ID,
+    public programId: PublicKey,
     public opts: OpenBookClientOptions = {}
   ) {
     this.program = new Program<OpenbookV2>(IDL, programId, provider);
