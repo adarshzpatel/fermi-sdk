@@ -7,7 +7,7 @@ import { marketPda } from "./constants";
 
 const main = async () => {
   const aliceClient = initClientWithKeypairPath(
-    "./test-keypairs/bob/key.json"
+    "./test-keypairs/alice/key.json"
   );
   const market = await aliceClient.deserializeMarketAccount(
     new PublicKey(marketPda)

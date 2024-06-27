@@ -3,9 +3,9 @@ import { Keypair } from "@solana/web3.js";
 export const rpcUrl = "http://api.devnet.solana.com";
 
 // Basic + Market orders + Market orders finalize
-export const programId = "33ZENzbUfMGwZZYQDCj8DEeBKBqd8LaCKnMfQQnMVGFW";
+export const programId = "61iWk6RE2TdZXDgKFpfLAsqTswXBdXHfgoE2UVcd6EHJ";
 
-export const marketPda = "3V9qnJ6sXrnPTo2n2KdiHWvfpnECPWierYazNc855W5o";
+export const marketPda = "9ajmjKALqZDYiDeFGsgQQq25JWE8EPUuriFjTX7rL5yo";
 
 
 // DCEp8dRr3TeLTcFADbEfHs2iHx6usXE6JhJwzu46M12W
