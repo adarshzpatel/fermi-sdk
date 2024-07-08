@@ -5,7 +5,7 @@ export const rpcUrl = "http://api.devnet.solana.com";
 // Basic + Market orders + Market orders finalize
 export const programId = "61iWk6RE2TdZXDgKFpfLAsqTswXBdXHfgoE2UVcd6EHJ";
 
-export const marketPda = "9ajmjKALqZDYiDeFGsgQQq25JWE8EPUuriFjTX7rL5yo";
+export const marketPda = "BC19FUd1RmR2bJzd6iQdkvdXzVjGjf49Hnqwv9T2bX6L";
 
 
 // DCEp8dRr3TeLTcFADbEfHs2iHx6usXE6JhJwzu46M12W
