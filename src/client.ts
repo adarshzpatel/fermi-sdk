@@ -1254,7 +1254,8 @@ export class FermiClient {
     taker: PublicKey,
     // tokenProgramPublicKey: PublicKey,
     // marketAuthorityPDA,
-    slotsToConsume: BN
+    slotsToConsume: BN,
+    limit: BN
   ): Promise<[TransactionInstruction, Signer[]]> {
     const accounts = {
       market: marketPublicKey,
@@ -1275,7 +1276,7 @@ export class FermiClient {
         units: 400000,
       });
     const ix = await this.program.methods
-      .atomicFinalizeEvents(slotsToConsume)
+      .atomicFinalizeEvents(slotsToConsume,limit)
       .accounts(accounts)
       .preInstructions([additionalComputeBudgetInstruction])
       .instruction();

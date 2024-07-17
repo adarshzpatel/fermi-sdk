@@ -1,8 +1,9 @@
+import { checkOrCreateAssociatedTokenAccount, getLocalKeypair } from "../src";
+
+import { BN } from "@coral-xyz/anchor";
 import { PublicKey } from "@solana/web3.js";
 import { initClientWithKeypairPath } from "./utils";
 import { marketPda } from "./constants";
-import { BN } from "@coral-xyz/anchor";
-import { checkOrCreateAssociatedTokenAccount, getLocalKeypair } from "../src";
 
 const main = async () => {
   const client = initClientWithKeypairPath("./test-keypairs/bob/key.json");
@@ -43,6 +44,7 @@ const main = async () => {
   );
 
   const slotsToConsume = new BN(0);
+  const limit = new BN(2);
 
   const makerOpenOrders = (
     await client.findOpenOrdersForMarket(makerpubkey, new PublicKey(marketPda))
@@ -62,6 +64,7 @@ const main = async () => {
     maker: makerOpenOrders,
     taker: takerOpenOrders,
     slotsToConsume,
+    limit
   };
   console.log(args);
 
