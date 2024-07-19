@@ -1099,6 +1099,64 @@ export class FermiClient {
     return [ix, signers];
   }
 
+  public async new_order_and_finalize(
+    market: PublicKey,
+    marketAuthority: PublicKey,
+    eventHeap: PublicKey,
+    bids: PublicKey,
+    asks: PublicKey,
+    takerBaseAccount: PublicKey,
+    takerQuoteAccount: PublicKey,
+    makerBaseAccount: PublicKey,
+    makerQuoteAccount: PublicKey,
+    marketVaultQuote: PublicKey,
+    marketVaultBase: PublicKey,
+    maker: PublicKey,
+    taker: PublicKey,
+    //slots: BN, 
+    limit: BN,
+    orderid: BN,
+    qty: BN,
+    side: BookSideAccount,
+
+  ): Promise<TransactionInstruction[]> {
+    // Create the additional compute budget instructions
+    const computeUnitLimitInstruction =
+      ComputeBudgetProgram.setComputeUnitLimit({
+        units: 800000,
+      });
+
+    // Create the main instruction with the required accounts
+    const mainInstruction = await this.program.methods
+      .placeAndFinalize(limit, orderid, qty, side)
+      .accounts({
+        market,
+        marketAuthority,
+        eventHeap,
+        bids,
+        asks,
+        takerBaseAccount,
+        takerQuoteAccount,
+        makerBaseAccount,
+        makerQuoteAccount,
+        marketVaultQuote,
+        marketVaultBase,
+        maker,
+        taker,
+        tokenProgram: TOKEN_PROGRAM_ID,
+        systemProgram: SystemProgram.programId,
+      })
+      .instruction();
+
+    // Initialize the instructions array
+    const instructions: TransactionInstruction[] = [mainInstruction];
+
+    // Prepend the compute budget instruction
+    instructions.unshift(computeUnitLimitInstruction);
+
+    return instructions;
+  }
+
   public async atomicFinalizeEventsDirect(
     market: PublicKey,
     marketAuthority: PublicKey,
