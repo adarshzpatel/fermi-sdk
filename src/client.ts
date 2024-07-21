@@ -1117,7 +1117,7 @@ export class FermiClient {
     limit: BN,
     orderid: BN,
     qty: BN,
-    side: BookSideAccount,
+    side: Side,
 
   ): Promise<TransactionInstruction[]> {
     // Create the additional compute budget instructions
