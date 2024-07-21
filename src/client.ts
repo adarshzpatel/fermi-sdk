@@ -66,8 +66,6 @@ export function nameToString(name: number[]): string {
 const BooksideSpace = 90944 + 8;
 const EventHeapSpace = 91280 + 8;
 
-
-
 export class FermiClient {
   public program: Program<OpenbookV2>;
 
@@ -1113,12 +1111,11 @@ export class FermiClient {
     marketVaultBase: PublicKey,
     maker: PublicKey,
     taker: PublicKey,
-    //slots: BN, 
+    //slots: BN,
     limit: BN,
     orderid: BN,
     qty: BN,
-    side: BookSideAccount,
-
+    side: PlaceOrderArgs["side"]
   ): Promise<TransactionInstruction[]> {
     // Create the additional compute budget instructions
     const computeUnitLimitInstruction =
@@ -1169,9 +1166,8 @@ export class FermiClient {
     marketVaultBase: PublicKey,
     maker: PublicKey,
     taker: PublicKey,
-    slots: BN, 
+    slots: BN,
     limit: BN
-
   ): Promise<TransactionInstruction[]> {
     // Create the additional compute budget instructions
     const computeUnitLimitInstruction =
@@ -1334,7 +1330,7 @@ export class FermiClient {
         units: 400000,
       });
     const ix = await this.program.methods
-      .atomicFinalizeEvents(slotsToConsume,limit)
+      .atomicFinalizeEvents(slotsToConsume, limit)
       .accounts(accounts)
       .preInstructions([additionalComputeBudgetInstruction])
       .instruction();
