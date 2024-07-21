@@ -1115,12 +1115,7 @@ export class FermiClient {
     limit: BN,
     orderid: BN,
     qty: BN,
-<<<<<<< HEAD
-    side: Side,
-
-=======
     side: PlaceOrderArgs["side"]
->>>>>>> a201ef6eecb50c885bbf39a400ac5739cac032f6
   ): Promise<TransactionInstruction[]> {
     // Create the additional compute budget instructions
     const computeUnitLimitInstruction =

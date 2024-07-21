@@ -90,7 +90,9 @@ const main = async () => {
   // orderid: BN;
   // qty: BN;
   // side: Side;
-  const ixs = await client.atomicFinalizeEventsDirect(
+
+  
+  const ixs = await client.new_order_and_finalize(
     args.market,
     args.marketAuthority,
     args.eventHeap,
@@ -105,8 +107,10 @@ const main = async () => {
     args.maker,
     args.taker,
     //new BN(2),  no slots arg
-    args.limit
-
+    args.limit,
+    args.orderid,
+    args.qty,
+    args.side
   );
 
   await client.sendAndConfirmTransaction(ixs, {});
