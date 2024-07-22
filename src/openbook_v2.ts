@@ -8814,6 +8814,11 @@ export const IDL: OpenbookV2 = {
       name: "placeAndFinalize",
       accounts: [
         {
+          name: "signer",
+          isMut: false,
+          isSigner: true,
+        },
+        {
           name: "market",
           isMut: true,
           isSigner: false,
@@ -12931,6 +12936,11 @@ export const IDL: OpenbookV2 = {
       {
         name: "placeAndFinalize",
         accounts: [
+          {
+            name: "signer",
+            isMut: false,
+            isSigner: true,
+          },
           {
             name: "market",
             isMut: true,
