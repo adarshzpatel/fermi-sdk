@@ -1124,9 +1124,11 @@ export class FermiClient {
       });
 
     // Create the main instruction with the required accounts
+    const signer = this.walletPk;
     const mainInstruction = await this.program.methods
       .placeAndFinalize(limit, orderid, qty, side)
       .accounts({
+        signer,
         market,
         marketAuthority,
         eventHeap,

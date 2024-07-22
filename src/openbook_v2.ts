@@ -640,6 +640,11 @@ export interface OpenbookV2 {
       name: "placeAndFinalize";
       accounts: [
         {
+          name: "signer";
+          isMut: false;
+          isSigner: true;
+        },
+        {
           name: "market";
           isMut: true;
           isSigner: false;
@@ -4757,6 +4762,11 @@ export interface OpenbookV2 {
       {
         name: "placeAndFinalize";
         accounts: [
+          {
+            name: "signer";
+            isMut: false;
+            isSigner: true;
+          },
           {
             name: "market";
             isMut: true;
