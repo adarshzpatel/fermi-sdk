@@ -1,11 +1,10 @@
-import { checkOrCreateAssociatedTokenAccount, getLocalKeypair } from "../src";
+import { SideUtils, checkOrCreateAssociatedTokenAccount, getLocalKeypair } from "../src";
 
 import { BN } from "@coral-xyz/anchor";
 import { PublicKey } from "@solana/web3.js";
+import { Side } from "../src";
 import { initClientWithKeypairPath } from "./utils";
 import { marketPda } from "./constants";
-import { Side } from "../src";
-
 
 // ensure opposite side (eg. limit ask by bob exists)
 const main = async () => {
@@ -79,9 +78,9 @@ const main = async () => {
     maker: makerOpenOrders,
     taker: takerOpenOrders,
     limit: new BN(0),
-    orderid: new BN(0),
+    orderid: new BN("1844674407370955161602"),
     qty: new BN(2),
-    side: Side.Bid,
+    side: SideUtils.Bid,
   };
   console.log(args);
 
@@ -92,7 +91,7 @@ const main = async () => {
   // side: Side;
 
   
-  const ixs = await client.new_order_and_finalize(
+  const ixs = await client.placeOrderAndFinalize(
     args.market,
     args.marketAuthority,
     args.eventHeap,

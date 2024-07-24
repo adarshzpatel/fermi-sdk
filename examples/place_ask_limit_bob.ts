@@ -1,4 +1,4 @@
-import { Side, checkOrCreateAssociatedTokenAccount } from "../src";
+import { SelfTradeBehaviorUtils, SideUtils, checkOrCreateAssociatedTokenAccount } from "../src";
 
 import { BN } from "@coral-xyz/anchor";
 import { PublicKey } from "@solana/web3.js";
@@ -29,7 +29,7 @@ const main = async () => {
   );
 
   const orderArgs = {
-    side: Side.Ask, // or Side.Ask
+    side: SideUtils.Ask, // or Side.Ask
     // side: 'bid',
     priceLots: new BN(100), // Replace with the appropriate value for price in lots
     maxBaseLots: new BN(1), // Replace with the appropriate value for max base quantity in lots
@@ -37,7 +37,7 @@ const main = async () => {
     clientOrderId: new BN(1),
     orderType: { limit: {} }, // 'limit' for a limit order, 'market' for a market order, etc.
     expiryTimestamp: new BN(Math.floor(Date.now() / 1000) + 3600), // Unix timestamp, e.g., 1 hour from now.
-    selfTradeBehavior: { decrementTake: {} }, // Options might include 'decrementTake', 'cancelProvide', 'abortTransaction', etc.
+    selfTradeBehavior: SelfTradeBehaviorUtils.DecrementTake, // Options might include 'decrementTake', 'cancelProvide', 'abortTransaction', etc.
     limit: 5,
     // selfTradeBehavior: /* self trade behavior */,
     // orderType: /* order type */,
@@ -48,11 +48,9 @@ const main = async () => {
     openOrdersPk,
     new PublicKey(marketPda),
     market,
-    market.marketAuthority,
     userBaseTokenAccount,
-    null, // openOrdersAdmin
     orderArgs,
-    [] // remainingAccounts
+    [] // remainingAccounts,
   );
 
   await aliceClient.sendAndConfirmTransaction([ix], {

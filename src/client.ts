@@ -31,13 +31,15 @@ import {
 import { IDL, type OpenbookV2 } from "./openbook_v2";
 import { sendTransaction } from "./utils/rpc";
 import {
-  Side,
-  checkMintOfATA,
+  SideUtils as Side,
   checkOrCreateAssociatedTokenAccount,
-} from "./utils/helpers";
+} from './utils/utils'
 
 export type IdsSource = "api" | "static" | "get-program-accounts";
 export type PlaceOrderArgs = IdlTypes<OpenbookV2>["PlaceOrderArgs"];
+export type PlaceOrderType = IdlTypes<OpenbookV2>["PlaceOrderType"];
+export type Side = IdlTypes<OpenbookV2>["Side"];
+export type SelfTradeBehavior = IdlTypes<OpenbookV2>["SelfTradeBehavior"];
 export type PlaceOrderPeggedArgs = IdlTypes<OpenbookV2>["PlaceOrderPeggedArgs"];
 export type OracleConfigParams = IdlTypes<OpenbookV2>["OracleConfigParams"];
 export type OracleConfig = IdlTypes<OpenbookV2>["OracleConfig"];
@@ -46,17 +48,21 @@ export type OpenOrdersAccount = IdlAccounts<OpenbookV2>["openOrdersAccount"];
 export type OpenOrdersIndexerAccount =
   IdlAccounts<OpenbookV2>["openOrdersIndexer"];
 export type EventHeapAccount = IdlAccounts<OpenbookV2>["eventHeap"];
-export type BookSideAccount = IdlAccounts<OpenbookV2>["bookSide"];
-export type LeafNode = IdlTypes<OpenbookV2>["LeafNode"];
-export type AnyNode = IdlTypes<OpenbookV2>["AnyNode"];
+export type AnyEvent = IdlTypes<OpenbookV2>["AnyEvent"];
 export type FillEvent = IdlTypes<OpenbookV2>["FillEvent"];
 export type OutEvent = IdlTypes<OpenbookV2>["OutEvent"];
+export type BookSideAccount = IdlAccounts<OpenbookV2>["bookSide"];
+export type AnyNode = IdlTypes<OpenbookV2>["AnyNode"];
+export type InnerNode = IdlTypes<OpenbookV2>["InnerNode"];
+export type LeafNode = IdlTypes<OpenbookV2>["LeafNode"];
+
 
 export interface OpenBookClientOptions {
   idsSource?: IdsSource;
   postSendTxCallback?: ({ txid }: { txid: string }) => void;
   prioritizationFee?: number;
   txConfirmationCommitment?: Commitment;
+  referrerWallet?: PublicKey;
 }
 
 export function nameToString(name: number[]): string {
@@ -70,9 +76,10 @@ export class FermiClient {
   public program: Program<OpenbookV2>;
 
   private readonly idsSource: IdsSource;
-  private readonly postSendTxCallback?: ({ txid }: any) => void;
+  private readonly postSendTxCallback?: ({ txid }) => void;
   private readonly prioritizationFee: number;
   private readonly txConfirmationCommitment: Commitment;
+  public readonly referrerWallet: PublicKey | undefined;
 
   constructor(
     public provider: AnchorProvider,
@@ -89,6 +96,7 @@ export class FermiClient {
         ? (this.program.provider as AnchorProvider).opts.commitment
         : undefined) ??
       "processed";
+    this.referrerWallet = opts.referrerWallet;
     // TODO: evil side effect, but limited backtraces are a nightmare
     Error.stackTraceLimit = 1000;
   }
@@ -596,7 +604,7 @@ export class FermiClient {
         userBaseAccount,
         userQuoteAccount,
         marketBaseVault: market.marketBaseVault,
-        marketQuoteVault: market.marketBaseVault,
+        marketQuoteVault: market.marketQuoteVault,
         tokenProgram: TOKEN_PROGRAM_ID,
       })
       .instruction();
@@ -605,42 +613,41 @@ export class FermiClient {
   }
 
   public decodeMarket(data: Buffer): any {
-    return this.program.coder.accounts.decode("Market", data);
+    return this.program.coder.accounts.decode("market", data);
   }
 
   public async placeOrderIx(
     openOrdersPublicKey: PublicKey,
     marketPublicKey: PublicKey,
     market: MarketAccount,
-    marketAuthority: PublicKey,
     userTokenAccount: PublicKey,
-    openOrdersAdmin: PublicKey | null,
     args: PlaceOrderArgs,
     remainingAccounts: PublicKey[],
     openOrdersDelegate?: Keypair
   ): Promise<[TransactionInstruction, Signer[]]> {
-    const marketVault =
-      args.side === Side.Bid ? market.marketQuoteVault : market.marketBaseVault;
+    const marketVault = args.side.bid
+      ? market.marketQuoteVault
+      : market.marketBaseVault;
     const accountsMeta: AccountMeta[] = remainingAccounts.map((remaining) => ({
       pubkey: remaining,
       isSigner: false,
       isWritable: true,
     }));
-    const MVmint = await checkMintOfATA(this.connection, marketVault);
+
+    const openOrdersAdmin = market.openOrdersAdmin.key.equals(PublicKey.default)
+      ? null
+      : market.openOrdersAdmin.key;
 
     const ix = await this.program.methods
       .placeOrder(args)
       .accounts({
-        signer:
-          openOrdersDelegate != null
-            ? openOrdersDelegate.publicKey
-            : this.walletPk,
+        signer: openOrdersDelegate?.publicKey ?? this.walletPk,
         asks: market.asks,
         bids: market.bids,
         marketVault,
         eventHeap: market.eventHeap,
         market: marketPublicKey,
-        marketAuthority: marketAuthority,
+        marketAuthority: market.marketAuthority,
         openOrdersAccount: openOrdersPublicKey,
         oracleA: market.oracleA.key,
         oracleB: market.oracleB.key,
@@ -711,7 +718,6 @@ export class FermiClient {
     openOrdersAdmin: PublicKey | null,
     args: PlaceOrderArgs,
     remainingAccounts: PublicKey[],
-    referrerAccount: PublicKey | null,
     openOrdersDelegate?: Keypair
   ): Promise<[TransactionInstruction, Signer[]]> {
     const accountsMeta: AccountMeta[] = remainingAccounts.map((remaining) => ({
@@ -726,6 +732,7 @@ export class FermiClient {
           openOrdersDelegate != null
             ? openOrdersDelegate.publicKey
             : this.walletPk,
+        penaltyPayer: this.walletPk,
         asks: market.asks,
         bids: market.bids,
         eventHeap: market.eventHeap,
@@ -737,9 +744,9 @@ export class FermiClient {
         marketBaseVault: market.marketBaseVault,
         marketQuoteVault: market.marketQuoteVault,
         marketAuthority: market.marketAuthority,
-        referrerAccount,
         tokenProgram: TOKEN_PROGRAM_ID,
         openOrdersAdmin,
+        systemProgram: SystemProgram.programId,
       })
       .remainingAccounts(accountsMeta)
       .instruction();
@@ -914,10 +921,8 @@ export class FermiClient {
   }
 
   public async closeOpenOrdersAccountIx(
-    payer: Keypair,
-    owner: Keypair = payer,
+    owner: Keypair,
     openOrdersPublicKey: PublicKey,
-    market: MarketAccount,
     solDestination: PublicKey = this.walletPk,
     openOrdersIndexer?: PublicKey
   ): Promise<[TransactionInstruction, Signer[]]> {
@@ -928,7 +933,6 @@ export class FermiClient {
       const ix = await this.program.methods
         .closeOpenOrdersAccount()
         .accounts({
-          payer: payer.publicKey,
           owner: owner.publicKey,
           openOrdersIndexer,
           openOrdersAccount: openOrdersPublicKey,
@@ -936,8 +940,8 @@ export class FermiClient {
           systemProgram: SystemProgram.programId,
         })
         .instruction();
-      const additionalSigners = [payer];
-      if (owner !== payer) {
+      const additionalSigners: Keypair[] = [];
+      if (owner.publicKey !== this.walletPk) {
         additionalSigners.push(owner);
       }
       return [ix, additionalSigners];
@@ -995,7 +999,7 @@ export class FermiClient {
       isSigner: false,
       isWritable: true,
     }));
-    /*
+
     const ix = await this.program.methods
       .consumeGivenEvents(slots)
       .accounts({
@@ -1005,7 +1009,7 @@ export class FermiClient {
       })
       .remainingAccounts(accountsMeta)
       .instruction();
-    return ix; */
+    return ix;
   }
 
   public async createFinalizeGivenEventsInstruction(
@@ -1097,7 +1101,7 @@ export class FermiClient {
     return [ix, signers];
   }
 
-  public async new_order_and_finalize(
+  public async placeOrderAndFinalize(
     market: PublicKey,
     marketAuthority: PublicKey,
     eventHeap: PublicKey,
@@ -1253,47 +1257,6 @@ export class FermiClient {
 
     return instructions;
   }
-  /*
-  public async atomicFinalizeEventsDirect(
-    market: PublicKey,
-    marketAuthority: PublicKey,
-    eventHeap: PublicKey,
-    takerBaseAccount: PublicKey,
-    takerQuoteAccount: PublicKey,
-    makerBaseAccount: PublicKey,
-    makerQuoteAccount: PublicKey,
-    marketVaultQuote: PublicKey,
-    marketVaultBase: PublicKey,
-    maker: PublicKey,
-    taker: PublicKey,
-    limit: BN
-  ): Promise<TransactionInstruction[]> {
- const additionalComputeBudgetInstruction =
-   ComputeBudgetProgram.setComputeUnitLimit({
-     units: 600_000,
-   });
-    const ix = await this.program.methods
-      .atomicFinalizeEventsDirect(limit)
-      .accounts({
-        market,
-        marketAuthority,
-        eventHeap,
-        takerBaseAccount,
-        takerQuoteAccount,
-        makerBaseAccount,
-        makerQuoteAccount,
-        marketVaultQuote,
-        marketVaultBase,
-        maker,
-        taker,
-        tokenProgram: TOKEN_PROGRAM_ID,
-        systemProgram: SystemProgram.programId,
-      })
-      .preInstructions([additionalComputeBudgetInstruction])
-      .instruction();
-
-    return [ix];
-  } */
 
   public async createFinalizeEventsInstruction(
     marketPublicKey: PublicKey,
@@ -1347,14 +1310,13 @@ export class FermiClient {
     market: MarketAccount,
     slots: BN[],
     remainingAccounts: PublicKey[]
-    // ): Promise<TransactionInstruction> {
-  ) {
+  ): Promise<TransactionInstruction> {
     const accountsMeta: AccountMeta[] = remainingAccounts.map((remaining) => ({
       pubkey: remaining,
       isSigner: false,
       isWritable: true,
     }));
-    /*const ix = await this.program.methods
+    const ix = await this.program.methods
       .consumeGivenEvents(slots)
       .accounts({
         eventHeap: market.eventHeap,
@@ -1363,7 +1325,7 @@ export class FermiClient {
       })
       .remainingAccounts(accountsMeta)
       .instruction();
-    return ix; */
+    return ix;
   }
 
   public async pruneOrdersIx(
@@ -1405,7 +1367,7 @@ export class FermiClient {
             "FillEvent",
             Buffer.from([0, ...node.event.padding])
           );
-          console.log("FillEvent Details:", fillEvent);
+
           accounts = accounts
             .filter((a) => a !== fillEvent.maker)
             .concat([fillEvent.maker]);

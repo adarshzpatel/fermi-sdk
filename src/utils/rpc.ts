@@ -1,5 +1,5 @@
-import { type AnchorProvider } from '@coral-xyz/anchor';
-import NodeWallet from '@coral-xyz/anchor/dist/cjs/nodewallet';
+import { type AnchorProvider } from "@coral-xyz/anchor";
+import NodeWallet from "@coral-xyz/anchor/dist/cjs/nodewallet";
 import {
   type AddressLookupTableAccount,
   ComputeBudgetProgram,
@@ -8,15 +8,17 @@ import {
   type TransactionInstruction,
   VersionedTransaction,
   Transaction,
-} from '@solana/web3.js';
+} from "@solana/web3.js";
 
 export async function sendTransaction(
   provider: AnchorProvider,
   ixs: TransactionInstruction[],
   alts: AddressLookupTableAccount[],
-  opts: any = {},
+  opts: any = {}
 ): Promise<string> {
   const connection = provider.connection;
+  const additionalSigners = opts?.additionalSigners || [];
+
   if ((connection as any).banksClient !== undefined) {
     const tx = new Transaction();
     for (const ix of ixs) {
@@ -27,19 +29,20 @@ export async function sendTransaction(
       connection as any
     ).banksClient.getLatestBlockhash();
 
-    for (const signer of opts?.additionalSigners) {
+    for (const signer of additionalSigners) {
       tx.partialSign(signer);
     }
 
     await (connection as any).banksClient.processTransaction(tx);
-    return '';
+    return "";
   }
+
   const latestBlockhash =
     opts?.latestBlockhash ??
     (await connection.getLatestBlockhash(
       opts?.preflightCommitment ??
         provider.opts.preflightCommitment ??
-        'finalized',
+        "finalized"
     ));
 
   const payer = provider.wallet;
@@ -49,26 +52,23 @@ export async function sendTransaction(
   }
 
   const message = MessageV0.compile({
-    payerKey: provider.wallet.publicKey,
+    payerKey: payer.publicKey,
     instructions: ixs,
     recentBlockhash: latestBlockhash.blockhash,
     addressLookupTableAccounts: alts,
   });
   let vtx = new VersionedTransaction(message);
 
-  if (
-    opts?.additionalSigners !== undefined &&
-    opts?.additionalSigners.length !== 0
-  ) {
-    vtx.sign([...opts?.additionalSigners]);
+  if (additionalSigners !== undefined && additionalSigners.length !== 0) {
+    vtx.sign([...additionalSigners]);
   }
 
   if (
-    typeof payer.signTransaction === 'function' &&
-    !(payer instanceof NodeWallet || payer.constructor.name === 'NodeWallet')
+    typeof payer.signTransaction === "function" &&
+    !(payer instanceof NodeWallet || payer.constructor.name === "NodeWallet")
   ) {
     vtx = (await payer.signTransaction(
-      vtx as any,
+      vtx as any
     )) as unknown as VersionedTransaction;
   } else {
     // Maybe this path is only correct for NodeWallet?
@@ -79,12 +79,7 @@ export async function sendTransaction(
     skipPreflight: true, // mergedOpts.skipPreflight,
   });
 
-  // const signature = await connection.sendTransactionss(
-  //   vtx as any as VersionedTransaction,
-  //   {
-  //     skipPreflight: true,
-  //   },
-  // );
+  // console.log(`sent tx base64=${Buffer.from(vtx.serialize()).toString('base64')}`);
 
   if (
     opts?.postSendTxCallback !== undefined &&
@@ -98,32 +93,32 @@ export async function sendTransaction(
   }
 
   const txConfirmationCommitment =
-    opts?.txConfirmationCommitment ?? 'processed';
-  let status: any;
+    opts?.txConfirmationCommitment ?? "processed";
+  let result: any;
   if (
     latestBlockhash.blockhash != null &&
     latestBlockhash.lastValidBlockHeight != null
   ) {
-    status = (
+    result = (
       await connection.confirmTransaction(
         {
           signature: signature,
           blockhash: latestBlockhash.blockhash,
           lastValidBlockHeight: latestBlockhash.lastValidBlockHeight,
         },
-        txConfirmationCommitment,
+        txConfirmationCommitment
       )
     ).value;
   } else {
-    status = (
+    result = (
       await connection.confirmTransaction(signature, txConfirmationCommitment)
     ).value;
   }
-  if (status.err !== '' && status.err !== null) {
-    console.warn('Tx status: ', JSON.stringify(status));
+  if (result.err !== "" && result.err !== null) {
+    console.warn("Tx failed result: ", result);
     throw new OpenBookError({
       txid: signature,
-      message: `${JSON.stringify(status)}`,
+      message: `${JSON.stringify(result)}`,
     });
   }
 
@@ -131,7 +126,7 @@ export async function sendTransaction(
 }
 
 export const createComputeBudgetIx = (
-  microLamports: number,
+  microLamports: number
 ): TransactionInstruction => {
   const computeBudgetIx = ComputeBudgetProgram.setComputeUnitPrice({
     microLamports,

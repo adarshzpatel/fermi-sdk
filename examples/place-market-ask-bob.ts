@@ -1,4 +1,4 @@
-import { Side, checkOrCreateAssociatedTokenAccount } from "../src";
+import { Side, SideUtils, checkOrCreateAssociatedTokenAccount } from "../src";
 
 import { BN } from "@coral-xyz/anchor";
 import { PublicKey } from "@solana/web3.js";
@@ -37,7 +37,7 @@ const main = async () => {
     )
   );
   const orderArgs = {
-    side: Side.Ask, // or Side.Ask
+    side: SideUtils.Ask, // or Side.Ask
     priceLots: new BN(100), // Replace with the appropriate value for price in lots
     maxBaseLots: new BN(1), // Replace with the appropriate value for max base quantity in lots
     maxQuoteLotsIncludingFees: new BN(100), // Replace with the appropriate value for max quote quantity in lots, including fees
@@ -69,7 +69,6 @@ const main = async () => {
     null, // openOrdersAdmin,
     orderArgs,
     [], // remainingAccounts 
-    null, // referrerAccount
   );
 
   await aliceClient

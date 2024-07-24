@@ -6,7 +6,6 @@ import { OWNER_KEYPAIR, programId, rpcUrl } from "./constants";
 const secretKeyPath = "/Users/Zero/.config/solana/id.json";
 
 
-
 const main = async () => {
   // const authority = getLocalKeypair(secretKeyPath);
   const authority = OWNER_KEYPAIR

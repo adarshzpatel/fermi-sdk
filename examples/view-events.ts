@@ -1,22 +1,18 @@
-import { initClientWithKeypairPath, parseEventHeap } from "./utils";
-
+import { Market } from "../src";
 import { PublicKey } from "@solana/web3.js";
+import { initClientWithKeypairPath } from "./utils";
 import { marketPda } from "./constants";
 
 /**
- * Vew events from the event heap
+ * View events from the event heap
  */
 const main = async () => {
   const client = initClientWithKeypairPath("./test-keypairs/bob/key.json");
-  const market = await client.deserializeMarketAccount(
-    new PublicKey(marketPda)
-  );
-  if (market === null) throw new Error("Market not found");
-
-  const eventHeapAcc = await client.deserializeEventHeapAccount(market.eventHeap)
-  const parsedEvents = eventHeapAcc && parseEventHeap(client,eventHeapAcc)
-  console.log(parsedEvents)
-
+  const market = await Market.load(client, new PublicKey(marketPda));
+  await market.loadOrderBook();
+  await market.loadEventHeap();
+  
+  console.log(market.eventHeap?.parsedEvents());
 };
 
 main().catch((err) => {

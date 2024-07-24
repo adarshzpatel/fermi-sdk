@@ -1,8 +1,9 @@
+import { SelfTradeBehaviorUtils, Side, SideUtils, checkOrCreateAssociatedTokenAccount } from "../src";
+
+import { BN } from "@coral-xyz/anchor";
 import { PublicKey } from "@solana/web3.js";
 import { initClientWithKeypairPath } from "./utils";
 import { marketPda } from "./constants";
-import { Side, checkOrCreateAssociatedTokenAccount } from "../src";
-import { BN } from "@coral-xyz/anchor";
 
 const main = async () => {
   const bobClient = initClientWithKeypairPath("./test-keypairs/bob/key.json");
@@ -28,7 +29,7 @@ const main = async () => {
   );
 
   const orderArgs = {
-    side: Side.Bid, // or Side.Ask
+    side: SideUtils.Bid, // or Side.Ask
     // side: 'bid',
     priceLots: new BN(100), // Replace with the appropriate value for price in lots
     maxBaseLots: new BN(1), // Replace with the appropriate value for max base quantity in lots
@@ -36,7 +37,7 @@ const main = async () => {
     clientOrderId: new BN(1),
     orderType: { limit: {} }, // 'limit' for a limit order, 'market' for a market order, etc.
     expiryTimestamp: new BN(Math.floor(Date.now() / 1000) + 3600), // Unix timestamp, e.g., 1 hour from now.
-    selfTradeBehavior: { decrementTake: {} }, // Options might include 'decrementTake', 'cancelProvide', 'abortTransaction', etc.
+    selfTradeBehavior: SelfTradeBehaviorUtils.DecrementTake, // Options might include 'decrementTake', 'cancelProvide', 'abortTransaction', etc.
     limit: 5,
     // selfTradeBehavior: /* self trade behavior */,
     // orderType: /* order type */,
@@ -47,16 +48,16 @@ const main = async () => {
     openOrdersPk,
     new PublicKey(marketPda),
     market,
-    market.marketAuthority,
     userQuoteTokenAccount,
-    null, // openOrdersAdmin
     orderArgs,
-    [] // remainingAccounts
+    [] // remainingAccounts,
   );
 
-  await bobClient.sendAndConfirmTransaction([ix], {
-    additionalSigners: signers,
-  }).then(()=> console.log("Placed bid order successfully"))
+  await bobClient
+    .sendAndConfirmTransaction([ix], {
+      additionalSigners: signers,
+    })
+    .then(() => console.log("Placed bid order successfully"));
 };
 
 main().catch((err) => {
