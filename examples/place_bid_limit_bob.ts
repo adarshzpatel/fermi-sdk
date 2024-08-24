@@ -32,7 +32,7 @@ const main = async () => {
     side: SideUtils.Bid, // or Side.Ask
     // side: 'bid',
     priceLots: new BN(100), // Replace with the appropriate value for price in lots
-    maxBaseLots: new BN(1), // Replace with the appropriate value for max base quantity in lots
+    maxBaseLots: new BN(100), // Replace with the appropriate value for max base quantity in lots
     maxQuoteLotsIncludingFees: new BN(100), // Replace with the appropriate value for max quote quantity in lots, including fees
     clientOrderId: new BN(1),
     orderType: { limit: {} }, // 'limit' for a limit order, 'market' for a market order, etc.

@@ -27,7 +27,9 @@ import { EventType } from "./eventHeap";
 import { Market } from "./market";
 import { OpenOrdersIndexer } from "./openOrdersIndexer";
 import { Order } from "../structs/order";
-import { getAssociatedTokenAddress } from "@solana/spl-token";
+import {
+  getAssociatedTokenAddress,
+} from "@solana/spl-token";
 
 export interface OrderToPlace {
   side: Side;
@@ -187,7 +189,6 @@ export class OpenOrders {
     const mint = order.side.bid
       ? this.market.account.quoteMint
       : this.market.account.baseMint;
-
     const userTokenAccount = await getAssociatedTokenAddress(
       mint,
       this.market.client.walletPk
@@ -426,7 +427,9 @@ export class OpenOrders {
   ): Promise<[TransactionInstruction, Signer[]]> {
     const priceLots = this.market.priceUiToLots(order.price);
     const maxBaseLots = this.market.baseUiToLots(order.size);
-    const maxQuoteLotsIncludingFees = new BN(priceLots.mul(maxBaseLots));
+    const maxQuoteLotsIncludingFees = order.quoteLimit
+      ? new BN(order.quoteLimit)
+      : I64_MAX_BN;
     const clientOrderId = new BN(order.clientOrderId || Date.now());
     const orderType = order.orderType ?? PlaceOrderTypeUtils.Limit;
     const expiryTimestamp = new BN(order.expiryTimestamp ?? 0);

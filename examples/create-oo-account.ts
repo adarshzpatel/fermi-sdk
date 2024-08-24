@@ -30,8 +30,6 @@ const main = async () => {
     aliceKp
   )
   console.log("Open orders acccount created for Alice",ooPkAlice.toString())
-
-
 }
 
 main().catch((err) => {
