@@ -4,7 +4,7 @@ import { PublicKey } from "@solana/web3.js";
 import { initClientWithKeypairPath } from "./utils";
 import { marketPda } from "./constants";
 
-const main = async () => {
+const placeLimitAskAlice = async () => {
   const aliceClient = initClientWithKeypairPath(
     "./test-keypairs/alice/key.json"
   );
@@ -25,13 +25,10 @@ const main = async () => {
     size: market.minOrderSize,
   };
 
-  console.log("orderToPlace.price", orderToPlace.price.toString());
-  console.log("orderToPlace.size", orderToPlace.size.toString());
-
-  await openOrders.placeOrder(orderToPlace);
+  await openOrders.placeOrder(orderToPlace).then(() => console.log("Placed bid order successfully"));
 };
 
-main().catch((err) => {
+placeLimitAskAlice().catch((err) => {
   console.log(err);
   process.exit(1);
 });

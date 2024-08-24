@@ -1,9 +1,10 @@
 import { Market, OpenOrders, OrderToPlace, SideUtils } from "../src";
+
 import { PublicKey } from "@solana/web3.js";
 import { initClientWithKeypairPath } from "./utils";
 import { marketPda } from "./constants";
 
-const main = async () => {
+const placeLimitAskBob = async () => {
   const bobClient = initClientWithKeypairPath("./test-keypairs/bob/key.json");
 
   const market = await Market.load(bobClient, new PublicKey(marketPda));
@@ -18,17 +19,14 @@ const main = async () => {
 
   const orderToPlace: OrderToPlace = {
     side: SideUtils.Ask,
-    price: market.tickSize * 2, // Example: setting ask price higher than bid
+    price: market.tickSize,
     size: market.minOrderSize,
   };
 
-  console.log("orderToPlace.price", orderToPlace.price.toString());
-  console.log("orderToPlace.size", orderToPlace.size.toString());
-
-  await openOrders.placeOrder(orderToPlace);
+  await openOrders.placeOrder(orderToPlace).then(() => console.log("Placed ask order successfully"));
 };
 
-main().catch((err) => {
+placeLimitAskBob().catch((err) => {
   console.log(err);
   process.exit(1);
 });
