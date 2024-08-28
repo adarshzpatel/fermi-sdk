@@ -1115,9 +1115,10 @@ export class FermiClient {
     limit: BN,
     orderid: BN,
     qty: BN,
-    side: PlaceOrderArgs["side"]
-  ): Promise<TransactionInstruction[]> {
-    // Create the additional compute budget instructions
+    side: PlaceOrderArgs["side"],
+    kp: Keypair
+    ): Promise<[TransactionInstruction, Signer[]]> {
+      // Create the additional compute budget instructions
     const computeUnitLimitInstruction =
       ComputeBudgetProgram.setComputeUnitLimit({
         units: 800000,
@@ -1153,7 +1154,10 @@ export class FermiClient {
     // Prepend the compute budget instruction
     instructions.unshift(computeUnitLimitInstruction);
 
-    return instructions;
+    const signers: Signer[] = [];
+    signers.push(kp);
+    
+    return [mainInstruction, signers] ;
   }
 
   public async atomicFinalizeEventsDirect(

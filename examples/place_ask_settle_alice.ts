@@ -96,7 +96,7 @@ const main = async () => {
     limit: new BN(0),
     orderid: new BN("1844674407370955161601"),
     qty: new BN(1),
-    side: Side.Bid,
+    side: Side.Ask,
   };
   console.log(args);
 
