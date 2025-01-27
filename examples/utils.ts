@@ -27,7 +27,7 @@ export const initClientWithKeypairPath = (path: string) => {
         `https://solana.fm/tx/${tx.txid}?cluster=devnet-alpha`
       ),
   });
-
+  console.log("Client initialized", client)
   return client;
 };
 

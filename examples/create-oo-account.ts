@@ -13,6 +13,7 @@ const main = async () => {
   const market = await bobClient.deserializeMarketAccount(new PublicKey(marketPda))
 
   if(market === null) throw new Error("Market not found")
+  console.log("Market found", market)
 
   const ooPkBob = await bobClient.createOpenOrders(
     bobKp, // payer keypair
