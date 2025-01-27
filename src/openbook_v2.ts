@@ -719,12 +719,54 @@ export interface OpenbookV2 {
           name: "systemProgram";
           isMut: false;
           isSigner: false;
+        },
+        {
+          name: "vaultState";
+          isMut: true;
+          isSigner: false;
+          docs: [
+            "The Vault's global state (tracks the mint, whitelisted program, etc.)"
+          ];
+        },
+        {
+          name: "vaultAuthority";
+          isMut: true;
+          isSigner: false;
+        },
+        {
+          name: "userState";
+          isMut: true;
+          isSigner: false;
+          docs: [
+            "The per-user state in the Vault (e.g., how many tokens deposited)"
+          ];
+        },
+        {
+          name: "caller";
+          isMut: true;
+          isSigner: false;
+          docs: ["is recognized by the Vault as an authorized caller."];
+        },
+        {
+          name: "vaultProgram";
+          isMut: false;
+          isSigner: false;
+          docs: [
+            "The actual Vault program we’re calling for CPI (`take_tokens`)"
+          ];
+        },
+        {
+          name: "vaultTokenAccount";
+          isMut: true;
+          isSigner: false;
         }
       ];
       args: [
         {
           name: "limit";
-          type: "u64";
+          type: {
+            defined: "u64";
+          };
         },
         {
           name: "orderid";
@@ -8894,11 +8936,53 @@ export const IDL: OpenbookV2 = {
           isMut: false,
           isSigner: false,
         },
+        {
+          name: "vaultState",
+          isMut: true,
+          isSigner: false,
+          docs: [
+            "The Vault's global state (tracks the mint, whitelisted program, etc.)",
+          ],
+        },
+        {
+          name: "vaultAuthority",
+          isMut: true,
+          isSigner: false,
+        },
+        {
+          name: "userState",
+          isMut: true,
+          isSigner: false,
+          docs: [
+            "The per-user state in the Vault (e.g., how many tokens deposited)",
+          ],
+        },
+        {
+          name: "caller",
+          isMut: true,
+          isSigner: false,
+          docs: ["is recognized by the Vault as an authorized caller."],
+        },
+        {
+          name: "vaultProgram",
+          isMut: false,
+          isSigner: false,
+          docs: [
+            "The actual Vault program we’re calling for CPI (`take_tokens`)",
+          ],
+        },
+        {
+          name: "vaultTokenAccount",
+          isMut: true,
+          isSigner: false,
+        },
       ],
       args: [
         {
           name: "limit",
-          type: "u64",
+          type: {
+            defined: "u64",
+          },
         },
         {
           name: "orderid",
