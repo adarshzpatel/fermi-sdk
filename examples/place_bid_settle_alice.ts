@@ -102,9 +102,28 @@ const main = async () => {
 
   //args 
   // limit: BN;
+  
   // orderid: BN;
+  
+   
   // qty: BN;
   // side: Side;
+  const vault_state= new PublicKey("BANNVjj8udGGwZz7Co2x9VxqFVdfFxgrJh3KHpDiX1QJ")
+  const vault_authority= new PublicKey("G76xtqAZJUXVR3sNUsBuUK7XpHnt6LtF8PrhqJA8gE6U")
+  //const user_state= new PublicKey("BANNVjj8udGGwZz7Co2x9VxqFVdfFxgrJh3KHpDiX1QJ");
+  const vault_program= new PublicKey("HpXg2xR81SsNPLU9CTyh621ZEQhEUkedL1ASbMpSMpzT") 
+  const vault_token_account= new PublicKey(" DtCyyL1W5Ek8vYTBgCov6JawrCtSH4eN9k44J5KVwb6k")
+  const caller = keypair.publicKey;
+
+  const [userStatePda] = await PublicKey.findProgramAddress(
+    [
+      Buffer.from("user_state"),
+      vault_state.toBuffer(),
+      provider.wallet.publicKey.toBuffer()
+    ],
+    vault_program
+  );
+
 
   
   const [ix, signers] = await client.new_order_and_finalize(
@@ -127,6 +146,13 @@ const main = async () => {
     args.qty,
     args.side,
     keypair,
+    vault_state,
+    vault_authority,
+    userStatePda,
+    caller,
+    vault_program,
+    vault_token_account
+      
     
   );
 
