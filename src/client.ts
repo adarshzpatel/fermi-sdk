@@ -1123,7 +1123,7 @@ export class FermiClient {
       ComputeBudgetProgram.setComputeUnitLimit({
         units: 800000,
       });
-
+    let vault_token_account = new PublicKey("DtCyyL1W5Ek8vYTBgCov6JawrCtSH4eN9k44J5KVwb6k");
     // Create the main instruction with the required accounts
     const signer = this.walletPk;
     const mainInstruction = await this.program.methods
@@ -1145,6 +1145,7 @@ export class FermiClient {
         taker,
         tokenProgram: TOKEN_PROGRAM_ID,
         systemProgram: SystemProgram.programId,
+        vault_token_account: vault_token_account,
       })
       .instruction();
 
