@@ -24,16 +24,16 @@ export const OWNER_KEYPAIR = Keypair.fromSecretKey(
 
 
 // Liquidity vault constants
-  export const vault_state = new PublicKey(
-    "BANNVjj8udGGwZz7Co2x9VxqFVdfFxgrJh3KHpDiX1QJ"
-  );
-  export const vault_authority = new PublicKey(
-    "G76xtqAZJUXVR3sNUsBuUK7XpHnt6LtF8PrhqJA8gE6U"
-  );
-  //const user_state= new PublicKey("BANNVjj8udGGwZz7Co2x9VxqFVdfFxgrJh3KHpDiX1QJ");
-  export const vault_program = new PublicKey(
-    "HpXg2xR81SsNPLU9CTyh621ZEQhEUkedL1ASbMpSMpzT"
-  );
-  export const vault_token_account = new PublicKey(
-    "DtCyyL1W5Ek8vYTBgCov6JawrCtSH4eN9k44J5KVwb6k"
-  );
+export const vault_state = new PublicKey(
+  "BANNVjj8udGGwZz7Co2x9VxqFVdfFxgrJh3KHpDiX1QJ"
+);
+export const vault_authority = new PublicKey(
+  "G76xtqAZJUXVR3sNUsBuUK7XpHnt6LtF8PrhqJA8gE6U"
+);
+//const user_state= new PublicKey("BANNVjj8udGGwZz7Co2x9VxqFVdfFxgrJh3KHpDiX1QJ");
+export const vault_program = new PublicKey(
+  "HpXg2xR81SsNPLU9CTyh621ZEQhEUkedL1ASbMpSMpzT"
+);
+export const vault_token_account = new PublicKey(
+  "DtCyyL1W5Ek8vYTBgCov6JawrCtSH4eN9k44J5KVwb6k"
+);
