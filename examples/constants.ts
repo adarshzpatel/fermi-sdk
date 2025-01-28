@@ -1,4 +1,4 @@
-import { Keypair } from "@solana/web3.js";
+import { Keypair, PublicKey } from "@solana/web3.js";
 
 export const rpcUrl = "http://api.devnet.solana.com";
 //export const rpcUrl = "http://localhost:8899";
@@ -20,3 +20,5 @@ export const OWNER_KEYPAIR = Keypair.fromSecretKey(
     202, 141, 174, 123, 200, 180, 83, 1, 183, 161, 227, 154, 145, 39,
   ])
 );
+
+export const liquidityVaultProgramId = new PublicKey("LIQUIDITY_VAULT_PROGRAM_ID");
