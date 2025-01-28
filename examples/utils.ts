@@ -7,7 +7,8 @@ import {
   OutEvent,
   getLocalKeypair,
 } from "../src";
-import { programId, rpcUrl } from "./constants";
+import { programId, rpcUrl, vault_program } from "./constants";
+import { LiquidityVaultClient } from "../src/liquidity_vault/client";
 
 // Function to initilize the client with the keypair path
 export const initClientWithKeypairPath = (path: string) => {
@@ -27,7 +28,7 @@ export const initClientWithKeypairPath = (path: string) => {
         `https://solana.fm/tx/${tx.txid}?cluster=devnet-alpha`
       ),
   });
-  console.log("Client initialized", client)
+  console.log("Client initialized", client);
   return client;
 };
 
@@ -91,4 +92,26 @@ export const parseEventHeap = (
   }
 
   return { fillEvents, outEvents, fillDirectEvents };
+};
+
+export const initLiquidityVaultClient = (path: string) => {
+  const authority = getLocalKeypair(path);
+  const wallet = new Wallet(authority);
+  const conn = new Connection(rpcUrl);
+
+  const provider = new AnchorProvider(conn, wallet, {
+    commitment: "confirmed",
+  });
+
+  return new LiquidityVaultClient(
+    provider,
+    new PublicKey(vault_program),
+    {
+      postSendTxCallback: (tx) =>
+        console.log(
+          "Tx Sent:",
+          `https://solana.fm/tx/${tx.txid}?cluster=devnet-alpha`
+        ),
+    }
+  );
 };

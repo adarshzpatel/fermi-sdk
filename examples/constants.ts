@@ -27,6 +27,7 @@ export const OWNER_KEYPAIR = Keypair.fromSecretKey(
 export const vault_state = new PublicKey(
   "BANNVjj8udGGwZz7Co2x9VxqFVdfFxgrJh3KHpDiX1QJ"
 );
+
 export const vault_authority = new PublicKey(
   "G76xtqAZJUXVR3sNUsBuUK7XpHnt6LtF8PrhqJA8gE6U"
 );
