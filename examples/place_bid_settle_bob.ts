@@ -105,11 +105,13 @@ const main = async () => {
    
   // qty: BN;
   // side: Side;
-  const vault_state= new PublicKey("BANNVjj8udGGwZz7Co2x9VxqFVdfFxgrJh3KHpDiX1QJ")
-  const vault_authority= new PublicKey("G76xtqAZJUXVR3sNUsBuUK7XpHnt6LtF8PrhqJA8gE6U")
+  const vault_state= new PublicKey("ERnLVrhxGeELBmrJc5BF5x8jFSBb5HettLvK6KaTf1D1");
+  const vault_authority= new PublicKey("jwXWNuXMvQfFw2RXtZRKjL28VuxLYZAQT7i6paWj5VP");
   //const user_state= new PublicKey("BANNVjj8udGGwZz7Co2x9VxqFVdfFxgrJh3KHpDiX1QJ");
-  const vault_program= new PublicKey("HpXg2xR81SsNPLU9CTyh621ZEQhEUkedL1ASbMpSMpzT") 
-  const vault_token_account= new PublicKey("DtCyyL1W5Ek8vYTBgCov6JawrCtSH4eN9k44J5KVwb6k")
+  //const vault_program= new PublicKey("5Nar3L4afsTTJP6YddfoXVatDX8J9bzQdujKC3NtA74q");
+  
+  const vault_program = new PublicKey("HpXg2xR81SsNPLU9CTyh621ZEQhEUkedL1ASbMpSMpzT");
+  const vault_token_account= new PublicKey("2oARmXfEebSYY8YcAPAcFnC1vGKEawsQwKP8h4xbQ2f3");
   const caller = keypair.publicKey;
 
   const [userStatePda] = await PublicKey.findProgramAddress(

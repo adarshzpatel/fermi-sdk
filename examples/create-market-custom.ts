@@ -28,7 +28,7 @@ const main = async () => {
   await createMint(provider, pcMint, 6);
 
   const quoteMint = new PublicKey(coinMint.publicKey.toBase58());
-  const baseMint = new PublicKey("6YwtM2Kh3Pg7ibpC6yaFmbrHdXvvHKcFKSzr6oeVvdYx");
+  const baseMint = new PublicKey("3hsHhFCRy1amfGsbn2mL7M5MpU99zsQGZqGsPKvdUH1m");
 
   // Define market parameter
   const quoteLotSize = new BN(1000000);

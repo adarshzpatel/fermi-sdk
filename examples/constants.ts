@@ -5,11 +5,11 @@ export const rpcUrl = "http://api.devnet.solana.com";
 
 // Basic + Market orders + Market orders finalize
 //export const programId = "AU2jGQtk7dmwwi1g18bqFwPn8oFaHL5A6735jssQC96E";
-export const programId = "GvgrAcGcrh6YVDm5hWdiAZgphjFNykxfnQfsaScaFZJf";
+export const programId = "7xGbCv5cPLFEeYpGhSMjy5y8H1QrwHd6UAoS16znkjPN";
 
 //export const marketPda = "3TEST3xCCxhcBWMrbSjbXSBSXZ9idpi8mUAtVxc39R8k";
 export const marketPda2 = "Gz12RjFZVUDPqBfEP18dwxxoiXZncsQKKfdjJSUdgoWB";
-export const marketPda = "NQfo73y6cxQMFzastGG4Epu4uBMBhQ64t4SD1qWRc2q";
+export const marketPda = "4t1hSTH5m9cEco5yKGuhmuotY6QRi7uAgMS2BHAkFRKj";
 
 
 // DCEp8dRr3TeLTcFADbEfHs2iHx6usXE6JhJwzu46M12W
