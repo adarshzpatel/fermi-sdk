@@ -1117,12 +1117,12 @@ export class FermiClient {
     qty: BN,
     side: PlaceOrderArgs["side"],
     kp: Keypair,
-    vault_state: PublicKey,
-    vault_authority: PublicKey,
+    vaultState: PublicKey,
+    vaultAuthority: PublicKey,
     userStatePda: PublicKey,
     caller: PublicKey,
-    vault_program: PublicKey,
-    vault_token_account: PublicKey
+    vaultProgram: PublicKey,
+    vaultTokenAccount: PublicKey
     ): Promise<[TransactionInstruction, Signer[]]> {
       // Create the additional compute budget instructions
     const computeUnitLimitInstruction =
@@ -1151,12 +1151,12 @@ export class FermiClient {
         taker,
         tokenProgram: TOKEN_PROGRAM_ID,
         systemProgram: SystemProgram.programId,
-        vault_state: vault_state,
-        vault_authority: vault_authority,
-        userStatePda: userStatePda,
+        vaultState: vaultState,
+        vaultAuthority: vaultAuthority,
+        userState: userStatePda,
         caller: caller,
-        vault_program: vault_program,
-        vault_token_account: vault_token_account,
+        vaultProgram: vaultProgram,
+        vaultTokenAccount: vaultTokenAccount,
       })
       .instruction();
 
