@@ -1,4 +1,4 @@
-import { Keypair } from "@solana/web3.js";
+import { Keypair, PublicKey } from "@solana/web3.js";
 
 export const rpcUrl = "http://api.devnet.solana.com";
 //export const rpcUrl = "http://localhost:8899";
@@ -21,3 +21,19 @@ export const OWNER_KEYPAIR = Keypair.fromSecretKey(
     202, 141, 174, 123, 200, 180, 83, 1, 183, 161, 227, 154, 145, 39,
   ])
 );
+
+
+// Liquidity vault constants
+  export const vault_state = new PublicKey(
+    "BANNVjj8udGGwZz7Co2x9VxqFVdfFxgrJh3KHpDiX1QJ"
+  );
+  export const vault_authority = new PublicKey(
+    "G76xtqAZJUXVR3sNUsBuUK7XpHnt6LtF8PrhqJA8gE6U"
+  );
+  //const user_state= new PublicKey("BANNVjj8udGGwZz7Co2x9VxqFVdfFxgrJh3KHpDiX1QJ");
+  export const vault_program = new PublicKey(
+    "HpXg2xR81SsNPLU9CTyh621ZEQhEUkedL1ASbMpSMpzT"
+  );
+  export const vault_token_account = new PublicKey(
+    "DtCyyL1W5Ek8vYTBgCov6JawrCtSH4eN9k44J5KVwb6k"
+  );
