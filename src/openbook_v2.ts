@@ -764,9 +764,7 @@ export interface OpenbookV2 {
       args: [
         {
           name: "limit";
-          type: {
-            defined: "u64";
-          };
+          type: "u64";
         },
         {
           name: "orderid";
@@ -8980,9 +8978,7 @@ export const IDL: OpenbookV2 = {
       args: [
         {
           name: "limit",
-          type: {
-            defined: "u64",
-          },
+          type: "u64",
         },
         {
           name: "orderid",
