@@ -8,7 +8,7 @@ export const rpcUrl = "http://api.devnet.solana.com";
 export const programId = "GvgrAcGcrh6YVDm5hWdiAZgphjFNykxfnQfsaScaFZJf";
 
 //export const marketPda = "3TEST3xCCxhcBWMrbSjbXSBSXZ9idpi8mUAtVxc39R8k";
-export const marketPda = "Fg9jKM5ozM4XszmLNLZKFwoF5LM2aQiXf8rshgPMjzZh";
+export const marketPda = "Gz12RjFZVUDPqBfEP18dwxxoiXZncsQKKfdjJSUdgoWB";
 
 
 // DCEp8dRr3TeLTcFADbEfHs2iHx6usXE6JhJwzu46M12W
