@@ -157,7 +157,7 @@ const main = async () => {
     vault_token_account
   );
 
-  await client.sendAndConfirmTransaction([ix], {
+  await client.sendAndConfirmTransaction(ix, {
     additionalSigners: signers,
   });
   console.log("Finalised successfully");
