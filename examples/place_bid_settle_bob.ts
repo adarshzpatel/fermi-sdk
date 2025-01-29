@@ -104,6 +104,13 @@ const main = async () => {
   };
   console.log(args);
 
+  // Get and print vault state owner
+  const vaultStateAccount = await provider.connection.getAccountInfo(vault_state);
+  if (!vaultStateAccount) {
+    throw new Error("Vault state account not found");
+  }
+  console.log("Vault state owner:", vaultStateAccount.owner.toBase58());
+
   //args
   // limit: BN;
 
