@@ -1123,15 +1123,20 @@ export class FermiClient {
     caller: PublicKey,
     vaultProgram: PublicKey,
     vaultTokenAccount: PublicKey
-    ): Promise<[TransactionInstruction, Signer[]]> {
+    ): Promise<[TransactionInstruction[], Signer[]]> {
       // Create the additional compute budget instructions
     const computeUnitLimitInstruction =
       ComputeBudgetProgram.setComputeUnitLimit({
         units: 800000,
       });
+    
+    const addPriorityFee = ComputeBudgetProgram.setComputeUnitPrice({
+        microLamports: 20000,
+      });
     //let vault_token_account = new PublicKey("DtCyyL1W5Ek8vYTBgCov6JawrCtSH4eN9k44J5KVwb6k");
     // Create the main instruction with the required accounts
     const signer = this.walletPk;
+    
     const mainInstruction = await this.program.methods
       .placeAndFinalize(limit, orderid, qty, side)
       .accounts({
@@ -1161,15 +1166,19 @@ export class FermiClient {
       .instruction();
 
     // Initialize the instructions array
-    const instructions: TransactionInstruction[] = [mainInstruction];
+    const transaction = new Transaction()
+    .add(computeUnitLimitInstruction)
+    .add(addPriorityFee)
+    .add(mainInstruction)
+    const instructions: TransactionInstruction[] = [computeUnitLimitInstruction, mainInstruction];
 
     // Prepend the compute budget instruction
-    instructions.unshift(computeUnitLimitInstruction);
+    //instructions.unshift(computeUnitLimitInstruction);
 
     const signers: Signer[] = [];
     signers.push(kp);
     
-    return [mainInstruction, signers] ;
+    return [instructions, signers] ;
   }
 
   public async atomicFinalizeEventsDirect(
