@@ -13,6 +13,7 @@ import {
 import { Side } from "../src";
 import fs from "fs";
 import { Keypair } from "@solana/web3.js";
+import { AccountLayout } from "@solana/spl-token";
 
 // Now you can use this keypair with your client initialization
 //const client = initClientWithKeypair(keypair);
@@ -39,10 +40,10 @@ const main = async () => {
   if (market == null) throw new Error("Market not found");
   const provider = client.provider;
 
-  const makerpubkey = getLocalKeypair("./test-keypairs/bob/key.json").publicKey;
+  const makerpubkey = getLocalKeypair("./test-keypairs/alice/key.json").publicKey;
 
   const takerpubkey = getLocalKeypair(
-    "./test-keypairs/alice/key.json"
+    "./test-keypairs/bob/key.json"
   ).publicKey;
 
   const makerQuoteAccount = new PublicKey(
@@ -98,7 +99,7 @@ const main = async () => {
     maker: makerOpenOrders,
     taker: takerOpenOrders,
     limit: new BN(0),
-    orderid: new BN("1844674407370955161602"),
+    orderid: new BN("1844674407370955161601"),
     qty: new BN(1),
     side: Side.Bid,
   };
@@ -111,6 +112,34 @@ const main = async () => {
   }
   console.log("Vault state owner:", vaultStateAccount.owner.toBase58());
 
+  const sourceAccountInfo = await client.provider.connection.getAccountInfo(makerQuoteAccount);
+  if (sourceAccountInfo) {
+      // Decode the token account data to see the actual owner
+      const tokenAccountData = AccountLayout.decode(sourceAccountInfo.data);
+      console.log('maker Quote Account :', makerQuoteAccount.toBase58());
+      console.log('Token Account Owner:', new PublicKey(tokenAccountData.owner).toBase58());
+      console.log('Expected Owner (sender):', makerpubkey.toBase58());
+  }
+  else {
+      console.log('Token Account not found');
+  }
+
+  // same for takerquoteaccount
+  const sourceAccountInfo2 = await client.provider.connection.getAccountInfo(takerQuoteAcconut);
+  if (sourceAccountInfo2) {
+      // Decode the token account data to see the actual owner
+      const tokenAccountData = AccountLayout.decode(sourceAccountInfo2.data);
+      console.log('tkaer Quote Account :', takerQuoteAcconut.toBase58());
+      console.log('Token Account Owner:', new PublicKey(tokenAccountData.owner).toBase58());
+      console.log('Expected Owner (sender):', takerpubkey.toBase58());
+  }
+  else {
+      console.log('Token Account not found');
+  }
+
+  //print alice and bob pubkeys
+  console.log('alicepubkey', alicekp.publicKey.toBase58());
+  console.log('bobpubkey', keypair.publicKey.toBase58());
   //args
   // limit: BN;
 
@@ -156,6 +185,8 @@ const main = async () => {
     vault_program,
     vault_token_account
   );
+  console.log("signers", signers[0].publicKey.toBase58());
+  console.log("makerpubkey", makerpubkey.toBase58());
 
   await client.sendAndConfirmTransaction(ix, {
     additionalSigners: signers,

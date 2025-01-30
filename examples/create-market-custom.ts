@@ -29,7 +29,7 @@ const main = async () => {
   await createMint(provider, pcMint, 6);
 
   const quoteMint = new PublicKey(coinMint.publicKey.toBase58());
-  const baseMint = new PublicKey("49VWKzC7xsHwWtH9GrEssQWXYBCiALLN4oxX7nXUeRcC");
+  const baseMint = new PublicKey("41386d3KTCZKteGXoMQNNueWqs6KY5kG3KsA48z5X577");
   /* Created test mint: 5sbpKP3FqsThf7gs7S4jFjpeAmdC8Xn5kY49JjYY7gcS
 vaultStatePda: AKegYwThcAHX1MWp3VkbgQdfdbhTea26fWHa2mBorSQ8
 vaultAuthPda: 65F3sF2awXh8PktKhiqoGjFg6kbfg1kBf2Pc4xsAQHxM bump = 254

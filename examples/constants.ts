@@ -5,11 +5,11 @@ export const rpcUrl = "http://api.devnet.solana.com";
 
 // Basic + Market orders + Market orders finalize
 //export const programId = "AU2jGQtk7dmwwi1g18bqFwPn8oFaHL5A6735jssQC96E";
-export const programId = "7xGbCv5cPLFEeYpGhSMjy5y8H1QrwHd6UAoS16znkjPN";
+export const programId = "3LaFxgsYSc27YuEhY7CwkfGyvpcAinmiHcAA5qE399ob";
 
 //export const marketPda = "3TEST3xCCxhcBWMrbSjbXSBSXZ9idpi8mUAtVxc39R8k";
-export const marketPda = "6ud7RKsbTJ8y6YxB7ExmhVAEQWSYKAxGa8azFna6NctL";
-//export const marketPda = "NQfo73y6cxQMFzastGG4Epu4uBMBhQ64t4SD1qWRc2q";
+//export const marketPda = "6ud7RKsbTJ8y6YxB7ExmhVAEQWSYKAxGa8azFna6NctL";
+export const marketPda = "GnDethiMd2Z1ANCeSAcP7fxRWXL64FM6dNJowho6Knxt";
 
 
 // DCEp8dRr3TeLTcFADbEfHs2iHx6usXE6JhJwzu46M12W
@@ -25,35 +25,33 @@ export const OWNER_KEYPAIR = Keypair.fromSecretKey(
 
 // Liquidity vault constants
 export const vault_state = new PublicKey(
-  "EywqiGFTj1N2QArnXndzTxNAEFLBbtmaERqnqf4tRa2P"
+  "6bNHAnuHZ4hjrmZYFCcABXhHd4GzuzHV554ApPMsgbih"
 );
 
 export const vault_authority = new PublicKey(
-  "47dVEsyXQ6uRFSQWhezaE4mCjuG7qk7WyK9WpfWuXw8b"
+  "GzyS5fbZcY2vHk7hFqkZXe6CowE4WpJnh6r8wC5GCY32"
 );
 
 export const vault_program = new PublicKey(
-  "BCXpeg3WcbfLV7EDB1HGnzEkdJTPuNTKkRzyNfAHQbQ1"
+  "2AcUsdsFXdUfKm5pd7JLQqNAKhgsZZz7e8Pc7E6Dowbx"
 );
 
 export const vault_token_account = new PublicKey(
-  "4Q31M1DYZmcmTVDEHKWhaz7XXDqCAdRoJrsGt8Zi9nQv"
+  "E567RjVmqQjxfj9hwDEHQEWZDx1AzwfSrAP45KmoG4Y6"
 );
 
 /*
-ProgramId: BCXpeg3WcbfLV7EDB1HGnzEkdJTPuNTKkRzyNfAHQbQ1
-
-
   fermi-vault
-    1) Is initialized!
-
   fermi-vault
-Created test mint: 49VWKzC7xsHwWtH9GrEssQWXYBCiALLN4oxX7nXUeRcC
-vaultStatePda: EywqiGFTj1N2QArnXndzTxNAEFLBbtmaERqnqf4tRa2P
-vaultAuthPda: 47dVEsyXQ6uRFSQWhezaE4mCjuG7qk7WyK9WpfWuXw8b bump = 254
-vaultTokenAccPda: 4Q31M1DYZmcmTVDEHKWhaz7XXDqCAdRoJrsGt8Zi9nQv bump = 254
+Created test mint: 41386d3KTCZKteGXoMQNNueWqs6KY5kG3KsA48z5X577
+vaultStatePda: 6bNHAnuHZ4hjrmZYFCcABXhHd4GzuzHV554ApPMsgbih
+vaultAuthPda: GzyS5fbZcY2vHk7hFqkZXe6CowE4WpJnh6r8wC5GCY32 bump = 255
+vaultTokenAccPda: E567RjVmqQjxfj9hwDEHQEWZDx1AzwfSrAP45KmoG4Y6 bump = 253
 Vault initialized successfully.
-vaultState.tokenMint: 49VWKzC7xsHwWtH9GrEssQWXYBCiALLN4oxX7nXUeRcC
-vaultState.whitelistedProgram: D1MCk3t8B6Cp1GnUnNkKBtMS5iXG4FEq4U3yNvJgtdDz
-vaultState.vaultAuthorityBump: 254
+vaultState.tokenMint: 41386d3KTCZKteGXoMQNNueWqs6KY5kG3KsA48z5X577
+vaultState.whitelistedProgram: 3FYwm5bHaUYYcnb6Cvu8QUuZUbzTe3wutHXVvrjRaZpF
+vaultState.vaultAuthorityBump: 255
+vaultState.vaultTokenAccountBump: 253
+    ✔ Is initialized! (1244ms)
+Deposit successful, usertokenaccount: GcHgJhH7E7wg2ijCZUSjX7dhxzuwNw17fmX1yHPviUb
 */
