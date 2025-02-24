@@ -9,7 +9,7 @@
     "build": "tsup",
     "clean": "rm -rf dist",
     "lint": "eslint . --ext .ts --fix",
-    "test": "mocha --require ts-node/register test/**/*ts"
+    "test:vault": "ts-node examples/liquidity_vault/test-scenario.ts"
   },
   "keywords": [],
   "license": "MIT",
